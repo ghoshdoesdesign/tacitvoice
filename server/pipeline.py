@@ -91,7 +91,11 @@ class Pipeline:
             )
         self._pool = ThreadPoolExecutor(max_workers=2)
 
-    def run(self, u: Utterance, log: bool = True) -> Outcome:
+    def run(self, u: Utterance, log: bool = True, trace=None) -> Outcome:
+        def step(message: str) -> None:
+            if trace:
+                trace(f"{message} ({int((time.perf_counter() - t0) * 1000)} ms)")
+
         t0 = time.perf_counter()
         self.phrasebook.reload()
 
@@ -101,6 +105,7 @@ class Pipeline:
         lips_ran = False
 
         def read_lips() -> LipResult:
+            step("lip reading started")
             try:
                 return self.lips.transcribe(u.frames, u.timestamps, u.fps)
             except Exception as e:
@@ -116,18 +121,14 @@ class Pipeline:
             # Audio first. It returns at once for a silent clip, and when it
             # does hear a whisper the lips add nothing worth their seconds
             # (measured: 17.9% word error without them, 17.6% with).
+            step("speech-to-text started")
             stt = self.stt.transcribe(u.audio, self.phrasebook.glossary)
+            step(f"speech-to-text finished: activity {stt.activity:.2f}, heard {stt.audible}, {stt.note or 'ok'}")
             if frames_ok and not stt.audible:
                 lips, lips_ran = read_lips(), True
         if stt.note:
             warnings.append(stt.note)
         t1 = time.perf_counter()
-        if log:
-            print(
-                f"[tacitvoice] recognised in {int((t1 - t0) * 1000)} ms: activity {stt.activity:.2f}, "
-                f"audio {'heard' if stt.audible else 'none'}, lips {'read' if lips_ran else 'skipped'}",
-                file=sys.stderr, flush=True,
-            )
 
         if lips_ran and lips.frames >= 5:
             if lips.face_fraction == 0:
@@ -140,7 +141,9 @@ class Pipeline:
         mode = "whisper" if stt.audible else ("silent" if lips.candidates else "none")
 
         cleaned = raw_pick(stt, lips, similar)
+        step(f"lips {'read' if lips_ran else 'skipped'}: {len(lips.candidates)} candidates")
         if cleaned.text and self.cleaner is not None:
+            step("cleanup started")
             evidence = build_evidence(
                 stt, lips, self.phrasebook.glossary, similar, u.app, u.text_before_cursor
             )

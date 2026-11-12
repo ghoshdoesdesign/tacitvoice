@@ -9,6 +9,7 @@ server down: it reports the exit code, starts a fresh process, and carries on.
 
 from __future__ import annotations
 
+import faulthandler
 import multiprocessing
 import signal
 import sys
@@ -73,7 +74,13 @@ def handle(pipe, message: tuple) -> tuple:
         app=str(info.get("app") or ""),
         text_before_cursor=str(info.get("textBeforeCursor") or ""),
     )
-    result = pipe.run(utterance).to_json()
+    # If recognition is still going after 20 s, print where every thread is,
+    # every 10 s after that, so a hang names the exact line it is stuck on.
+    faulthandler.dump_traceback_later(20, repeat=False)
+    try:
+        result = pipe.run(utterance, trace=say).to_json()
+    finally:
+        faulthandler.cancel_dump_traceback_later()
     say(f"done ({result['mode']}, {result['timingsMs'].get('total')} ms): {result['text']!r} {result['warnings']}")
     return ("ok", result)
 

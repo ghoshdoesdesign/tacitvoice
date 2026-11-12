@@ -18,7 +18,7 @@ class FakePipeline:
         self.seen = None
         self.phrasebook = Phrasebook(tmp_path / "dictionary.txt", tmp_path / "prompts.txt")
 
-    def run(self, u):
+    def run(self, u, trace=None):
         self.seen = u
         return pipeline.Outcome(
             id="abc", text="Hello.", alternatives=["Yellow."], mode="whisper",
