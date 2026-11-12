@@ -76,10 +76,19 @@ def main() -> None:
     with sd.InputStream(samplerate=RATE, channels=1, dtype="float32", callback=on_audio):
         frames: list[np.ndarray] = []
         stamps: list[float] = []
+        misses = 0
         while i < len(prompts):
             ok, frame = cam.read()
             if not ok:
+                misses += 1
+                if misses > 100:
+                    raise SystemExit(
+                        f"Camera {args.camera} is sending no pictures. Try the other one: --camera "
+                        f"{1 - args.camera if args.camera in (0, 1) else 0}"
+                    )
+                time.sleep(0.05)
                 continue
+            misses = 0
             frame = cv2.resize(frame, (WIDTH, HEIGHT), interpolation=cv2.INTER_AREA)
             if recording:
                 frames.append(frame)
