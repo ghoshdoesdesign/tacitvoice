@@ -94,24 +94,35 @@ class Pipeline:
         t0 = time.perf_counter()
         self.phrasebook.reload()
 
-        # Audio and lips are independent, so run them side by side.
-        stt_job = self._pool.submit(self.stt.transcribe, u.audio, self.phrasebook.glossary)
-        if self.lips is not None and len(u.frames):
-            lips_job = self._pool.submit(self.lips.transcribe, u.frames, u.timestamps, u.fps)
-        else:
-            lips_job = None
-        stt = stt_job.result()
+        frames_ok = self.lips is not None and len(u.frames) > 0
         warnings: list[str] = []
+        lips = LipResult()
+        lips_ran = False
+
+        def read_lips() -> LipResult:
+            try:
+                return self.lips.transcribe(u.frames, u.timestamps, u.fps)
+            except Exception as e:
+                warnings.append(f"lip reading failed: {e}")
+                return LipResult()
+
+        if frames_ok and config.LIPS_WITH_AUDIO:
+            # Both channels on every clip, side by side.
+            lips_job = self._pool.submit(read_lips)
+            stt = self.stt.transcribe(u.audio, self.phrasebook.glossary)
+            lips, lips_ran = lips_job.result(), True
+        else:
+            # Audio first. It returns at once for a silent clip, and when it
+            # does hear a whisper the lips add nothing worth their seconds
+            # (measured: 17.9% word error without them, 17.6% with).
+            stt = self.stt.transcribe(u.audio, self.phrasebook.glossary)
+            if frames_ok and not stt.audible:
+                lips, lips_ran = read_lips(), True
         if stt.note:
             warnings.append(stt.note)
-        try:
-            lips = lips_job.result() if lips_job else LipResult()
-        except Exception as e:
-            lips = LipResult()
-            warnings.append(f"lip reading failed: {e}")
         t1 = time.perf_counter()
 
-        if lips_job and lips.frames >= 5:
+        if lips_ran and lips.frames >= 5:
             if lips.face_fraction == 0:
                 warnings.append("No face found. Face the camera.")
             elif lips.face_fraction < 0.5:

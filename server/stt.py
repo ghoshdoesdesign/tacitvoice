@@ -82,10 +82,14 @@ _PHANTOMS = {
 }
 
 
+_PHANTOM_PARTS = ("for watching", "next video", "subscribe", "see you next time")
+
+
 def is_phantom(text: str) -> bool:
     from .text import normalise
 
-    return normalise(text) in _PHANTOMS
+    text = normalise(text)
+    return text in _PHANTOMS or any(part in text for part in _PHANTOM_PARTS)
 
 
 def gate(result: "SttResult", audio: np.ndarray, silence_dbfs: float, min_activity: float) -> bool:

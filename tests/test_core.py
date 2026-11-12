@@ -242,7 +242,7 @@ def test_activity_separates_whisper_from_silent_mouthing():
     assert activity(silent) < 0.05 < 0.3 < activity(whisper_like())
     assert not gate(SttResult(), silent, -50.0, 0.15) and gate(SttResult(), whisper_like(), -50.0, 0.15)
     assert activity(np.zeros(100, dtype=np.float32)) == 0.0
-    assert is_phantom("Thank you.") and is_phantom("I'll see you next time.") and not is_phantom("Thank you for the file")
+    assert is_phantom("Thank you.") and is_phantom("I'll see you next time.") and is_phantom("Thank you so much for watching, and I'll see you in the next video!") and not is_phantom("Thank you for the file")
 
 
 def test_cloud_stt(monkeypatch):
@@ -284,3 +284,44 @@ def test_cloud_stt(monkeypatch):
 
     out = make(FakeTranscriptions(error=api_error("openai", "AuthenticationError", 401))).transcribe(loud)
     assert not out.audible and "401" in out.note
+
+
+def test_pipeline_reads_lips_only_when_no_whisper_is_heard(tmp_path, monkeypatch):
+    from server import pipeline
+    from server.phrases import Phrasebook
+
+    calls = []
+
+    class Stt:
+        def __init__(self, text):
+            self.text = text
+
+        def transcribe(self, audio, glossary):
+            calls.append("stt")
+            return SttResult(text=self.text, audible=bool(self.text), activity=0.4)
+
+    class Lips:
+        device = "cpu"
+
+        def transcribe(self, frames, timestamps, fps):
+            calls.append("lips")
+            return LipResult(candidates=[("read from lips", -1.0)], face_fraction=1.0, frames=len(frames))
+
+    def run(heard, with_audio=False):
+        calls.clear()
+        monkeypatch.setattr(config, "LIPS_WITH_AUDIO", with_audio)
+        p = pipeline.Pipeline.__new__(pipeline.Pipeline)
+        p.phrasebook = Phrasebook(tmp_path / "d.txt", tmp_path / "p.txt")
+        p.stt, p.lips, p.cleaner = Stt(heard), Lips(), None
+        from concurrent.futures import ThreadPoolExecutor
+
+        p._pool = ThreadPoolExecutor(max_workers=2)
+        u = pipeline.Utterance(frames=np.zeros((10, 4, 4, 3), np.uint8), audio=np.zeros(16000, np.float32))
+        return p.run(u, log=False)
+
+    out = run("a whisper")
+    assert calls == ["stt"] and out.mode == "whisper" and out.text == "a whisper"
+    out = run("")
+    assert calls == ["stt", "lips"] and out.mode == "silent" and out.text == "read from lips"
+    out = run("a whisper", with_audio=True)
+    assert sorted(calls) == ["lips", "stt"] and out.text == "a whisper" and out.alternatives == ["read from lips"]

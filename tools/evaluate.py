@@ -61,6 +61,7 @@ def summarise(rows: list[dict]) -> dict:
 
     return {
         "clips": len(rows),
+        "lips_ran": any(r["lips"] for r in rows),
         "wer_audio_only": wer(lambda r: r["audio"]),
         "wer_lips_top1": wer(lambda r: r["lips"][0] if r["lips"] else ""),
         # Best of the candidates: the ceiling a perfect chooser could reach.
@@ -76,10 +77,10 @@ def summarise(rows: list[dict]) -> dict:
 def print_table(results: dict) -> None:
     print(f"\n{'mode':8} {'clips':>5} {'audio':>7} {'lips':>7} {'lips*':>7} {'final':>7} {'exact':>7} {'total ms':>9}")
     for mode, r in results.items():
+        lips = f"{r['wer_lips_top1']:7.1%} {r['wer_lips_best_of_n']:7.1%}" if r["lips_ran"] else "      -       -"
         print(
-            f"{mode:8} {r['clips']:5d} {r['wer_audio_only']:7.1%} {r['wer_lips_top1']:7.1%} "
-            f"{r['wer_lips_best_of_n']:7.1%} {r['wer_final']:7.1%} {r['exact_final']:7.1%} "
-            f"{r['median_ms']['total']:9d}"
+            f"{mode:8} {r['clips']:5d} {r['wer_audio_only']:7.1%} {lips} "
+            f"{r['wer_final']:7.1%} {r['exact_final']:7.1%} {r['median_ms']['total']:9d}"
         )
     print("Word error rates; lower is better. lips* = best of the lip candidates. exact = clips with no errors.")
     for mode, r in results.items():

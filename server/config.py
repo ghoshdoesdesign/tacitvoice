@@ -26,6 +26,9 @@ LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
 LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "10"))
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
+# Also read lips when a whisper was heard. Off: on the owner's clips it added
+# 3-4 seconds and changed the error rate by 0.3 points.
+LIPS_WITH_AUDIO = os.getenv("TACIT_LIPS_WITH_AUDIO", "off") == "on"
 
 # Where speech-to-text runs. "openai" sends each utterance's audio to OpenAI
 # (about a second); "local" keeps it on this Mac (10+ seconds on a CPU).

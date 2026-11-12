@@ -17,8 +17,9 @@ Working name in the PRD: "Murmur". This is a one-user research prototype.
 | Cleanup | `server/cleanup.py` | A hosted model (OpenAI or Claude) picks between the guesses and punctuates. Text only |
 | Insert | `app/` | Pasted at the cursor; the clipboard is restored |
 
-If the microphone hears nothing, the clip is treated as silent mouthing and
-only the lips and your vocabulary are used. Silent mode is rough until the
+If the microphone hears a whisper, only the audio is used. If it hears
+nothing, the clip is treated as silent mouthing and your lips and vocabulary
+are used instead. Silent mode is rough until the
 model is fine-tuned on your own face.
 
 ## Setup (Apple Silicon Mac)
@@ -117,6 +118,7 @@ Environment variables for `scripts/server.sh`; see `server/config.py`.
 | `TACIT_SILENCE_DBFS` | `-50` | Below this level a clip counts as silent |
 | `TACIT_MIN_ACTIVITY` | `0.12` | Share of the clip that must rise above its noise floor to count as a whisper |
 | `TACIT_LIPS` | `on` | `off` skips lip reading |
+| `TACIT_LIPS_WITH_AUDIO` | `off` | `on` also reads lips when a whisper is heard (slower, little gain so far) |
 | `TACIT_LIPS_BEAM` | `10` | Search width. `0` uses the model's 40: slower, a little more accurate |
 | `TACIT_CLEANUP_PROVIDER` | follows the key present | `openai` or `anthropic` |
 | `TACIT_CLEANUP_MODEL` | `gpt-4.1-mini` or `claude-haiku-5-5` | Model for the cleanup pass |
