@@ -134,9 +134,10 @@ def main() -> None:
                 i -= 1
                 (out / f"{i:03d}.json").unlink(missing_ok=True)
 
-    cam.release()
+    print(f"Saved takes are in {out}. Next: uv run python -m tools.evaluate", flush=True)
     cv2.destroyAllWindows()
-    print(f"Saved takes are in {out}. Next: uv run python -m tools.evaluate")
+    cv2.waitKey(1)  # macOS only closes the window once its event loop runs again
+    cam.release()
 
 
 if __name__ == "__main__":
