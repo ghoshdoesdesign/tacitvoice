@@ -7,8 +7,10 @@ Listens on 127.0.0.1 only and requires the token in ~/.tacitvoice/token.
 from __future__ import annotations
 
 import asyncio
+import atexit
 import hmac
 import json
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 
@@ -104,6 +106,7 @@ async def transcribe(
     except ValueError:
         raise HTTPException(status_code=400, detail="meta is not valid JSON.")
 
+    say(f"clip received: {len(frames)} frames, audio {'yes' if audio else 'no'}")
     pcm = pcm16_to_float(await audio.read()) if audio else np.zeros(0, dtype=np.float32)
     pcm = resample(pcm, int(info.get("sampleRate") or 16000))
     images = decode_frames([await f.read() for f in frames])
@@ -116,8 +119,11 @@ async def transcribe(
         text_before_cursor=str(info.get("textBeforeCursor") or ""),
     )
 
+    say(f"clip decoded: {images.shape[0]} frames, {len(pcm) / 16000:.1f} s of audio")
     loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(_worker, lambda: p.run(utterance).to_json())
+    result = await loop.run_in_executor(_worker, lambda: p.run(utterance).to_json())
+    say(f"done ({result['mode']}, {result['timingsMs'].get('total')} ms): {result['text']!r} {result['warnings']}")
+    return result
 
 
 class Correction(BaseModel):
@@ -134,7 +140,13 @@ def correction(body: Correction) -> dict:
     return {"ok": True}
 
 
+def say(message: str) -> None:
+    """Progress line on the console, so a stall or exit shows how far a clip got."""
+    print(f"[tacitvoice] {message}", file=sys.stderr, flush=True)
+
+
 def main() -> None:
+    atexit.register(lambda: say("server process is exiting"))
     uvicorn.run(app, host=config.HOST, port=config.PORT, log_level="info")
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -121,6 +122,12 @@ class Pipeline:
         if stt.note:
             warnings.append(stt.note)
         t1 = time.perf_counter()
+        if log:
+            print(
+                f"[tacitvoice] recognised in {int((t1 - t0) * 1000)} ms: activity {stt.activity:.2f}, "
+                f"audio {'heard' if stt.audible else 'none'}, lips {'read' if lips_ran else 'skipped'}",
+                file=sys.stderr, flush=True,
+            )
 
         if lips_ran and lips.frames >= 5:
             if lips.face_fraction == 0:

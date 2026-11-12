@@ -25,7 +25,5 @@ fi
 # faulthandler prints where Python was if a native library crashes the process.
 uv run python -X faulthandler -m server.main
 code=$?
-if [[ $code -ne 0 && $code -ne 130 ]]; then
-  echo "The server stopped unexpectedly (exit code $code). Copy the lines above to report it."
-fi
+echo "The server stopped (exit code $code)."
 exit $code
