@@ -23,7 +23,7 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" && -z "${OPENAI_API_KEY:-}" ]]; then
 fi
 
 # faulthandler prints where Python was if a native library crashes the process.
-uv run python -X faulthandler -m server.main
-code=$?
+code=0
+uv run python -X faulthandler -m server.main || code=$?
 echo "The server stopped (exit code $code)."
 exit $code

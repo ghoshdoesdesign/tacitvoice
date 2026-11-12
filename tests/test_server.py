@@ -1,11 +1,12 @@
 import json
+import time
 
 import cv2
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from server import config, main, pipeline
+from server import config, main, pipeline, worker
 from server.cleanup import Cleaned
 from server.lips import LipResult
 from server.phrases import Phrasebook
@@ -13,10 +14,6 @@ from server.stt import SttResult
 
 
 class FakePipeline:
-    lips = None
-    cleaner = None
-    errors: list = []
-
     def __init__(self, tmp_path):
         self.seen = None
         self.phrasebook = Phrasebook(tmp_path / "dictionary.txt", tmp_path / "prompts.txt")
@@ -31,18 +28,44 @@ class FakePipeline:
         )
 
 
+class InlineWorker:
+    """A worker that answers in this process, through the real request handler."""
+
+    def __init__(self, pipe):
+        self.pipe, self.error = pipe, None
+        self.info = {"stt": "openai", "lips": True, "cleanup": True, "problems": []}
+
+    @property
+    def ready(self):
+        return self.info is not None
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
+    def call(self, message):
+        if not self.ready:
+            raise worker.WorkerError("Models are still loading.", 503)
+        answer = worker.handle(self.pipe, message)
+        if answer[0] == "ok":
+            return answer[1]
+        raise worker.WorkerError(answer[1], answer[2])
+
+
 @pytest.fixture
 def client(tmp_path, monkeypatch):
-    for name in ("HOME", "TOKEN_FILE", "LOG_FILE"):
-        monkeypatch.setattr(config, name, tmp_path / {"HOME": "", "TOKEN_FILE": "token", "LOG_FILE": "log.jsonl"}[name])
-    monkeypatch.setattr(main, "_load", lambda: None)
+    monkeypatch.setattr(config, "HOME", tmp_path)
+    monkeypatch.setattr(config, "TOKEN_FILE", tmp_path / "token")
+    monkeypatch.setattr(config, "LOG_FILE", tmp_path / "log.jsonl")
     fake = FakePipeline(tmp_path)
-    main._state.update(pipeline=fake, error=None)
+    inline = InlineWorker(fake)
+    monkeypatch.setattr(main, "make_worker", lambda: inline)
     with TestClient(main.app) as c:
-        c.fake = fake
+        c.fake, c.worker = fake, inline
         c.token = {"Authorization": f"Bearer {config.local_token()}"}
         yield c
-    main._state.update(pipeline=None, error=None)
 
 
 def jpeg(value):
@@ -51,7 +74,8 @@ def jpeg(value):
 
 
 def test_health_needs_no_token(client):
-    assert client.get("/health").json()["ready"] is True
+    body = client.get("/health").json()
+    assert body["ready"] is True and body["lips"] is True and body["stt"] == "openai"
 
 
 def test_transcribe_requires_token(client):
@@ -78,6 +102,7 @@ def test_transcribe_round_trip(client):
 
 def test_transcribe_rejects_bad_input(client):
     assert client.post("/transcribe", data={"meta": "{nope"}, headers=client.token).status_code == 400
+    assert client.post("/transcribe", data={"meta": "[1]"}, headers=client.token).status_code == 400
     files = [("frames", ("0.jpg", b"not an image", "image/jpeg"))]
     assert client.post("/transcribe", data={"meta": "{}"}, files=files, headers=client.token).status_code == 400
 
@@ -91,6 +116,33 @@ def test_correction_is_logged_and_remembered(client):
 
 
 def test_loading_state(client):
-    main._state.update(pipeline=None, error=None)
+    client.worker.info = None
     assert client.get("/health").json()["ready"] is False
     assert client.post("/transcribe", data={"meta": "{}"}, headers=client.token).status_code == 503
+
+
+def wait_ready(w, seconds=20):
+    deadline = time.monotonic() + seconds
+    while not w.ready and time.monotonic() < deadline:
+        time.sleep(0.05)
+    assert w.ready, w.error
+
+
+def test_model_process_survives_its_own_crash():
+    """A real child process: answers, dies, is reported and replaced."""
+    w = worker.Worker(target=worker.echo)
+    w.start()
+    try:
+        wait_ready(w)
+        assert w.call(("hello", 1)) == ("hello", 1)
+        with pytest.raises(worker.WorkerError) as failure:
+            w.call(("crash",))
+        assert "exit code 7" in str(failure.value) and failure.value.status == 500
+        wait_ready(w)  # a fresh process took over
+        assert w.call(("again",)) == ("again",)
+    finally:
+        w.stop()
+
+
+def test_describe_exit():
+    assert worker.describe_exit(0) == "exit code 0" and worker.describe_exit(-9) == "killed by SIGKILL"

@@ -2,48 +2,40 @@
 
 Run with: uv run python -m server.main
 Listens on 127.0.0.1 only and requires the token in ~/.tacitvoice/token.
+The models themselves live in a separate process (server/worker.py).
 """
 
 from __future__ import annotations
 
-import asyncio
-import atexit
 import hmac
 import json
-import sys
-from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 
-import cv2
-import numpy as np
 import uvicorn
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 from . import config
-from .pipeline import Pipeline, Utterance, append_log
-from .stt import pcm16_to_float, resample
+from .pipeline import append_log
+from .worker import Worker, WorkerError, say
 
-_state: dict = {"pipeline": None, "error": None}
-# Every model call, loading included, runs on this one long-lived thread. The
-# face detector keeps graphics state tied to the thread that created it, and
-# using it from another thread after that one has exited can kill the process.
-_worker = ThreadPoolExecutor(max_workers=1, thread_name_prefix="models")
+_state: dict = {"worker": None}
 
 
-def _load() -> None:
-    try:
-        _state["pipeline"] = Pipeline()
-    except Exception as e:
-        _state["error"] = f"{type(e).__name__}: {e}"
+def make_worker() -> Worker:
+    return Worker()
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     config.local_token()
-    # Load models off the event loop so /health answers while they warm up.
-    _worker.submit(_load)
+    if _state["worker"] is None:
+        _state["worker"] = make_worker()
+        _state["worker"].start()  # loads the models in the background
     yield
+    _state["worker"].stop()
+    _state["worker"] = None
 
 
 app = FastAPI(title="TacitVoice", lifespan=lifespan)
@@ -55,39 +47,28 @@ def authorised(authorization: str = Header(default="")) -> None:
         raise HTTPException(status_code=401, detail="Missing or wrong token.")
 
 
-def pipeline() -> Pipeline:
-    if _state["pipeline"] is None:
-        raise HTTPException(status_code=503, detail=_state["error"] or "Models are still loading.")
-    return _state["pipeline"]
+async def ask(message: tuple):
+    worker: Worker = _state["worker"]
+    try:
+        return await run_in_threadpool(worker.call, message)
+    except WorkerError as e:
+        raise HTTPException(status_code=e.status, detail=str(e))
 
 
 @app.get("/health")
 def health() -> dict:
-    p: Pipeline | None = _state["pipeline"]
+    worker: Worker = _state["worker"]
+    info = worker.info or {}
     return {
-        "ready": p is not None,
-        "error": _state["error"],
-        "lips": bool(p and p.lips),
-        "lipsDevice": p.lips.device if p and p.lips else None,
-        "stt": config.STT_BACKEND,
-        "cleanup": bool(p and p.cleaner),
-        "cleanupModel": p.cleaner.model if p and p.cleaner else None,
-        "problems": p.errors if p else [],
+        "ready": worker.ready,
+        "error": worker.error,
+        "stt": info.get("stt"),
+        "lips": bool(info.get("lips")),
+        "lipsDevice": info.get("lipsDevice"),
+        "cleanup": bool(info.get("cleanup")),
+        "cleanupModel": info.get("cleanupModel"),
+        "problems": info.get("problems", []),
     }
-
-
-def decode_frames(blobs: list[bytes]) -> np.ndarray:
-    frames = []
-    for blob in blobs:
-        img = cv2.imdecode(np.frombuffer(blob, dtype=np.uint8), cv2.IMREAD_COLOR)
-        if img is None:
-            raise HTTPException(status_code=400, detail="A frame is not a readable image.")
-        frames.append(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    if not frames:
-        return np.zeros((0, 0, 0, 3), dtype=np.uint8)
-    if len({f.shape for f in frames}) != 1:
-        raise HTTPException(status_code=400, detail="Frames differ in size.")
-    return np.stack(frames)
 
 
 @app.post("/transcribe", dependencies=[Depends(authorised)])
@@ -98,32 +79,18 @@ async def transcribe(
 ) -> dict:
     """meta: JSON {sampleRate, timestamps?, fps?, app?, textBeforeCursor?}.
     audio: raw 16-bit little-endian mono PCM. frames: JPEG images in order.
-    Nothing received here is written to disk.
     """
-    p = pipeline()
     try:
         info = json.loads(meta)
     except ValueError:
         raise HTTPException(status_code=400, detail="meta is not valid JSON.")
+    if not isinstance(info, dict):
+        raise HTTPException(status_code=400, detail="meta must be a JSON object.")
 
-    say(f"clip received: {len(frames)} frames, audio {'yes' if audio else 'no'}")
-    pcm = pcm16_to_float(await audio.read()) if audio else np.zeros(0, dtype=np.float32)
-    pcm = resample(pcm, int(info.get("sampleRate") or 16000))
-    images = decode_frames([await f.read() for f in frames])
-    utterance = Utterance(
-        frames=images,
-        audio=pcm,
-        timestamps=info.get("timestamps"),
-        fps=info.get("fps"),
-        app=str(info.get("app") or ""),
-        text_before_cursor=str(info.get("textBeforeCursor") or ""),
-    )
-
-    say(f"clip decoded: {images.shape[0]} frames, {len(pcm) / 16000:.1f} s of audio")
-    loop = asyncio.get_running_loop()
-    result = await loop.run_in_executor(_worker, lambda: p.run(utterance).to_json())
-    say(f"done ({result['mode']}, {result['timingsMs'].get('total')} ms): {result['text']!r} {result['warnings']}")
-    return result
+    pcm = await audio.read() if audio else b""
+    jpegs = [await f.read() for f in frames]
+    say(f"clip received: {len(jpegs)} frames, audio {'yes' if pcm else 'no'}")
+    return await ask(("run", jpegs, pcm, info))
 
 
 class Correction(BaseModel):
@@ -133,20 +100,14 @@ class Correction(BaseModel):
 
 
 @app.post("/correction", dependencies=[Depends(authorised)])
-def correction(body: Correction) -> dict:
+async def correction(body: Correction) -> dict:
     """Record a fix. Corrected text is ground truth, so it joins the known prompts."""
     append_log({"event": "correction", **body.model_dump()})
-    pipeline().phrasebook.remember(body.text)
+    await ask(("remember", body.text))
     return {"ok": True}
 
 
-def say(message: str) -> None:
-    """Progress line on the console, so a stall or exit shows how far a clip got."""
-    print(f"[tacitvoice] {message}", file=sys.stderr, flush=True)
-
-
 def main() -> None:
-    atexit.register(lambda: say("server process is exiting"))
     uvicorn.run(app, host=config.HOST, port=config.PORT, log_level="info")
 
 
