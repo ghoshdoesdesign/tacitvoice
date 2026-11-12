@@ -1,0 +1,120 @@
+# TacitVoice
+
+Silent dictation for the Mac. Hold right Option, whisper or silently mouth a
+prompt, release, and the text appears at your cursor in any app. It uses only
+the laptop's webcam and microphone.
+
+Working name in the PRD: "Murmur". This is a one-user research prototype.
+
+## How it works
+
+| Step | Where | What |
+|---|---|---|
+| Capture | `app/` (Swift menu-bar app) | Camera and microphone, only while the key is held, kept in memory |
+| Audio | `server/stt.py` | Whisper speech-to-text of the whisper, with a confidence per word |
+| Lips | `server/lips.py` | Auto-AVSR lip reading of the mouth region, top five guesses |
+| Your vocabulary | `server/phrases.py` | Glossary and past prompts from `~/.tacitvoice/` |
+| Cleanup | `server/cleanup.py` | Claude picks between the guesses and punctuates. Text only |
+| Insert | `app/` | Pasted at the cursor; the clipboard is restored |
+
+If the microphone hears nothing, the clip is treated as silent mouthing and
+only the lips and your vocabulary are used. Silent mode is rough until the
+model is fine-tuned on your own face.
+
+## Setup (Apple Silicon Mac)
+
+Needs Xcode and Homebrew.
+
+```bash
+brew install uv
+```
+
+```bash
+./scripts/setup.sh
+```
+
+Store your Anthropic API key in the Keychain (it prompts for the key):
+
+```bash
+security add-generic-password -a "$USER" -s tacitvoice-anthropic -w
+```
+
+## Day 0: measure your baseline
+
+Put 100 prompts you really send in `data/prompts.txt`, one per line. `data/`
+is ignored by git. Then record them twice and measure:
+
+```bash
+uv run python -m tools.record data/prompts.txt --mode whisper
+```
+
+```bash
+uv run python -m tools.record data/prompts.txt --mode silent
+```
+
+```bash
+uv run python -m tools.evaluate
+```
+
+The table shows the word error rate for audio alone, lips alone, and the
+final text, plus the time each stage takes.
+
+## Daily use
+
+Start the server and leave it running:
+
+```bash
+./scripts/server.sh
+```
+
+Build and open the app:
+
+```bash
+./scripts/build_app.sh
+```
+
+```bash
+open app/build/TacitVoice.app
+```
+
+Allow Camera, Microphone and Accessibility when asked, then quit and reopen
+the app once so the hold key starts working. Add names and terms you use to
+`~/.tacitvoice/dictionary.txt` and prompts you send often to
+`~/.tacitvoice/prompts.txt`; both are read on every use.
+
+## Privacy
+
+- The camera and microphone run only while the key is held.
+- Video and audio are processed on this Mac and never written to disk. The
+  exception is `tools/record.py`, which saves clips to `data/` on purpose.
+- Only text goes to the Anthropic API: the candidate transcripts, your
+  glossary, similar past prompts, the app name and up to 600 characters before
+  the cursor. The last one can be turned off in the menu. Password fields are
+  never read.
+- `~/.tacitvoice/log.jsonl` keeps a text-only log on this Mac for the latency
+  and habit metrics.
+
+## Settings
+
+Environment variables for `scripts/server.sh`; see `server/config.py`.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `TACIT_STT_MODEL` | `large-v3-turbo` | Whisper model. `small.en` is faster and less accurate |
+| `TACIT_SILENCE_DBFS` | `-50` | Below this level a clip counts as silent |
+| `TACIT_LIPS` | `on` | `off` skips lip reading |
+| `TACIT_LIPS_BEAM` | model's (40) | Smaller is faster and less accurate |
+| `TACIT_CLEANUP_MODEL` | `claude-haiku-5-5` | Model for the cleanup pass |
+| `TACIT_CLEANUP` | `on` | `off` inserts the raw transcript |
+
+## Licence note
+
+The lip-reading model (Auto-AVSR, trained on LRS3) is downloaded by
+`scripts/setup.sh` and is not part of this repository. Its licence allows
+individual research and private study only, not commercial use.
+
+## Tests
+
+```bash
+uv run pytest
+```
