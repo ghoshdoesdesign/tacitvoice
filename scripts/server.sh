@@ -22,4 +22,10 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" && -z "${OPENAI_API_KEY:-}" ]]; then
   echo "No API key found: text will be inserted without the cleanup pass."
 fi
 
-exec uv run python -m server.main
+# faulthandler prints where Python was if a native library crashes the process.
+uv run python -X faulthandler -m server.main
+code=$?
+if [[ $code -ne 0 && $code -ne 130 ]]; then
+  echo "The server stopped unexpectedly (exit code $code). Copy the lines above to report it."
+fi
+exit $code

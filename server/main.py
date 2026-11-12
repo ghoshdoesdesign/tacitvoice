@@ -6,16 +6,16 @@ Listens on 127.0.0.1 only and requires the token in ~/.tacitvoice/token.
 
 from __future__ import annotations
 
+import asyncio
 import hmac
 import json
-import threading
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 
 import cv2
 import numpy as np
 import uvicorn
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
-from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 from . import config
@@ -23,7 +23,10 @@ from .pipeline import Pipeline, Utterance, append_log
 from .stt import pcm16_to_float, resample
 
 _state: dict = {"pipeline": None, "error": None}
-_busy = threading.Lock()  # one utterance at a time: there is one user and one GPU
+# Every model call, loading included, runs on this one long-lived thread. The
+# face detector keeps graphics state tied to the thread that created it, and
+# using it from another thread after that one has exited can kill the process.
+_worker = ThreadPoolExecutor(max_workers=1, thread_name_prefix="models")
 
 
 def _load() -> None:
@@ -36,8 +39,8 @@ def _load() -> None:
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     config.local_token()
-    # Load models in the background so /health answers while they warm up.
-    threading.Thread(target=_load, daemon=True).start()
+    # Load models off the event loop so /health answers while they warm up.
+    _worker.submit(_load)
     yield
 
 
@@ -113,11 +116,8 @@ async def transcribe(
         text_before_cursor=str(info.get("textBeforeCursor") or ""),
     )
 
-    def work() -> dict:
-        with _busy:
-            return p.run(utterance).to_json()
-
-    return await run_in_threadpool(work)
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(_worker, lambda: p.run(utterance).to_json())
 
 
 class Correction(BaseModel):
