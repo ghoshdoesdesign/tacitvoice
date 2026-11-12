@@ -18,6 +18,7 @@ Silent dictation prototype for macOS (PRD working name "Murmur"). One user, rese
 ## Conventions
 - `/transcribe` is multipart: `meta` JSON, `audio` raw 16-bit mono PCM, `frames` JPEGs in order.
 - Frames are resampled to 25 fps by timestamp before lip reading.
-- A clip whose loudest 100 ms is under `TACIT_SILENCE_DBFS` skips Whisper (it invents text on silence).
+- A clip counts as silent mouthing, and skips speech-to-text (it invents text on silence), when its loudest 100 ms is under `TACIT_SILENCE_DBFS` or less than `TACIT_MIN_ACTIVITY` of it rises above its own noise floor. Loudness alone does not separate the two in the owner's room. Stock phrases such as "Thank you." are also discarded.
+- Lip reading runs on the CPU: Auto-AVSR's beam search fails on Apple's GPU (mps) with a device mismatch.
 - `tools.evaluate` ignores `~/.tacitvoice/prompts.txt` unless `--known-prompts`, so scores measure recognition, not lookup.
 - The Swift app cannot be built on Linux; changes to it need a build on the Mac.

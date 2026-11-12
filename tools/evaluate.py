@@ -128,6 +128,7 @@ def main() -> None:
                 "audio": o.stt.text,
                 "lips": [t for t, _ in o.lips.candidates],
                 "mode_detected": o.mode,
+                "activity": round(o.stt.activity, 2),
                 "seconds": round(len(utterance.audio) / 16000, 2),
                 "timings_ms": o.timings_ms,
                 "warnings": o.warnings,

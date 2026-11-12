@@ -51,6 +51,7 @@ class Outcome:
                 "audio": self.stt.text,
                 "audioConfidence": round(self.stt.confidence, 3),
                 "peakDbfs": round(self.stt.peak_dbfs, 1),
+                "activity": round(self.stt.activity, 2),
                 "lips": [t for t, _ in self.lips.candidates],
                 "faceFraction": round(self.lips.face_fraction, 2),
                 "cleanup": self.cleaned.source,
@@ -63,9 +64,11 @@ class Pipeline:
         self.errors: list[str] = []
         self.phrasebook = Phrasebook(config.DICTIONARY_FILE, config.PROMPTS_FILE)
         if config.STT_BACKEND == "openai":
-            self.stt = OpenAISTT(config.STT_CLOUD_MODEL, config.SILENCE_DBFS)
+            self.stt = OpenAISTT(config.STT_CLOUD_MODEL, config.SILENCE_DBFS, config.MIN_ACTIVITY)
         else:
-            self.stt = WhisperSTT(config.STT_MODEL, config.STT_COMPUTE, config.SILENCE_DBFS)
+            self.stt = WhisperSTT(
+                config.STT_MODEL, config.STT_COMPUTE, config.SILENCE_DBFS, config.MIN_ACTIVITY
+            )
         self.lips: LipReader | None = None
         if lips and config.LIPS_ENABLED:
             try:

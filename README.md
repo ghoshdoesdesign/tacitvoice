@@ -115,6 +115,7 @@ Environment variables for `scripts/server.sh`; see `server/config.py`.
 | `TACIT_STT_CLOUD_MODEL` | `gpt-4o-transcribe` | OpenAI transcription model |
 | `TACIT_STT_MODEL` | `large-v3-turbo` | Local Whisper model. `small.en` is faster and less accurate |
 | `TACIT_SILENCE_DBFS` | `-50` | Below this level a clip counts as silent |
+| `TACIT_MIN_ACTIVITY` | `0.15` | Share of the clip that must rise above its noise floor to count as a whisper |
 | `TACIT_LIPS` | `on` | `off` skips lip reading |
 | `TACIT_LIPS_BEAM` | model's (40) | Smaller is faster and less accurate |
 | `TACIT_CLEANUP_PROVIDER` | follows the key present | `openai` or `anthropic` |

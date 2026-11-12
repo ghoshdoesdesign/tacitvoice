@@ -18,7 +18,9 @@ AVSR_REPO = Path(
     )
 ).expanduser()
 AVSR_CONFIG = os.getenv("TACIT_AVSR_CONFIG", "configs/LRS3_V_WER19.1.ini")
-LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")  # auto | mps | cpu | cuda
+# auto = cuda if present, else cpu. "mps" (Apple GPU) fails inside the model's
+# beam search with a device mismatch, so it is opt-in.
+LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
 LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "0"))  # 0 = the model config's value
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
@@ -33,6 +35,9 @@ STT_COMPUTE = os.getenv("TACIT_STT_COMPUTE", "int8")
 # Loudest 100 ms of the clip, in dBFS. Below this the clip counts as silent
 # mouthing and speech-to-text is skipped (Whisper invents text on silence).
 SILENCE_DBFS = float(os.getenv("TACIT_SILENCE_DBFS", "-50"))
+# Share of the clip that must rise above its own noise floor to count as a
+# whisper. Loudness alone cannot separate the two in a normal room.
+MIN_ACTIVITY = float(os.getenv("TACIT_MIN_ACTIVITY", "0.15"))
 
 CLEANUP_ENABLED = os.getenv("TACIT_CLEANUP", "on") != "off"
 # Which service runs the cleanup pass: "anthropic" or "openai". By default it

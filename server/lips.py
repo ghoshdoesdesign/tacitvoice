@@ -179,10 +179,11 @@ class LipReader:
     def _pick_device(self, wanted: str) -> str:
         torch = self._torch
         wanted = (wanted or "auto").lower()
-        if wanted in ("auto", "mps") and torch.backends.mps.is_available():
-            return "mps"
         if wanted in ("auto", "cuda") and torch.cuda.is_available():
             return "cuda"
+        # Apple's GPU is opt-in: the model's beam search mixes devices on it.
+        if wanted == "mps" and torch.backends.mps.is_available():
+            return "mps"
         return "cpu"
 
     def mouth_patches(

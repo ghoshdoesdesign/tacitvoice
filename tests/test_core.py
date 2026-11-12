@@ -219,6 +219,32 @@ def test_token_is_private_and_stable(tmp_path, monkeypatch):
     assert (tmp_path / "token").stat().st_mode & 0o777 == 0o600
 
 
+def room(seconds=6.0, level=0.004, seed=0):
+    return (np.random.default_rng(seed).standard_normal(int(16000 * seconds)) * level).astype(np.float32)
+
+
+def whisper_like():
+    """Room noise with bursts of louder hiss over about half the clip."""
+    audio = room()
+    rng = np.random.default_rng(1)
+    for start in np.arange(0.5, 5.0, 0.5):
+        a, b = int(start * 16000), int((start + 0.28) * 16000)
+        audio[a:b] += (rng.standard_normal(b - a) * 0.03).astype(np.float32)
+    return audio
+
+
+def test_activity_separates_whisper_from_silent_mouthing():
+    from server.stt import SttResult, activity, gate, is_phantom, peak_dbfs
+
+    silent = room()
+    silent[8000:8300] += 0.2  # a key click, as loud as any whisper
+    assert peak_dbfs(silent) > -50  # loudness alone would call this a whisper
+    assert activity(silent) < 0.05 < 0.3 < activity(whisper_like())
+    assert not gate(SttResult(), silent, -50.0, 0.15) and gate(SttResult(), whisper_like(), -50.0, 0.15)
+    assert activity(np.zeros(100, dtype=np.float32)) == 0.0
+    assert is_phantom("Thank you.") and is_phantom("I'll see you next time.") and not is_phantom("Thank you for the file")
+
+
 def test_cloud_stt(monkeypatch):
     import io
 
@@ -240,17 +266,17 @@ def test_cloud_stt(monkeypatch):
         import openai
 
         s = OpenAISTT.__new__(OpenAISTT)
-        s._sdk, s.model, s.silence_dbfs = openai, "gpt-4o-transcribe", -50.0
+        s._sdk, s.model, s.silence_dbfs, s.min_activity = openai, "gpt-4o-transcribe", -50.0, 0.15
         s._client = SimpleNamespace(audio=SimpleNamespace(transcriptions=fake))
         return s
 
-    loud = (np.sin(np.linspace(0, 2000, 16000)) * 0.2).astype(np.float32)
+    loud = whisper_like()
     fake = FakeTranscriptions()
     out = make(fake).transcribe(loud, ["Lyra"])
     assert out.text == "Summarise this thread." and out.audible and "stt" in out.timings_ms
     name, data, mime = fake.kwargs["file"]
     sent, rate = sf.read(io.BytesIO(data), dtype="float32")
-    assert rate == 16000 and len(sent) == 16000 and fake.kwargs["prompt"] == "Glossary: Lyra"
+    assert rate == 16000 and len(sent) == len(loud) and fake.kwargs["prompt"] == "Glossary: Lyra"
 
     quiet = FakeTranscriptions()
     out = make(quiet).transcribe(np.zeros(16000, dtype=np.float32))
