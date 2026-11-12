@@ -21,7 +21,9 @@ AVSR_CONFIG = os.getenv("TACIT_AVSR_CONFIG", "configs/LRS3_V_WER19.1.ini")
 # auto = cuda if present, else cpu. "mps" (Apple GPU) fails inside the model's
 # beam search with a device mismatch, so it is opt-in.
 LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
-LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "0"))  # 0 = the model config's value
+# Beam width for lip reading; 0 = the model config's value (40). At 40 the
+# search took 13 s per clip on an M2 CPU, by far the slowest stage.
+LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "10"))
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
 
@@ -29,7 +31,9 @@ LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
 # (about a second); "local" keeps it on this Mac (10+ seconds on a CPU).
 # By default it is "openai" when an OpenAI key is present.
 STT_BACKEND = os.getenv("TACIT_STT") or ("openai" if os.getenv("OPENAI_API_KEY") else "local")
-STT_CLOUD_MODEL = os.getenv("TACIT_STT_CLOUD_MODEL", "gpt-4o-transcribe")
+# whisper-1, not gpt-4o-transcribe: on the owner's whispered clips the latter
+# cut sentences short and paraphrased (71% word error against 20% for Whisper).
+STT_CLOUD_MODEL = os.getenv("TACIT_STT_CLOUD_MODEL", "whisper-1")
 STT_MODEL = os.getenv("TACIT_STT_MODEL", "large-v3-turbo")
 STT_COMPUTE = os.getenv("TACIT_STT_COMPUTE", "int8")
 # Loudest 100 ms of the clip, in dBFS. Below this the clip counts as silent
@@ -37,7 +41,10 @@ STT_COMPUTE = os.getenv("TACIT_STT_COMPUTE", "int8")
 SILENCE_DBFS = float(os.getenv("TACIT_SILENCE_DBFS", "-50"))
 # Share of the clip that must rise above its own noise floor to count as a
 # whisper. Loudness alone cannot separate the two in a normal room.
-MIN_ACTIVITY = float(os.getenv("TACIT_MIN_ACTIVITY", "0.15"))
+# Measured on the owner's clips: whispers 0.12-0.55, silent mouthing 0.05-0.15.
+# The cutoff sits low because losing a whisper's audio costs more than letting
+# one silent clip through (stock phantom phrases are discarded anyway).
+MIN_ACTIVITY = float(os.getenv("TACIT_MIN_ACTIVITY", "0.12"))
 
 CLEANUP_ENABLED = os.getenv("TACIT_CLEANUP", "on") != "off"
 # Which service runs the cleanup pass: "anthropic" or "openai". By default it

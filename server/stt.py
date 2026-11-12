@@ -97,7 +97,7 @@ def gate(result: "SttResult", audio: np.ndarray, silence_dbfs: float, min_activi
 
 class WhisperSTT:
     def __init__(
-        self, model: str, compute_type: str = "int8", silence_dbfs: float = -50.0, min_activity: float = 0.15
+        self, model: str, compute_type: str = "int8", silence_dbfs: float = -50.0, min_activity: float = 0.12
     ) -> None:
         from faster_whisper import WhisperModel
 
@@ -138,7 +138,7 @@ class OpenAISTT:
     """Cloud speech-to-text. Sends the clip's audio (never video) to OpenAI."""
 
     def __init__(
-        self, model: str, silence_dbfs: float = -50.0, min_activity: float = 0.15, timeout_s: float = 20.0
+        self, model: str, silence_dbfs: float = -50.0, min_activity: float = 0.12, timeout_s: float = 20.0
     ) -> None:
         import openai
 
