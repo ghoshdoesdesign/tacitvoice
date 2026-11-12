@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import textwrap
 import time
 from pathlib import Path
@@ -134,10 +135,13 @@ def main() -> None:
                 i -= 1
                 (out / f"{i:03d}.json").unlink(missing_ok=True)
 
-    print(f"Saved takes are in {out}. Next: uv run python -m tools.evaluate", flush=True)
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)  # macOS only closes the window once its event loop runs again
-    cam.release()
+        # Every take is already on disk. Leave from inside the audio stream:
+        # on macOS, shutting the microphone or camera down can hang for good.
+        done = len(list(out.glob("*.json")))
+        print(f"{done} takes saved in {out}. Next: uv run python -m tools.evaluate", flush=True)
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)  # the window only closes once its event loop runs again
+        os._exit(0)
 
 
 if __name__ == "__main__":
