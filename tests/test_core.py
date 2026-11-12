@@ -217,3 +217,44 @@ def test_token_is_private_and_stable(tmp_path, monkeypatch):
     token = config.local_token()
     assert len(token) > 30 and config.local_token() == token
     assert (tmp_path / "token").stat().st_mode & 0o777 == 0o600
+
+
+def test_cloud_stt(monkeypatch):
+    import io
+
+    import soundfile as sf
+
+    from server.stt import OpenAISTT
+
+    class FakeTranscriptions:
+        def __init__(self, error=None):
+            self.kwargs, self.error = None, error
+
+        def create(self, **kwargs):
+            self.kwargs = kwargs
+            if self.error:
+                raise self.error
+            return SimpleNamespace(text=" Summarise this thread. ")
+
+    def make(fake):
+        import openai
+
+        s = OpenAISTT.__new__(OpenAISTT)
+        s._sdk, s.model, s.silence_dbfs = openai, "gpt-4o-transcribe", -50.0
+        s._client = SimpleNamespace(audio=SimpleNamespace(transcriptions=fake))
+        return s
+
+    loud = (np.sin(np.linspace(0, 2000, 16000)) * 0.2).astype(np.float32)
+    fake = FakeTranscriptions()
+    out = make(fake).transcribe(loud, ["Lyra"])
+    assert out.text == "Summarise this thread." and out.audible and "stt" in out.timings_ms
+    name, data, mime = fake.kwargs["file"]
+    sent, rate = sf.read(io.BytesIO(data), dtype="float32")
+    assert rate == 16000 and len(sent) == 16000 and fake.kwargs["prompt"] == "Glossary: Lyra"
+
+    quiet = FakeTranscriptions()
+    out = make(quiet).transcribe(np.zeros(16000, dtype=np.float32))
+    assert not out.audible and quiet.kwargs is None  # silence is never uploaded
+
+    out = make(FakeTranscriptions(error=api_error("openai", "AuthenticationError", 401))).transcribe(loud)
+    assert not out.audible and "401" in out.note

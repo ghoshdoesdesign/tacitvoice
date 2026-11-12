@@ -109,6 +109,7 @@ def main() -> None:
         raise SystemExit(f"No recordings under {args.data}. Run tools.record first.")
 
     pipe = Pipeline(cleanup=not args.no_cleanup)
+    print(f"speech-to-text: {config.STT_BACKEND}; cleanup: {config.CLEANUP_PROVIDER} {config.CLEANUP_MODEL}")
     for problem in pipe.errors:
         print("!", problem)
     if not args.known_prompts:
@@ -132,6 +133,8 @@ def main() -> None:
                 "warnings": o.warnings,
             })
             print(f"[{mode} {n}/{len(stems)}] {word_error_rate(truth, o.text):4.0%}  {o.text!r}")
+            for warning in o.warnings:
+                print(f"      ! {warning}")
         if rows:
             results[mode] = {**summarise(rows), "rows": rows}
 

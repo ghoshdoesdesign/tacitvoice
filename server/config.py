@@ -23,6 +23,11 @@ LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "0"))  # 0 = the model config's val
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
 
+# Where speech-to-text runs. "openai" sends each utterance's audio to OpenAI
+# (about a second); "local" keeps it on this Mac (10+ seconds on a CPU).
+# By default it is "openai" when an OpenAI key is present.
+STT_BACKEND = os.getenv("TACIT_STT") or ("openai" if os.getenv("OPENAI_API_KEY") else "local")
+STT_CLOUD_MODEL = os.getenv("TACIT_STT_CLOUD_MODEL", "gpt-4o-transcribe")
 STT_MODEL = os.getenv("TACIT_STT_MODEL", "large-v3-turbo")
 STT_COMPUTE = os.getenv("TACIT_STT_COMPUTE", "int8")
 # Loudest 100 ms of the clip, in dBFS. Below this the clip counts as silent

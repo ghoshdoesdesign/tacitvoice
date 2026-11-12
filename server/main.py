@@ -64,6 +64,7 @@ def health() -> dict:
         "error": _state["error"],
         "lips": bool(p and p.lips),
         "lipsDevice": p.lips.device if p and p.lips else None,
+        "stt": config.STT_BACKEND,
         "cleanup": bool(p and p.cleaner),
         "cleanupModel": p.cleaner.model if p and p.cleaner else None,
         "problems": p.errors if p else [],

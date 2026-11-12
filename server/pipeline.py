@@ -14,7 +14,7 @@ from . import config
 from .cleanup import Cleaned, Cleaner, build_evidence, make_cleaner, raw_pick
 from .lips import LipReader, LipResult
 from .phrases import Phrasebook
-from .stt import SttResult, WhisperSTT
+from .stt import OpenAISTT, SttResult, WhisperSTT
 
 
 @dataclass
@@ -62,7 +62,10 @@ class Pipeline:
     def __init__(self, lips: bool = True, cleanup: bool = True) -> None:
         self.errors: list[str] = []
         self.phrasebook = Phrasebook(config.DICTIONARY_FILE, config.PROMPTS_FILE)
-        self.stt = WhisperSTT(config.STT_MODEL, config.STT_COMPUTE, config.SILENCE_DBFS)
+        if config.STT_BACKEND == "openai":
+            self.stt = OpenAISTT(config.STT_CLOUD_MODEL, config.SILENCE_DBFS)
+        else:
+            self.stt = WhisperSTT(config.STT_MODEL, config.STT_COMPUTE, config.SILENCE_DBFS)
         self.lips: LipReader | None = None
         if lips and config.LIPS_ENABLED:
             try:
@@ -96,6 +99,8 @@ class Pipeline:
             lips_job = None
         stt = stt_job.result()
         warnings: list[str] = []
+        if stt.note:
+            warnings.append(stt.note)
         try:
             lips = lips_job.result() if lips_job else LipResult()
         except Exception as e:

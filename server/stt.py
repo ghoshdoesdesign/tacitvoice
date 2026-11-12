@@ -1,7 +1,12 @@
-"""Speech-to-text for the whisper channel (OpenAI's Whisper model, run locally)."""
+"""Speech-to-text for the whisper channel.
+
+Two backends: Whisper run on this Mac (private, slow on a CPU) or OpenAI's
+transcription API (fast, but the audio of each utterance leaves the device).
+"""
 
 from __future__ import annotations
 
+import io
 import time
 from dataclasses import dataclass, field
 
@@ -16,6 +21,7 @@ class SttResult:
     words: list[tuple[str, float]] = field(default_factory=list)  # (word, probability)
     peak_dbfs: float = -120.0
     audible: bool = False
+    note: str = ""  # why there is no text, when something went wrong
     timings_ms: dict[str, int] = field(default_factory=dict)
 
     @property
@@ -76,5 +82,45 @@ class WhisperSTT:
         kept = [s for s in segments if not (s.no_speech_prob > 0.8 and s.avg_logprob < -1.0)]
         result.text = " ".join(s.text.strip() for s in kept).strip()
         result.words = [(w.word.strip(), float(w.probability)) for s in kept for w in (s.words or [])]
+        result.audible = bool(result.text)
+        return result
+
+
+class OpenAISTT:
+    """Cloud speech-to-text. Sends the clip's audio (never video) to OpenAI."""
+
+    def __init__(self, model: str, silence_dbfs: float = -50.0, timeout_s: float = 20.0) -> None:
+        import openai
+
+        self._sdk = openai
+        self._client = openai.OpenAI(timeout=timeout_s, max_retries=0)  # reads OPENAI_API_KEY
+        self.model = model
+        self.silence_dbfs = silence_dbfs
+
+    def transcribe(self, audio: np.ndarray, glossary: list[str] | None = None) -> SttResult:
+        import soundfile as sf
+
+        result = SttResult(peak_dbfs=peak_dbfs(audio))
+        if result.peak_dbfs < self.silence_dbfs:
+            return result
+
+        wav = io.BytesIO()
+        sf.write(wav, audio, SAMPLE_RATE, format="WAV", subtype="PCM_16")
+        extra = {"prompt": "Glossary: " + ", ".join(glossary[:80])} if glossary else {}
+        t0 = time.perf_counter()
+        try:
+            response = self._client.audio.transcriptions.create(
+                model=self.model,
+                file=("audio.wav", wav.getvalue(), "audio/wav"),
+                language="en",
+                response_format="json",
+                **extra,
+            )
+        except self._sdk.APIError as e:
+            status = getattr(e, "status_code", None)
+            result.note = f"speech-to-text failed: OpenAI error {status or type(e).__name__}"
+            return result
+        result.timings_ms["stt"] = int((time.perf_counter() - t0) * 1000)
+        result.text = (response.text or "").strip()
         result.audible = bool(result.text)
         return result

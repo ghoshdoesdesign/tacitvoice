@@ -11,7 +11,7 @@ Working name in the PRD: "Murmur". This is a one-user research prototype.
 | Step | Where | What |
 |---|---|---|
 | Capture | `app/` (Swift menu-bar app) | Camera and microphone, only while the key is held, kept in memory |
-| Audio | `server/stt.py` | Whisper speech-to-text of the whisper, with a confidence per word |
+| Audio | `server/stt.py` | Speech-to-text of the whisper: OpenAI's API (fast) or Whisper on this Mac (private) |
 | Lips | `server/lips.py` | Auto-AVSR lip reading of the mouth region, top five guesses |
 | Your vocabulary | `server/phrases.py` | Glossary and past prompts from `~/.tacitvoice/` |
 | Cleanup | `server/cleanup.py` | A hosted model (OpenAI or Claude) picks between the guesses and punctuates. Text only |
@@ -94,8 +94,10 @@ the app once so the hold key starts working. Add names and terms you use to
 ## Privacy
 
 - The camera and microphone run only while the key is held.
-- Video and audio are processed on this Mac and never written to disk. The
-  exception is `tools/record.py`, which saves clips to `data/` on purpose.
+- Video is processed on this Mac. Nothing is written to disk, except by
+  `tools/record.py`, which saves clips to `data/` on purpose.
+- With an OpenAI key, the audio of each utterance is sent to OpenAI for
+  speech-to-text. Set `TACIT_STT=local` to keep audio on this Mac (much slower).
 - Only text goes to the cleanup provider (OpenAI or Anthropic): the candidate transcripts, your
   glossary, similar past prompts, the app name and up to 600 characters before
   the cursor. The last one can be turned off in the menu. Password fields are
@@ -109,7 +111,9 @@ Environment variables for `scripts/server.sh`; see `server/config.py`.
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `TACIT_STT_MODEL` | `large-v3-turbo` | Whisper model. `small.en` is faster and less accurate |
+| `TACIT_STT` | `openai` with an OpenAI key, else `local` | Where speech-to-text runs |
+| `TACIT_STT_CLOUD_MODEL` | `gpt-4o-transcribe` | OpenAI transcription model |
+| `TACIT_STT_MODEL` | `large-v3-turbo` | Local Whisper model. `small.en` is faster and less accurate |
 | `TACIT_SILENCE_DBFS` | `-50` | Below this level a clip counts as silent |
 | `TACIT_LIPS` | `on` | `off` skips lip reading |
 | `TACIT_LIPS_BEAM` | model's (40) | Smaller is faster and less accurate |
