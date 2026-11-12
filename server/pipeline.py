@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from . import config
-from .cleanup import Cleaned, Cleaner, build_evidence, raw_pick
+from .cleanup import Cleaned, Cleaner, build_evidence, make_cleaner, raw_pick
 from .lips import LipReader, LipResult
 from .phrases import Phrasebook
 from .stt import SttResult, WhisperSTT
@@ -79,7 +79,9 @@ class Pipeline:
                 self.errors.append(f"lip reading unavailable: {e}")
         self.cleaner: Cleaner | None = None
         if cleanup and config.CLEANUP_ENABLED:
-            self.cleaner = Cleaner(config.CLEANUP_MODEL, config.CLEANUP_TIMEOUT_S)
+            self.cleaner = make_cleaner(
+                config.CLEANUP_PROVIDER, config.CLEANUP_MODEL, config.CLEANUP_TIMEOUT_S
+            )
         self._pool = ThreadPoolExecutor(max_workers=2)
 
     def run(self, u: Utterance, log: bool = True) -> Outcome:

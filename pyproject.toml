@@ -8,6 +8,7 @@ dependencies = [
   "fastapi>=0.111",
   "faster-whisper>=1.1",
   "mediapipe==0.10.14",
+  "openai>=1.50",
   "numpy>=1.26,<2",
   "opencv-contrib-python>=4.9",
   "python-multipart>=0.0.9",

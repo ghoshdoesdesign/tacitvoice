@@ -114,18 +114,17 @@ def raw_pick(stt: SttResult, lips: LipResult, similar: list[tuple[str, float]]) 
 
 
 class Cleaner:
-    def __init__(self, model: str, timeout_s: float = 6.0) -> None:
-        import anthropic
+    """Shared logic; subclasses make the one model call for their provider."""
 
-        self._anthropic = anthropic
-        # Credentials come from the environment (ANTHROPIC_API_KEY or an
-        # `ant auth login` profile). No retries: a slow answer is worse than
-        # the raw transcript, which the caller falls back to.
-        self._client = anthropic.Anthropic(timeout=timeout_s, max_retries=0)
+    def __init__(self, model: str, timeout_s: float = 6.0) -> None:
         self.model = model
+        self.timeout_s = timeout_s
+
+    def _ask(self, evidence_json: str) -> tuple[str | None, str]:
+        """Return (reply JSON text, "") or (None, why it failed)."""
+        raise NotImplementedError
 
     def clean(self, evidence: dict, fallback: Cleaned) -> Cleaned:
-        anthropic = self._anthropic
         t0 = time.perf_counter()
 
         def failed(note: str) -> Cleaned:
@@ -134,34 +133,16 @@ class Cleaner:
             return fallback
 
         try:
-            response = self._client.messages.create(
-                model=self.model,
-                max_tokens=2048,
-                system=SYSTEM,
-                # A short rewrite, and the user is waiting on a key release:
-                # no thinking, lowest effort.
-                thinking={"type": "disabled"},
-                output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}},
-                messages=[{"role": "user", "content": json.dumps(evidence, ensure_ascii=False)}],
-            )
-        except anthropic.AuthenticationError:
-            return failed("cleanup skipped: no valid Anthropic API key")
-        except anthropic.RateLimitError:
-            return failed("cleanup skipped: rate limited")
-        except anthropic.APIStatusError as e:
-            return failed(f"cleanup failed: API error {e.status_code}")
-        except anthropic.APIConnectionError:
-            return failed("cleanup skipped: offline or timed out")
+            reply, problem = self._ask(json.dumps(evidence, ensure_ascii=False))
         except Exception as e:  # e.g. no credentials configured at all
             return failed(f"cleanup skipped: {type(e).__name__}")
-
-        if response.stop_reason != "end_turn":
-            return failed(f"cleanup stopped early: {response.stop_reason}")
+        if reply is None:
+            return failed(problem)
         try:
-            data = json.loads(next(b.text for b in response.content if b.type == "text"))
+            data = json.loads(reply)
             text = str(data["text"]).strip()
             alternatives = [str(a).strip() for a in data.get("alternatives", [])]
-        except (StopIteration, ValueError, KeyError, TypeError):
+        except (ValueError, KeyError, TypeError):
             return failed("cleanup returned unreadable output")
         if not text:
             return failed("cleanup returned no text")
@@ -171,3 +152,83 @@ class Cleaner:
             source="model",
             ms=int((time.perf_counter() - t0) * 1000),
         )
+
+
+def _api_problem(sdk, error: Exception, provider: str) -> str:
+    """One message per failure class. Both SDKs name these errors alike."""
+    if isinstance(error, sdk.AuthenticationError):
+        return f"cleanup skipped: no valid {provider} API key"
+    if isinstance(error, sdk.RateLimitError):
+        return "cleanup skipped: rate limited or out of credit"
+    if isinstance(error, sdk.APIStatusError):
+        return f"cleanup failed: {provider} API error {error.status_code}"
+    if isinstance(error, sdk.APIConnectionError):
+        return "cleanup skipped: offline or timed out"
+    raise error
+
+
+class AnthropicCleaner(Cleaner):
+    def __init__(self, model: str, timeout_s: float = 6.0) -> None:
+        import anthropic
+
+        super().__init__(model, timeout_s)
+        self._sdk = anthropic
+        # Credentials come from the environment (ANTHROPIC_API_KEY or an
+        # `ant auth login` profile). No retries: a slow answer is worse than
+        # the raw transcript, which the caller falls back to.
+        self._client = anthropic.Anthropic(timeout=timeout_s, max_retries=0)
+
+    def _ask(self, evidence_json: str) -> tuple[str | None, str]:
+        try:
+            response = self._client.messages.create(
+                model=self.model,
+                max_tokens=2048,
+                system=SYSTEM,
+                # A short rewrite, and the user is waiting on a key release:
+                # no thinking, lowest effort.
+                thinking={"type": "disabled"},
+                output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}},
+                messages=[{"role": "user", "content": evidence_json}],
+            )
+        except self._sdk.APIError as e:
+            return None, _api_problem(self._sdk, e, "Anthropic")
+        if response.stop_reason != "end_turn":
+            return None, f"cleanup stopped early: {response.stop_reason}"
+        text = next((b.text for b in response.content if b.type == "text"), None)
+        return text, "" if text is not None else "cleanup returned unreadable output"
+
+
+class OpenAICleaner(Cleaner):
+    def __init__(self, model: str, timeout_s: float = 6.0) -> None:
+        import openai
+
+        super().__init__(model, timeout_s)
+        self._sdk = openai
+        self._client = openai.OpenAI(timeout=timeout_s, max_retries=0)  # reads OPENAI_API_KEY
+
+    def _ask(self, evidence_json: str) -> tuple[str | None, str]:
+        try:
+            response = self._client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": SYSTEM},
+                    {"role": "user", "content": evidence_json},
+                ],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {"name": "dictation", "strict": True, "schema": SCHEMA},
+                },
+            )
+        except self._sdk.APIError as e:
+            return None, _api_problem(self._sdk, e, "OpenAI")
+        choice = response.choices[0]
+        if choice.finish_reason != "stop" or getattr(choice.message, "refusal", None):
+            return None, f"cleanup stopped early: {choice.finish_reason}"
+        text = choice.message.content
+        return text, "" if text else "cleanup returned unreadable output"
+
+
+def make_cleaner(provider: str, model: str, timeout_s: float) -> Cleaner:
+    if provider == "openai":
+        return OpenAICleaner(model, timeout_s)
+    return AnthropicCleaner(model, timeout_s)

@@ -10,7 +10,7 @@ Silent dictation prototype for macOS (PRD working name "Murmur"). One user, rese
 - Auto-AVSR code and weights stay out of the repo (`third_party/` is gitignored; research-only licence).
 
 ## Layout
-- `server/`: local FastAPI server. `pipeline.py` runs `stt.py` (Whisper) and `lips.py` (Auto-AVSR, n-best) in parallel, then `phrases.py` (glossary and past prompts) and `cleanup.py` (Claude, structured output, falls back to the raw transcript on any failure).
+- `server/`: local FastAPI server. `pipeline.py` runs `stt.py` (Whisper) and `lips.py` (Auto-AVSR, n-best) in parallel, then `phrases.py` (glossary and past prompts) and `cleanup.py` (OpenAI or Claude, chosen by `TACIT_CLEANUP_PROVIDER` or the key present; structured output; falls back to the raw transcript on any failure).
 - `tools/record.py`, `tools/evaluate.py`: record labelled clips and measure word error rate and latency.
 - `app/`: Swift menu-bar app (SwiftPM, bundled by `scripts/build_app.sh`). Hotkey, capture, pill, paste-insert.
 - `tests/`: pytest; models are faked. `uv run pytest`.

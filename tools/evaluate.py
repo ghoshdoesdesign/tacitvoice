@@ -5,7 +5,7 @@
 
 Prints a table and writes data/baseline/results.json. Only numbers and text
 are produced; the recordings never leave this machine. With cleanup on, the
-candidate transcripts (text) are sent to the Anthropic API.
+candidate transcripts (text) are sent to the cleanup provider's API.
 """
 
 from __future__ import annotations

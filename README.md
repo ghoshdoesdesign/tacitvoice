@@ -14,7 +14,7 @@ Working name in the PRD: "Murmur". This is a one-user research prototype.
 | Audio | `server/stt.py` | Whisper speech-to-text of the whisper, with a confidence per word |
 | Lips | `server/lips.py` | Auto-AVSR lip reading of the mouth region, top five guesses |
 | Your vocabulary | `server/phrases.py` | Glossary and past prompts from `~/.tacitvoice/` |
-| Cleanup | `server/cleanup.py` | Claude picks between the guesses and punctuates. Text only |
+| Cleanup | `server/cleanup.py` | A hosted model (OpenAI or Claude) picks between the guesses and punctuates. Text only |
 | Insert | `app/` | Pasted at the cursor; the clipboard is restored |
 
 If the microphone hears nothing, the clip is treated as silent mouthing and
@@ -33,11 +33,20 @@ brew install uv
 ./scripts/setup.sh
 ```
 
-Store your Anthropic API key in the Keychain (it prompts for the key):
+Store an API key for the cleanup pass in the Keychain (it prompts for the
+key). Use either OpenAI:
+
+```bash
+security add-generic-password -a "$USER" -s tacitvoice-openai -w
+```
+
+or Anthropic:
 
 ```bash
 security add-generic-password -a "$USER" -s tacitvoice-anthropic -w
 ```
+
+With both stored, Anthropic is used unless `TACIT_CLEANUP_PROVIDER=openai`.
 
 ## Day 0: measure your baseline
 
@@ -87,7 +96,7 @@ the app once so the hold key starts working. Add names and terms you use to
 - The camera and microphone run only while the key is held.
 - Video and audio are processed on this Mac and never written to disk. The
   exception is `tools/record.py`, which saves clips to `data/` on purpose.
-- Only text goes to the Anthropic API: the candidate transcripts, your
+- Only text goes to the cleanup provider (OpenAI or Anthropic): the candidate transcripts, your
   glossary, similar past prompts, the app name and up to 600 characters before
   the cursor. The last one can be turned off in the menu. Password fields are
   never read.
@@ -104,7 +113,8 @@ Environment variables for `scripts/server.sh`; see `server/config.py`.
 | `TACIT_SILENCE_DBFS` | `-50` | Below this level a clip counts as silent |
 | `TACIT_LIPS` | `on` | `off` skips lip reading |
 | `TACIT_LIPS_BEAM` | model's (40) | Smaller is faster and less accurate |
-| `TACIT_CLEANUP_MODEL` | `claude-haiku-5-5` | Model for the cleanup pass |
+| `TACIT_CLEANUP_PROVIDER` | follows the key present | `openai` or `anthropic` |
+| `TACIT_CLEANUP_MODEL` | `gpt-4.1-mini` or `claude-haiku-5-5` | Model for the cleanup pass |
 | `TACIT_CLEANUP` | `on` | `off` inserts the raw transcript |
 
 ## Licence note

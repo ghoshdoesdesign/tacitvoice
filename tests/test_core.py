@@ -109,36 +109,106 @@ class FakeMessages:
         return SimpleNamespace(stop_reason=self.stop, content=content)
 
 
-def cleaner_with(messages):
-    c = cleanup.Cleaner.__new__(cleanup.Cleaner)
+class FakeCompletions(FakeMessages):
+    def create(self, **kwargs):
+        self.kwargs = kwargs
+        if self.error:
+            raise self.error
+        message = SimpleNamespace(content=self.reply, refusal=None)
+        finish = "stop" if self.stop == "end_turn" else self.stop
+        return SimpleNamespace(choices=[SimpleNamespace(finish_reason=finish, message=message)])
+
+
+def anthropic_cleaner(fake):
     import anthropic
 
-    c._anthropic, c._client, c.model = anthropic, SimpleNamespace(messages=messages), "claude-haiku-5-5"
+    c = cleanup.AnthropicCleaner.__new__(cleanup.AnthropicCleaner)
+    c._sdk, c._client, c.model = anthropic, SimpleNamespace(messages=fake), "claude-haiku-5-5"
     return c
 
 
-def test_cleaner_success_and_request_shape():
-    m = FakeMessages(json.dumps({"text": "Summarise this thread.", "alternatives": ["Summarise this thread.", "Summarise this bread."]}))
-    out = cleaner_with(m).clean({"audio": None}, cleanup.Cleaned(text="raw"))
+def openai_cleaner(fake):
+    import openai
+
+    c = cleanup.OpenAICleaner.__new__(cleanup.OpenAICleaner)
+    chat = SimpleNamespace(completions=fake)
+    c._sdk, c._client, c.model = openai, SimpleNamespace(chat=chat), "gpt-4.1-mini"
+    return c
+
+
+PROVIDERS = [(anthropic_cleaner, FakeMessages), (openai_cleaner, FakeCompletions)]
+GOOD = json.dumps({"text": "Summarise this thread.", "alternatives": ["Summarise this thread.", "Summarise this bread."]})
+
+
+@pytest.mark.parametrize("make,fake", PROVIDERS)
+def test_cleaner_success(make, fake):
+    out = make(fake(GOOD)).clean({"audio": None}, cleanup.Cleaned(text="raw"))
     assert out.text == "Summarise this thread." and out.source == "model"
     assert out.alternatives == ["Summarise this bread."]
+
+
+def test_request_shapes():
+    m = FakeMessages(GOOD)
+    anthropic_cleaner(m).clean({}, cleanup.Cleaned(text="raw"))
     assert m.kwargs["output_config"]["format"]["type"] == "json_schema"
     assert "temperature" not in m.kwargs and m.kwargs["thinking"] == {"type": "disabled"}
+    f = FakeCompletions(GOOD)
+    openai_cleaner(f).clean({"app": "Slack"}, cleanup.Cleaned(text="raw"))
+    assert f.kwargs["response_format"]["json_schema"]["strict"] is True
+    assert [m["role"] for m in f.kwargs["messages"]] == ["system", "user"]
+    assert json.loads(f.kwargs["messages"][1]["content"]) == {"app": "Slack"}
 
 
+def api_error(sdk_name, cls_name, status):
+    import importlib
+
+    import httpx
+
+    sdk = importlib.import_module(sdk_name)
+    response = httpx.Response(status, request=httpx.Request("POST", "https://example.invalid"))
+    return getattr(sdk, cls_name)("nope", response=response, body=None)
+
+
+@pytest.mark.parametrize("make,fake", PROVIDERS)
 @pytest.mark.parametrize(
-    "messages",
+    "kwargs",
     [
-        FakeMessages(reply="not json"),
-        FakeMessages(reply=json.dumps({"text": "  ", "alternatives": []})),
-        FakeMessages(reply=json.dumps({"text": "x", "alternatives": []}), stop="refusal"),
-        FakeMessages(reply=None),
-        FakeMessages(error=RuntimeError("no credentials")),
+        {"reply": "not json"},
+        {"reply": json.dumps({"text": "  ", "alternatives": []})},
+        {"reply": json.dumps({"text": "x", "alternatives": []}), "stop": "refusal"},
+        {"reply": None},
+        {"error": RuntimeError("no credentials")},
     ],
 )
-def test_cleaner_falls_back_to_raw(messages):
-    out = cleaner_with(messages).clean({}, cleanup.Cleaned(text="raw"))
+def test_cleaner_falls_back_to_raw(make, fake, kwargs):
+    out = make(fake(**kwargs)).clean({}, cleanup.Cleaned(text="raw"))
     assert out.text == "raw" and out.source == "raw" and out.note
+
+
+@pytest.mark.parametrize("make,fake,sdk", [(anthropic_cleaner, FakeMessages, "anthropic"), (openai_cleaner, FakeCompletions, "openai")])
+def test_cleaner_reports_api_errors(make, fake, sdk):
+    out = make(fake(error=api_error(sdk, "AuthenticationError", 401))).clean({}, cleanup.Cleaned(text="raw"))
+    assert out.text == "raw" and "API key" in out.note
+    out = make(fake(error=api_error(sdk, "RateLimitError", 429))).clean({}, cleanup.Cleaned(text="raw"))
+    assert "rate limited" in out.note
+
+
+def test_provider_follows_the_key_present(monkeypatch):
+    import importlib
+
+    def provider(env):
+        for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "TACIT_CLEANUP_PROVIDER", "TACIT_CLEANUP_MODEL"):
+            monkeypatch.delenv(k, raising=False)
+        for k, v in env.items():
+            monkeypatch.setenv(k, v)
+        c = importlib.reload(config)
+        return c.CLEANUP_PROVIDER, c.CLEANUP_MODEL
+
+    assert provider({"OPENAI_API_KEY": "x"}) == ("openai", "gpt-4.1-mini")
+    assert provider({"ANTHROPIC_API_KEY": "x", "OPENAI_API_KEY": "y"}) == ("anthropic", "claude-haiku-5-5")
+    assert provider({}) == ("anthropic", "claude-haiku-5-5")
+    assert provider({"TACIT_CLEANUP_PROVIDER": "openai", "TACIT_CLEANUP_MODEL": "m"}) == ("openai", "m")
+    provider({})
 
 
 def test_token_is_private_and_stable(tmp_path, monkeypatch):

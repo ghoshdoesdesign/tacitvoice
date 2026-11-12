@@ -30,7 +30,15 @@ STT_COMPUTE = os.getenv("TACIT_STT_COMPUTE", "int8")
 SILENCE_DBFS = float(os.getenv("TACIT_SILENCE_DBFS", "-50"))
 
 CLEANUP_ENABLED = os.getenv("TACIT_CLEANUP", "on") != "off"
-CLEANUP_MODEL = os.getenv("TACIT_CLEANUP_MODEL", "claude-haiku-5-5")
+# Which service runs the cleanup pass: "anthropic" or "openai". By default it
+# follows whichever API key is present (Anthropic if both are).
+CLEANUP_PROVIDER = os.getenv("TACIT_CLEANUP_PROVIDER") or (
+    "openai" if os.getenv("OPENAI_API_KEY") and not os.getenv("ANTHROPIC_API_KEY") else "anthropic"
+)
+# Fast models without a reasoning step: the user is waiting on a key release.
+CLEANUP_MODEL = os.getenv("TACIT_CLEANUP_MODEL") or (
+    "gpt-4.1-mini" if CLEANUP_PROVIDER == "openai" else "claude-haiku-5-5"
+)
 CLEANUP_TIMEOUT_S = float(os.getenv("TACIT_CLEANUP_TIMEOUT", "6"))
 
 HOST = "127.0.0.1"  # never listen on other interfaces: frames of your face come here
