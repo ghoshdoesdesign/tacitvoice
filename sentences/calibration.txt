@@ -1,0 +1,191 @@
+# Calibration sentences: everyday prompts and messages, no digits or symbols.
+# Record each one aloud, whispered and silently with tools.record.
+Summarise this thread and list the action items.
+Rewrite this paragraph so it sounds more confident.
+What is the fastest way to learn a new language?
+Draft a polite reply saying I will be late.
+Explain this error message in simple words.
+Make the introduction shorter and more direct.
+Give me three names for a coffee shop.
+How do I reset my password on this website?
+Turn these notes into a clear project plan.
+What should I cook for dinner tonight?
+Find the bug in this function and fix it.
+Write a short thank you note to my manager.
+Compare these two options and recommend one.
+Translate this sentence into Spanish and French.
+Remind me to call the bank tomorrow morning.
+Why is the sky blue during the day?
+Create a weekly workout plan for beginners.
+Check this email for spelling and grammar mistakes.
+What are the main causes of inflation?
+Suggest a good book about product design.
+Help me prepare for a job interview next week.
+Write a function that sorts a list of names.
+Tell me a fun fact about the ocean.
+Schedule a meeting with the design team on Friday.
+How long does it take to fly to Tokyo?
+Give me feedback on this presentation outline.
+What is the difference between a virus and bacteria?
+Make this message sound friendlier and less formal.
+List the pros and cons of working from home.
+Show me how to center an element with styles.
+Plan a three day trip to the mountains.
+What is a healthy breakfast I can make quickly?
+Write a headline for this blog post.
+Explain how a neural network learns from data.
+Can you shorten this to two sentences?
+Add comments to this code so others understand it.
+What time zone is best for this call?
+Give me a recipe that uses chicken and rice.
+Describe the image in as much detail as possible.
+Rename these variables so the code reads better.
+How much water should I drink every day?
+Write a birthday message for my best friend.
+Turn this long document into five bullet points.
+What are some good questions to ask a mentor?
+Open the latest report and read the summary.
+Convert this table into a simple chart.
+I need a catchy title for my new video.
+What does this word mean in plain English?
+Reply to her and say the files are attached.
+Build a small landing page for my portfolio.
+Which laptop is better for editing photos?
+Explain the rules of chess to a child.
+Write tests for the login page.
+Give me an example of a strong opening line.
+How do vaccines protect the body?
+Move the deadline to the end of the month.
+Suggest gift ideas for my parents' anniversary.
+What is the capital of Australia?
+Help me write a cover letter for this role.
+Refactor this file into smaller pieces.
+Who invented the telephone and when?
+Make a packing list for a beach holiday.
+Please check whether the build passed.
+Outline a talk about the future of interfaces.
+What should I say to start the meeting?
+Generate a logo idea for a bakery.
+Explain the theory of relativity briefly.
+Push my changes and open a pull request.
+How do I politely decline an invitation?
+Write a poem about rain on a quiet evening.
+Is it going to be cold this weekend?
+Find a cheaper flight that leaves in the afternoon.
+Tell the team that the launch is delayed.
+What are the symptoms of a common cold?
+Clean up this spreadsheet and remove duplicates.
+Give me a simple budget for this month.
+How does a battery store energy?
+Draft an agenda for our planning session.
+Play some calm music while I work.
+What is the best way to take notes?
+Rewrite the ending so it feels more hopeful.
+Search my inbox for the invoice from last week.
+Why do cats purr when they are happy?
+Design a simple habit tracker for mornings.
+Could you explain that again more slowly?
+Run the program and show me the output.
+What are the benefits of walking every day?
+Write a product description for wireless headphones.
+I want to change the color of this button.
+How do I start a small online business?
+Give me five ideas for a weekend project.
+Check if this argument has any weak points.
+Order more printer paper and a box of pens.
+What is the story behind this painting?
+Shorten the list to the three most important things.
+Help me understand this contract clause.
+Set a timer for the pasta, please.
+Which of these fonts is easier to read?
+Write a message asking for a quick update.
+What happened in the news this morning?
+Create a prototype with as few parts as possible.
+Show me examples of minimal furniture design.
+How do I improve my posture at a desk?
+Tell me the history of the bicycle.
+Fix the layout so it works on a phone.
+Add a section about pricing to the page.
+What is a good name for a small robot?
+Email the client and confirm the new budget.
+Explain why this approach might fail.
+Give me a script for a thirty second video.
+How do plants make food from sunlight?
+Make the tone of this article more playful.
+Which city has better weather in the winter?
+Write a query that counts users by country.
+Take a screenshot and send it to the group.
+What skills should a young designer learn first?
+Suggest a title for my research paper.
+Turn off the lights in the living room.
+How far is the moon from the earth?
+Break this big task into smaller steps.
+Should I buy this now or wait for a sale?
+Read the last message out loud.
+Describe a perfect day in the countryside.
+What is the quickest route to the airport?
+Please update the document with these changes.
+Think of a surprising use for this device.
+Why do we dream when we sleep?
+Write a friendly reminder about the unpaid bill.
+Give me a short biography of a famous scientist.
+Change the background to a soft shade of green.
+How can I sleep better at night?
+Paste the result into the shared folder.
+What would you improve about this drawing?
+Explain the difference between weather and climate.
+Book a table for four at seven tonight.
+Find the average of these values.
+Tell me a joke that children would enjoy.
+Which approach uses less memory?
+Write the first chapter of a mystery story.
+Is there a simpler way to say this?
+Close all the windows and save my work.
+What is the population of this country?
+Help me choose between these two apartments.
+Make a checklist for moving to a new house.
+Zoom in on the top left corner.
+How do airplanes stay in the air?
+Give me a stretching routine for a sore back.
+Combine these two paragraphs into one.
+What vegetables grow well in the shade?
+Send the photos to my brother.
+Explain this joke, because I do not get it.
+Write a caption for a photo of a sunset.
+Which language should I learn after English?
+Start a new note called shopping list.
+How does the stock market actually work?
+Thank the volunteers for their generous help.
+Why is exercise good for the brain?
+Draw a quick sketch of a wooden chair.
+Measure the width of this box for me.
+What is the meaning of this proverb?
+Give me a different version with fewer adjectives.
+Join the video call and mute my microphone.
+How do bees find their way back home?
+Offer three ways to reduce our monthly costs.
+Push the button, then wait a few seconds.
+What are good vegetarian sources of protein?
+Write an apology for the shipping delay.
+Show the changes since yesterday evening.
+Which movie should we watch on Friday?
+Explain how to tie a shoelace step by step.
+Does this jacket go with these trousers?
+Archive everything older than a year.
+What is the origin of the word quiz?
+Propose a name for our weekly newsletter.
+Just give me the short version, thanks.
+How should I respond to this difficult customer?
+Save this page so I can read it later.
+What makes a logo feel trustworthy?
+Calculate the tip and split the bill.
+Zebras, foxes and jaguars live in very different places.
+Would you fetch the heavy yellow box from the garage?
+The quick brown fox jumps over the lazy dog.
+She sells fresh vegetables at the village market every Thursday.
+Both of my brothers think this path is too rough.
+A huge orange jellyfish washed up on the shore.
+Measure the pleasure of a leisurely Sunday voyage.
+The judge chose the unusual vision with good reason.
+Which wristwatch would you choose for a wedding?
+Five thick feathers floated through the thin morning mist.
