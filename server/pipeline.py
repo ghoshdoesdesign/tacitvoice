@@ -80,6 +80,7 @@ class Pipeline:
                     config.LIPS_DEVICE,
                     config.LIPS_BEAM,
                     config.LIPS_NBEST,
+                    config.LIPS_WEIGHTS,
                 )
             except Exception as e:
                 # Whisper mode still works without the lip model, so keep going

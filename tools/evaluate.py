@@ -111,6 +111,8 @@ def main() -> None:
 
     pipe = Pipeline(cleanup=not args.no_cleanup)
     print(f"speech-to-text: {config.STT_BACKEND}; cleanup: {config.CLEANUP_PROVIDER} {config.CLEANUP_MODEL}")
+    if pipe.lips is not None:
+        print(f"lip model weights: {pipe.lips.weights}")
     for problem in pipe.errors:
         print("!", problem)
     if not args.known_prompts:

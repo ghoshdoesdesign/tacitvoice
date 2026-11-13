@@ -127,6 +127,41 @@ class FaceLandmarks:
         return out
 
 
+class MouthCropper:
+    """Frames in, aligned (T, 96, 96) grey mouth patches out. No speech model.
+
+    Used by the lip reader, and on its own to prepare training data.
+    """
+
+    def __init__(self, repo_dir: Path) -> None:
+        repo_dir = Path(repo_dir)
+        if not repo_dir.exists():
+            raise FileNotFoundError(f"{repo_dir} is missing. Run scripts/setup.sh first.")
+        if str(repo_dir) not in sys.path:
+            sys.path.insert(0, str(repo_dir))
+        from pipelines.detectors.mediapipe.video_process import VideoProcess
+
+        self._landmarks = FaceLandmarks()
+        self._crop = VideoProcess(convert_gray=True)
+
+    def __call__(
+        self, frames: np.ndarray, timestamps: list[float] | None, fps: float | None
+    ) -> tuple[np.ndarray | None, float]:
+        """Resample to 25 fps, find the face, cut out the mouth.
+
+        Returns the patches (None if no face was found) and the share of
+        frames in which a face was found.
+        """
+        idx = resample_indices(timestamps, len(frames), fps)
+        frames = frames[idx]
+        landmarks = self._landmarks(frames)
+        found = sum(lm is not None for lm in landmarks)
+        fraction = found / len(landmarks) if landmarks else 0.0
+        if not found:
+            return None, 0.0
+        return self._crop(frames, landmarks), fraction
+
+
 class LipReader:
     def __init__(
         self,
@@ -135,15 +170,12 @@ class LipReader:
         device: str = "auto",
         beam_size: int = 0,
         nbest: int = 5,
+        weights: Path | None = None,
     ) -> None:
         repo_dir = Path(repo_dir)
-        if not repo_dir.exists():
-            raise FileNotFoundError(f"{repo_dir} is missing. Run scripts/setup.sh first.")
-        if str(repo_dir) not in sys.path:
-            sys.path.insert(0, str(repo_dir))
+        self.mouth_patches = MouthCropper(repo_dir)  # also puts the repo on sys.path
 
         import torch
-        from pipelines.detectors.mediapipe.video_process import VideoProcess
         from pipelines.model import get_beam_search_decoder
 
         self._torch = torch
@@ -173,7 +205,9 @@ class LipReader:
         from espnet.nets.pytorch_backend.e2e_asr_transformer import E2E
 
         self.model = E2E(len(self.token_list), train_args)
-        self.model.load_state_dict(torch.load(path("model_path"), map_location="cpu"))
+        # A personal fine-tune (train/finetune_colab.ipynb) replaces the stock weights.
+        self.weights = str(weights) if weights and Path(weights).exists() else path("model_path")
+        self.model.load_state_dict(torch.load(self.weights, map_location="cpu"))
         self.model.to(self.device).eval()
 
         self.beam_search = get_beam_search_decoder(
@@ -188,9 +222,6 @@ class LipReader:
         )
         self.beam_search.to(self.device).eval()
 
-        self._landmarks = FaceLandmarks()
-        self._crop = VideoProcess(convert_gray=True)
-
     def _pick_device(self, wanted: str) -> str:
         torch = self._torch
         wanted = (wanted or "auto").lower()
@@ -200,20 +231,6 @@ class LipReader:
         if wanted == "mps" and torch.backends.mps.is_available():
             return "mps"
         return "cpu"
-
-    def mouth_patches(
-        self, frames: np.ndarray, timestamps: list[float] | None, fps: float | None
-    ) -> tuple[np.ndarray | None, float]:
-        """Resample to 25 fps, find the face, return (T, 96, 96) mouth patches."""
-        idx = resample_indices(timestamps, len(frames), fps)
-        frames = frames[idx]
-        landmarks = self._landmarks(frames)
-        found = sum(lm is not None for lm in landmarks)
-        fraction = found / len(landmarks) if landmarks else 0.0
-        if not found:
-            return None, 0.0
-        patches = self._crop(frames, landmarks)
-        return patches, fraction
 
     def transcribe(
         self,

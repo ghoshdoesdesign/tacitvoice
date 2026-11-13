@@ -92,6 +92,41 @@ the app once so the hold key starts working. Add names and terms you use to
 `~/.tacitvoice/dictionary.txt` and prompts you send often to
 `~/.tacitvoice/prompts.txt`; both are read on every use.
 
+## Fine-tune the lip model on yourself
+
+Silent mode is weak until the model has seen your own mouth. One day's work:
+
+1. Record the calibration sentences three times (aloud, whispered, silent).
+   Each run resumes where you stopped:
+
+```bash
+uv run python -m tools.record sentences/calibration.txt --mode aloud --out data/train
+```
+
+```bash
+uv run python -m tools.record sentences/calibration.txt --mode whisper --out data/train
+```
+
+```bash
+uv run python -m tools.record sentences/calibration.txt --mode silent --out data/train
+```
+
+2. Pack the recordings into one small file of mouth crops:
+
+```bash
+uv run python -m tools.pack
+```
+
+3. Upload `data/pack.npz` to the top level of your Google Drive. Open
+   `train/finetune_colab.ipynb` in Google Colab (File > Upload notebook),
+   choose a T4 GPU runtime, and run all cells. It prints the word error rate
+   on your `data/baseline` clips before and after.
+
+4. Download `lips_finetuned.pth` from Drive to `~/.tacitvoice/`. The server and
+   the evaluator use it automatically; `TACIT_LIPS_WEIGHTS=stock` switches back.
+
+The tuned model fits your face only. It will not help other people.
+
 ## Privacy
 
 - The camera and microphone run only while the key is held.

@@ -18,6 +18,10 @@ AVSR_REPO = Path(
     )
 ).expanduser()
 AVSR_CONFIG = os.getenv("TACIT_AVSR_CONFIG", "configs/LRS3_V_WER19.1.ini")
+# Lip-model weights fine-tuned on the owner's own recordings. Used when the file
+# exists; set TACIT_LIPS_WEIGHTS=stock to compare against the original model.
+_weights = os.getenv("TACIT_LIPS_WEIGHTS", str(HOME / "lips_finetuned.pth"))
+LIPS_WEIGHTS = None if _weights == "stock" else Path(_weights).expanduser()
 # auto = cuda if present, else cpu. "mps" (Apple GPU) fails inside the model's
 # beam search with a device mismatch, so it is opt-in.
 LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
