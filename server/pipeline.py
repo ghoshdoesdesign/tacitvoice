@@ -53,6 +53,7 @@ class Outcome:
                 "audioConfidence": round(self.stt.confidence, 3),
                 "peakDbfs": round(self.stt.peak_dbfs, 1),
                 "activity": round(self.stt.activity, 2),
+                "spreadDb": round(self.stt.spread_db, 1),
                 "lips": [t for t, _ in self.lips.candidates],
                 "faceFraction": round(self.lips.face_fraction, 2),
                 "cleanup": self.cleaned.source,
@@ -123,7 +124,10 @@ class Pipeline:
             # (measured: 17.9% word error without them, 17.6% with).
             step("speech-to-text started")
             stt = self.stt.transcribe(u.audio, self.phrasebook.glossary)
-            step(f"speech-to-text finished: activity {stt.activity:.2f}, heard {stt.audible}, {stt.note or 'ok'}")
+            step(
+                f"speech-to-text finished: peak {stt.peak_dbfs:.0f} dBFS, activity {stt.activity:.2f}, "
+                f"spread {stt.spread_db:.0f} dB, heard {stt.audible}, {stt.note or 'ok'}"
+            )
             if frames_ok and not stt.audible:
                 lips, lips_ran = read_lips(), True
         if stt.note:

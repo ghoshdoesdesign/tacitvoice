@@ -40,9 +40,8 @@ def resample_indices(timestamps: list[float] | None, n_frames: int, fps: float |
     """
     if n_frames == 0:
         return np.zeros(0, dtype=np.int64)
-    if timestamps and len(timestamps) == n_frames:
-        t = np.asarray(timestamps, dtype=np.float64)
-        t = t - t[0]
+    if timestamps and len(timestamps) == n_frames and n_frames > 1:
+        t = clean_times(np.asarray(timestamps, dtype=np.float64))
     else:
         t = np.arange(n_frames, dtype=np.float64) / float(fps or MODEL_FPS)
     duration = float(t[-1])
@@ -53,6 +52,22 @@ def resample_indices(timestamps: list[float] | None, n_frames: int, fps: float |
         left = idx - 1
         idx = np.where(ticks - t[left] <= t[idx] - ticks, left, idx)
     return idx.astype(np.int64)
+
+
+def clean_times(t: np.ndarray, max_gap_s: float = 0.5) -> np.ndarray:
+    """Frame times starting at 0, with impossible jumps squeezed out.
+
+    A camera can hand over one stale frame stamped long before the recording
+    began. Taken at face value that turns a 3-second clip into hours, and
+    resampling it asks for more memory than the machine has. Any step that
+    runs backwards, is not a number, or exceeds `max_gap_s` is replaced by
+    the clip's typical step.
+    """
+    steps = np.diff(t)
+    good = np.isfinite(steps) & (steps >= 0) & (steps <= max_gap_s)
+    typical = float(np.median(steps[good])) if good.any() else 1.0 / 30.0
+    steps = np.where(good, steps, typical)
+    return np.concatenate([[0.0], np.cumsum(steps)])
 
 
 def to_model_input(patches: np.ndarray) -> np.ndarray:

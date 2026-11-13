@@ -21,6 +21,7 @@ class SttResult:
     words: list[tuple[str, float]] = field(default_factory=list)  # (word, probability)
     peak_dbfs: float = -120.0
     activity: float = 0.0  # share of the clip above its own noise floor
+    spread_db: float = 0.0  # loud frames minus quiet frames
     audible: bool = False
     note: str = ""  # why there is no text, when something went wrong
     timings_ms: dict[str, int] = field(default_factory=dict)
@@ -53,25 +54,46 @@ def peak_dbfs(audio: np.ndarray, window_s: float = 0.1) -> float:
     return float(20 * np.log10(max(float(rms.max()), 1e-6)))
 
 
-def activity(audio: np.ndarray, frame_s: float = 0.025, rise_db: float = 8.0) -> float:
-    """Share of the clip that stands clearly above its own background noise.
+def frame_levels(audio: np.ndarray, frame_s: float = 0.025) -> np.ndarray:
+    """Level in dB of each 25 ms frame, on a pre-emphasised signal.
 
-    Loudness alone cannot tell a whisper from silent mouthing: in a normal room
-    the two overlap (a key click or the room's hum is as loud as a whisper).
-    What differs is how much of the clip is busy. A whisper lifts the level
-    above the room's floor for a large part of the clip; a silent clip does so
-    only for the odd click. Measured on a pre-emphasised signal, which drops
-    low hum and keeps the hiss that whispering is made of.
+    Pre-emphasis drops low hum and keeps the hiss that whispering is made of.
     """
     frame = int(SAMPLE_RATE * frame_s)
     if len(audio) < frame * 10:
-        return 0.0
+        return np.zeros(0)
     x = np.diff(audio.astype(np.float32), prepend=audio[:1])
     n = len(x) // frame
     rms = np.sqrt(np.mean(x[: n * frame].reshape(n, frame) ** 2, axis=1))
-    db = 20 * np.log10(np.maximum(rms, 1e-7))
-    floor = np.percentile(db, 10)
-    return float(np.mean(db > floor + rise_db))
+    return 20 * np.log10(np.maximum(rms, 1e-7))
+
+
+def activity(audio: np.ndarray, rise_db: float = 8.0) -> float:
+    """Share of the clip that stands clearly above its own quietest moments.
+
+    Loudness alone cannot tell a whisper from silent mouthing: in a normal room
+    the two overlap (a key click or the room's hum is as loud as a whisper).
+    A whisper lifts the level above the room's floor for a large part of the
+    clip; a silent clip does so only for the odd click.
+    """
+    db = frame_levels(audio)
+    if not len(db):
+        return 0.0
+    return float(np.mean(db > np.percentile(db, 10) + rise_db))
+
+
+def spread(audio: np.ndarray) -> float:
+    """How far the clip's loud frames sit above its quiet ones, in dB.
+
+    `activity` needs some quiet in the clip to measure against. A clip that is
+    whispered from the first frame to the last (the usual case in the app, where
+    the key is held only while speaking) has none, yet its level still swings
+    widely between syllables, while room noise stays within a few dB.
+    """
+    db = frame_levels(audio)
+    if not len(db):
+        return 0.0
+    return float(np.percentile(db, 90) - np.percentile(db, 10))
 
 
 # What speech models tend to output when given no speech at all.
@@ -94,9 +116,13 @@ def is_phantom(text: str) -> bool:
 
 def gate(result: "SttResult", audio: np.ndarray, silence_dbfs: float, min_activity: float) -> bool:
     """Fill in the clip's levels; return True if it is worth transcribing."""
+    from . import config
+
     result.peak_dbfs = peak_dbfs(audio)
     result.activity = activity(audio)
-    return result.peak_dbfs >= silence_dbfs and result.activity >= min_activity
+    result.spread_db = spread(audio)
+    busy = result.activity >= min_activity or result.spread_db >= config.MIN_SPREAD_DB
+    return result.peak_dbfs >= silence_dbfs and busy
 
 
 class WhisperSTT:

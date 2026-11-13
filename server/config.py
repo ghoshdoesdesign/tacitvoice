@@ -48,6 +48,10 @@ SILENCE_DBFS = float(os.getenv("TACIT_SILENCE_DBFS", "-50"))
 # The cutoff sits low because losing a whisper's audio costs more than letting
 # one silent clip through (stock phantom phrases are discarded anyway).
 MIN_ACTIVITY = float(os.getenv("TACIT_MIN_ACTIVITY", "0.12"))
+# Or: its loud frames sit this many dB above its quiet ones. Catches clips
+# whispered from start to end, which have no quiet stretch to compare with.
+# Not yet tuned on real clips; tools.levels prints the measure.
+MIN_SPREAD_DB = float(os.getenv("TACIT_MIN_SPREAD_DB", "10"))
 
 CLEANUP_ENABLED = os.getenv("TACIT_CLEANUP", "on") != "off"
 # Which service runs the cleanup pass: "anthropic" or "openai". By default it

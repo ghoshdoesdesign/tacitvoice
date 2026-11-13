@@ -325,3 +325,25 @@ def test_pipeline_reads_lips_only_when_no_whisper_is_heard(tmp_path, monkeypatch
     assert calls == ["stt", "lips"] and out.mode == "silent" and out.text == "read from lips"
     out = run("a whisper", with_audio=True)
     assert sorted(calls) == ["lips", "stt"] and out.text == "a whisper" and out.alternatives == ["read from lips"]
+
+
+def test_stale_first_frame_does_not_blow_up_the_clip():
+    # The app sent a first frame stamped hours before the rest. Taken literally
+    # that asked for millions of frames and hung the model process.
+    ts = [0.0] + [9000.0 + i / 30 for i in range(80)]
+    idx = resample_indices(ts, 81, None)
+    assert 60 <= len(idx) <= 75 and idx[-1] >= 79 and (np.diff(idx) >= 0).all()
+    # backwards and non-finite steps are repaired too
+    assert len(resample_indices([0.0, 0.03, 0.01, float("nan"), 0.1, 0.13], 6, None)) < 20
+
+
+def test_spread_hears_a_clip_whispered_end_to_end():
+    from server.stt import SttResult, activity, gate, spread
+
+    rng = np.random.default_rng(3)
+    # Syllable-like swings in level for the whole clip: no quiet stretch at all.
+    envelope = np.repeat(rng.uniform(0.003, 0.06, 60), 800)
+    whisper = (rng.standard_normal(len(envelope)) * envelope).astype(np.float32)
+    assert spread(whisper) > 12 > 6 > spread(room())
+    assert gate(SttResult(), whisper, -50.0, 0.99)  # passes on spread even if activity is not enough
+    assert not gate(SttResult(), room(), -60.0, 0.12)

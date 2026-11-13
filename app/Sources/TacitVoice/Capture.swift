@@ -138,8 +138,17 @@ final class Capture: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate,
             firstFrameTime = time
             DispatchQueue.main.async { self.onFirstFrame?() }
         }
+        var elapsed = time - (firstFrameTime ?? time)
+        if let last = clip.timestamps.last, elapsed < last || elapsed - last > 1.0 {
+            // The camera handed over a stale frame stamped before this
+            // recording began. Start the clip again from this frame.
+            clip.frames.removeAll()
+            clip.timestamps.removeAll()
+            firstFrameTime = time
+            elapsed = 0
+        }
         clip.frames.append(jpeg)
-        clip.timestamps.append(time - (firstFrameTime ?? time))
+        clip.timestamps.append(elapsed)
     }
 
     private func appendAudio(_ sampleBuffer: CMSampleBuffer) {
