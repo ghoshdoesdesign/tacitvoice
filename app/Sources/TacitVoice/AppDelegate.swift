@@ -19,7 +19,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var phase = Phase.idle
     private var pressedAt = Date()
-    private var anchor: NSRect?
     private var targetApp = ""
     private var textBefore = ""
     private var limitTimer: Timer?
@@ -38,10 +37,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hotkey.onPress = { [weak self] in self?.keyDown() }
         hotkey.onRelease = { [weak self] in self?.keyUp() }
         hotkey.start()
-        capture.onFirstFrame = { [weak self] in
-            guard let self = self, self.phase == .recording else { return }
-            self.pill.show("● Listening", near: self.anchor)
-        }
 
         checkServer()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -147,12 +142,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func keyDown() {
         guard phase == .idle else { return }
-        // Read where the text will go now, while the user's app has focus.
-        anchor = FocusContext.caretRect()
         if let problem = missingPermission() {
-            pill.show(problem, near: anchor, hideAfter: 4)
+            pill.show(.note(problem), hideAfter: 4)
             return
         }
+        // Read what the text will join now, while the user's app has focus.
         targetApp = FocusContext.appName()
         let sendContext = UserDefaults.standard.bool(forKey: contextKey)
         textBefore = sendContext ? FocusContext.textBeforeCursor() : ""
@@ -160,12 +154,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         phase = .recording
         pressedAt = Date()
         setIcon(recording: true)
-        pill.show("Starting camera…", near: anchor)
+        pill.show(.observing)
         capture.start { [weak self] problem in
             guard let self = self else { return }
             self.phase = .idle
             self.setIcon(recording: false)
-            self.pill.show(problem, near: self.anchor, hideAfter: 4)
+            self.pill.show(.note(problem), hideAfter: 4)
         }
         limitTimer = Timer.scheduledTimer(withTimeInterval: maximumHold, repeats: false) {
             [weak self] _ in self?.keyUp()
@@ -178,6 +172,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let held = Date().timeIntervalSince(pressedAt)
         phase = .processing
         setIcon(recording: false)
+        pill.show(.polishing)
 
         capture.stop { [weak self] clip in
             guard let self = self else { return }
@@ -186,13 +181,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.pill.hide()
                 return
             }
-            self.pill.show("Transcribing…", near: self.anchor)
             self.client.transcribe(clip, app: self.targetApp, textBeforeCursor: self.textBefore) {
                 result in
                 self.phase = .idle
                 switch result {
                 case .failure(let error):
-                    self.pill.show(error.text, near: self.anchor, hideAfter: 4)
+                    self.pill.show(.note(error.text), hideAfter: 4)
                 case .success(let transcript):
                     self.finish(transcript)
                 }
@@ -203,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func finish(_ transcript: Transcript) {
         guard !transcript.text.isEmpty else {
             let reason = transcript.warnings.first ?? "Nothing recognised"
-            pill.show(reason, near: anchor, hideAfter: 3)
+            pill.show(.note(reason), hideAfter: 3)
             return
         }
         var text = transcript.text
@@ -213,8 +207,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         Inserter.paste(text)
 
-        var note = transcript.mode == "silent" ? "Silent (beta)" : "Whisper"
-        if let warning = transcript.warnings.first { note += " · " + warning }
-        pill.show(note, near: anchor, hideAfter: transcript.warnings.isEmpty ? 1.2 : 3)
+        pill.show(.inserted, hideAfter: 1.4)
     }
 }

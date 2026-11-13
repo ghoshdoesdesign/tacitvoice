@@ -8,6 +8,10 @@ struct Transcript: Decodable {
     let warnings: [String]
 }
 
+struct ServerProblem: Decodable {
+    let detail: String
+}
+
 struct Health: Decodable {
     let ready: Bool
     let error: String?
@@ -89,7 +93,13 @@ final class ServerClient {
                 switch http.statusCode {
                 case 401: result = .failure(.message("Server rejected the app's token."))
                 case 503: result = .failure(.message("Models are still loading."))
-                default: result = .failure(.message("Server error \(http.statusCode)."))
+                default:
+                    // The server explains itself in {"detail": "..."}.
+                    let problem = data.flatMap {
+                        try? JSONDecoder().decode(ServerProblem.self, from: $0)
+                    }
+                    result = .failure(
+                        .message(problem?.detail ?? "Server error \(http.statusCode)."))
                 }
             } else if let data = data,
                 let transcript = try? JSONDecoder().decode(Transcript.self, from: data)
