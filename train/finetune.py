@@ -258,11 +258,17 @@ def main() -> None:
     clips = [c for c in clips if len(c["y"]) > 0 and len(c["x"]) >= 2 * len(c["y"])]
     test = [c for c in clips if c["split"] == "test"]
     pool = [c for c in clips if c["split"] == "train"]
-    random.shuffle(pool)
-    n_val = max(1, len(pool) // 20)
-    val, train = pool[:n_val], pool[n_val:]
+    # Hold out whole sentences, not clips. Each sentence is recorded in several
+    # modes, so holding out single clips would leave the same words in training
+    # and the validation loss would reward memorising them.
+    sentences = sorted({c["text"] for c in pool})
+    random.shuffle(sentences)
+    held = set(sentences[: max(1, len(sentences) // 10)])
+    val = [c for c in pool if c["text"] in held]
+    train = [c for c in pool if c["text"] not in held]
     minutes = sum(len(c["x"]) for c in train) / 25 / 60
-    print(f"{len(train)} training clips ({minutes:.0f} min), {len(val)} validation, {len(test)} test, on {device}")
+    print(f"{len(train)} training clips ({minutes:.0f} min), {len(val)} validation clips of "
+          f"{len(held)} held-out sentences, {len(test)} test, on {device}")
     if not train:
         raise SystemExit("No training clips in the pack.")
 
