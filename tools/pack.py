@@ -2,8 +2,8 @@
 
     uv run python -m tools.pack
 
-Reads data/train (recorded with tools.record --out data/train) as training
-clips and data/baseline as test clips, cuts each down to the 96x96 grey mouth
+Reads data/train and data/train2 (recorded with tools.record --out ...) as
+training clips and data/baseline as test clips, cuts each down to the 96x96 grey mouth
 region the model sees, and writes data/pack.npz. Only your mouth region and
 the sentence text go into the file; no audio and no full face.
 """
@@ -33,14 +33,17 @@ def collect(root: Path, split: str) -> list[tuple[Path, str, str]]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--train", type=Path, default=Path("data/train"))
+    ap.add_argument(
+        "--train", type=Path, nargs="+", default=[Path("data/train"), Path("data/train2")],
+        help="folders of training recordings; ones that do not exist are skipped",
+    )
     ap.add_argument("--test", type=Path, default=Path("data/baseline"))
     ap.add_argument("--out", type=Path, default=Path("data/pack.npz"))
     args = ap.parse_args()
 
-    clips = collect(args.train, "train") + collect(args.test, "test")
+    clips = [c for folder in args.train for c in collect(folder, "train")] + collect(args.test, "test")
     if not any(split == "train" for _, _, split in clips):
-        raise SystemExit(f"No recordings under {args.train}. Record with: tools.record ... --out {args.train}")
+        raise SystemExit(f"No recordings under {args.train[0]}. Record with: tools.record ... --out {args.train[0]}")
 
     crop = MouthCropper(config.AVSR_REPO)
     arrays: dict[str, np.ndarray] = {}
@@ -54,7 +57,7 @@ def main() -> None:
             skipped += 1
             print(f"[{n}/{len(clips)}] skipped {split}/{mode}/{stem.name}: face found in {face:.0%} of frames")
             continue
-        key = f"{split}_{mode}_{stem.name}"
+        key = f"{split}_{stem.parent.parent.name}_{mode}_{stem.name}"  # unique across folders
         arrays[key] = np.asarray(patches, dtype=np.uint8)
         manifest.append({"key": key, "text": text, "mode": mode, "split": split})
         frames[split] += len(patches)

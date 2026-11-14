@@ -1,0 +1,193 @@
+# Second calibration set: all new sentences, no digits or symbols.
+# Record with: tools.record sentences/calibration2.txt --mode <aloud|whisper|silent> --out data/train2
+Open my calendar and tell me what is on for Monday.
+Could you draft a proposal for the new client?
+I would like a shorter version of this report.
+Why does this page take so long to load?
+Put the most important point at the very top.
+Find me a quiet cafe near the train station.
+Which of these headlines grabs your attention?
+Let us go through the plan one more time.
+Please turn the volume down a little.
+What is the weather like in London right now?
+Write a gentle reminder for the overdue invoice.
+Can you make this sentence less awkward?
+Tell me how to brew a better cup of tea.
+I forgot the name of that actor in the film.
+Start with the problem, then explain the solution.
+How many people are coming to the workshop?
+Make a list of everything we need to buy.
+Give this paragraph a stronger first sentence.
+Who should I talk to about the budget?
+Show me the difference between these two files.
+Pick a color palette for a children's book.
+What is the next step after signing up?
+Explain the word algorithm without any jargon.
+I am not sure this argument holds together.
+Add my sister to the family group chat.
+Read me the top stories from this morning.
+How do I export this as a slide deck?
+Keep the same meaning but use simpler words.
+Is there a faster route that avoids the highway?
+Tell them we will ship the order on Thursday.
+What makes bread rise in the oven?
+Create a quiz with ten easy questions.
+Do we have enough chairs for everyone?
+Write a welcome message for new members.
+Move this meeting to later in the afternoon.
+How do I remove a stain from a white shirt?
+Suggest a name for a hiking club.
+This paragraph repeats itself, please fix it.
+What are the opening hours of the library?
+Look up the phone number for the dentist.
+Describe the taste of a ripe mango.
+I need three arguments for and against.
+When is the best season to visit Japan?
+Check the spelling of every name on this list.
+Give me an outline with five clear sections.
+Why did the program crash when I clicked save?
+Share the folder with everyone on the team.
+What should I pack for a rainy weekend?
+Write a note to say I enjoyed the dinner.
+Is this chart easy to understand at a glance?
+Help me pick a birthday present for a teenager.
+Explain what a budget deficit means.
+Put a reminder on Friday to water the plants.
+Can you turn this into a friendly email?
+How do I change the language on this phone?
+Leave out the last paragraph, it is not needed.
+Which exercises strengthen the lower back?
+Tell me something interesting about volcanoes.
+The title is too long, give me a tighter one.
+What would a good first sentence be?
+Call a taxi to pick me up in ten minutes.
+Find a recipe that needs only five ingredients.
+Write a toast for my friend's wedding.
+How does a microwave heat food so quickly?
+Make the buttons bigger and easier to tap.
+Who wrote this song and what is it about?
+Give me a rough estimate of the cost.
+Arrange these tasks from most to least urgent.
+What is the plural of the word cactus?
+Save a copy before you change anything.
+Does this sentence need a comma here?
+Help me write a speech for the school assembly.
+How do birds know when to fly south?
+Add a short summary at the beginning.
+Which museum is worth visiting in Paris?
+Tell me the rules of table tennis.
+I think the second option is clearly better.
+Write a short story about a lost umbrella.
+Where can I park near the city hall?
+Remove the jargon and keep it plain.
+What should I ask before renting a flat?
+Look for flights that leave before noon.
+Explain how interest on a loan is worked out.
+Change every heading to the same style.
+Is it safe to eat this after the date?
+Give me a morning routine that takes half an hour.
+How do I teach a puppy to sit?
+Summarise the meeting in three short lines.
+What rhymes with the word orange?
+Ask the group whether Tuesday works for them.
+Write a clear answer to this customer question.
+Why do onions make people cry?
+Turn the brightness up on my screen.
+Find the cheapest way to send this parcel.
+What is a polite way to ask for a raise?
+Sort the names in order from first to last.
+Tell me how a rainbow forms.
+Suggest a hobby I could start this month.
+Make this table easier to scan quickly.
+How far in advance should I book the venue?
+Write a short description for my profile.
+Which word fits better, quick or rapid?
+Give me the highlights of the latest update.
+What tools do I need to hang a shelf?
+Start a timer for twenty five minutes.
+Explain the plot of this novel in a paragraph.
+Can we push the release back by a week?
+Draw up a seating plan for the dinner.
+How do I say good morning in Italian?
+Check whether the two totals match.
+Write a thank you card for the nurse.
+Why is my phone battery draining so fast?
+List some healthy snacks for the afternoon.
+Tell the driver I am waiting by the gate.
+What does the abbreviation stand for?
+Give me a version that fits on one line.
+How do I get rid of the background noise?
+Find a photo of a lighthouse at dawn.
+Plan the agenda for a half day workshop.
+What is the safest way to carry a laptop?
+Rewrite this in the voice of a pirate.
+Should the logo sit on the left or the right?
+Tell me about the life cycle of a butterfly.
+Open the document I was editing yesterday.
+How many cups of flour does this need?
+Give me an honest opinion of this design.
+Write a slogan for a recycling campaign.
+What is the fastest animal on land?
+Add a column for the delivery date.
+Explain the offside rule in football.
+Could you check my maths on this page?
+Suggest a quiet activity for a rainy afternoon.
+How do I back up my photos safely?
+Tell everyone the office is closed on Monday.
+Which is cheaper, the train or the coach?
+Make the opening scene more dramatic.
+What is a simple way to learn chords?
+Hide the sidebar and widen the main area.
+Write a paragraph about why sleep matters.
+Who painted the ceiling of that chapel?
+Find a synonym for the word beautiful.
+How long should I boil an egg?
+Send a reminder an hour before the appointment.
+Give me a checklist for launching a website.
+What is the difference between a frog and a toad?
+Shorten the introduction by half.
+Tell me a riddle and then the answer.
+How do I share my location with a friend?
+Write the steps as a numbered list.
+Why do leaves change color in autumn?
+Replace the photo with a cleaner version.
+Suggest a name for a puppy with white paws.
+What time does the pharmacy shut today?
+Explain how a camera captures a picture.
+Fill in the missing words in this sentence.
+Can you recommend a good podcast about history?
+Write a brief update for the newsletter.
+How should I store fresh herbs?
+Put the files in alphabetical order.
+Tell me which bus goes to the harbour.
+What does a product manager actually do?
+Give the robot a cheerful personality.
+Add a joke at the end of the speech.
+Is the meeting room free at three?
+How do magnets attract metal?
+Make a plan to finish the book by June.
+Find the mistake in this calculation.
+Write a line of dialogue for a shy character.
+What should I do if I lose my passport?
+Rename the folder to something clearer.
+Tell me how the internet reaches my house.
+Choose a font that feels warm and friendly.
+How do I politely end a long phone call?
+Give me a workout I can do without equipment.
+Why is the ocean salty?
+Write a note to the neighbours about the party.
+Which chapter should I read first?
+Keep the heading but change everything below it.
+What is a fair price for this old bicycle?
+Play the next episode when this one ends.
+Explain why the moon changes shape.
+The children watched a purple kite drift over the church.
+My father usually shaves before he goes fishing.
+A thousand soldiers marched through the thick fog.
+Vera wore a velvet jacket to the jazz show.
+We chose the youngest judge with unusual pleasure.
+Three brothers bought brown bread from the baker.
+The thief thought nothing of the withered path.
+Phil gave Victor five very fine violins.
+Sharp shears and a shiny shovel sat in the shed.
+Whisper softly while the wolves wander west.

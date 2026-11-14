@@ -71,6 +71,10 @@ def test_notebook_carries_the_current_script():
 
 
 def test_calibration_sentences_fit_the_model_vocabulary():
-    lines = [l for l in (ROOT / "sentences" / "calibration.txt").read_text().splitlines() if l and not l.startswith("#")]
-    assert len(lines) > 150 and len(set(lines)) == len(lines)
-    assert not any(ch.isdigit() for line in lines for ch in line)
+    seen = set()
+    for name in ("calibration.txt", "calibration2.txt"):
+        lines = [l for l in (ROOT / "sentences" / name).read_text().splitlines() if l and not l.startswith("#")]
+        assert len(lines) > 150 and len(set(lines)) == len(lines)
+        assert not any(ch.isdigit() for line in lines for ch in line)
+        assert not seen & set(lines), "the two sets must not share sentences"
+        seen |= set(lines)
