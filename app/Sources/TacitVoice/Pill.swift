@@ -1,11 +1,13 @@
 import AppKit
+import ImageIO
 import QuartzCore
 
-/// The small black label at the top centre of the screen: the app's whole
-/// interface. It has three working states and a plain one for messages.
+/// The app's whole interface, at the bottom centre of the screen: a floating
+/// animated orb while the key is held, then a small black label for the
+/// polishing and inserted states and for messages.
 final class Pill {
     enum State {
-        case observing        // key held: animated orb, "Observing lip movement…"
+        case observing        // key held: the orb animation on its own
         case polishing        // key released: spinner, "Polishing your thoughts…"
         case inserted         // text pasted: green tick, "Inserted"
         case note(String)     // anything else worth saying, no icon
@@ -18,6 +20,15 @@ final class Pill {
     private var hideWork: DispatchWorkItem?
 
     private let height: CGFloat = 36
+    /// Side of the floating orb, in points.
+    private let orbSize: CGFloat = 120
+    /// Gap between the bottom of the usable screen and the orb.
+    private let bottomMargin: CGFloat = 56
+
+    /// Frames of the listening animation, made by tools/make_orb.py from a
+    /// video of the owner's choosing. Empty until loaded, or if none exist.
+    private var orbFrames: [CGImage] = []
+    private var orbFPS: Double = 30
     private let iconSize: CGFloat = 22
     private let padding: CGFloat = 12
     private let gap: CGFloat = 10
@@ -53,12 +64,78 @@ final class Pill {
         background.addSubview(icon)
         background.addSubview(label)
         panel.contentView = background
+        loadOrbFrames()
     }
 
-    /// Show a state at the top centre of the active screen, just under the
-    /// menu bar. Hides itself after `seconds` if given.
+    /// Read ~/.tacitvoice/orb/*.png off the main thread, so launch stays quick.
+    private func loadOrbFrames() {
+        let folder = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".tacitvoice/orb")
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            let files = (try? FileManager.default.contentsOfDirectory(
+                at: folder, includingPropertiesForKeys: nil)) ?? []
+            let pngs = files.filter { $0.pathExtension == "png" }
+                .sorted { $0.lastPathComponent < $1.lastPathComponent }
+            var frames: [CGImage] = []
+            for url in pngs {
+                guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                    let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
+                else { continue }
+                frames.append(image)
+            }
+            let rateFile = folder.appendingPathComponent("fps.txt")
+            let rateText = (try? String(contentsOf: rateFile, encoding: .utf8)) ?? ""
+            let rate = Double(rateText.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 30
+            DispatchQueue.main.async {
+                self?.orbFrames = frames
+                self?.orbFPS = rate > 0 ? rate : 30
+            }
+        }
+    }
+
+    /// Show only the animated orb, with no label or background.
+    private func showOrb(on screen: NSScreen) {
+        let image = CALayer()
+        image.frame = CGRect(x: 0, y: 0, width: orbSize, height: orbSize)
+        image.contentsGravity = .resizeAspect
+        image.contents = orbFrames[0]
+        let play = CAKeyframeAnimation(keyPath: "contents")
+        play.values = orbFrames
+        play.calculationMode = .discrete
+        play.duration = Double(orbFrames.count) / orbFPS
+        play.repeatCount = .infinity
+        play.isRemovedOnCompletion = false
+        image.add(play, forKey: "play")
+
+        icon.layer?.sublayers = nil
+        icon.layer?.addSublayer(image)
+        icon.isHidden = false
+        label.isHidden = true
+        background.layer?.backgroundColor = NSColor.clear.cgColor
+        panel.hasShadow = false
+
+        icon.frame = NSRect(x: 0, y: 0, width: orbSize, height: orbSize)
+        let origin = NSPoint(
+            x: screen.frame.midX - orbSize / 2,
+            y: screen.visibleFrame.minY + bottomMargin)
+        panel.setFrame(
+            NSRect(origin: origin, size: NSSize(width: orbSize, height: orbSize)), display: true)
+        panel.orderFrontRegardless()
+    }
+
+    /// Show a state at the bottom centre of the active screen. Every state is
+    /// centred on the same point. Hides itself after `seconds` if given.
     func show(_ state: State, hideAfter seconds: Double? = nil) {
         hideWork?.cancel()
+        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+
+        if case .observing = state, !orbFrames.isEmpty {
+            showOrb(on: screen)
+            return
+        }
+        label.isHidden = false
+        background.layer?.backgroundColor = NSColor.black.cgColor
+        panel.hasShadow = true
 
         let text: String
         var layers: [CALayer] = []
@@ -94,12 +171,11 @@ final class Pill {
             x: padding + iconSpace, y: (height - textHeight) / 2, width: textWidth,
             height: textHeight)
 
-        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
-        // visibleFrame ends below the menu bar, which on notched Macs is as
-        // tall as the notch, so the pill sits just beneath it.
+        // Centred where the orb's centre is, so the states replace each other
+        // in place. visibleFrame starts above the Dock.
         let origin = NSPoint(
             x: screen.frame.midX - width / 2,
-            y: screen.visibleFrame.maxY - height - 8)
+            y: screen.visibleFrame.minY + bottomMargin + (orbSize - height) / 2)
         panel.setFrame(
             NSRect(origin: origin, size: NSSize(width: width, height: height)), display: true)
         panel.orderFrontRegardless()
