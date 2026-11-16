@@ -127,6 +127,41 @@ uv run python -m tools.pack
 
 The tuned model fits your face only. It will not help other people.
 
+## Collect recordings from other people
+
+A model tuned on one person does not help anyone else. To test a shared
+model you need other faces. `collect/index.html` is a recording page people
+open in a browser: it shows sentences, records video only (no sound) while
+they hold a key, keeps everything in their browser, and gives them one .zip
+to send back. It uploads nothing.
+
+1. Put the page online. Any host that serves a file over https works. Two
+   free options:
+   - GitHub Pages, if this repository is public: Settings > Pages > deploy
+     from this branch. The link is `https://<user>.github.io/tacitvoice/collect/`.
+   - [Netlify Drop](https://app.netlify.com/drop): drag the `collect` folder
+     onto the page and copy the link it gives you.
+2. Send people the link. Sixty sentences, three ways each, takes about half
+   an hour; they can stop early and still send what they have.
+3. When a .zip comes back, import it and repack:
+
+```bash
+uv run python -m tools.import_friend ~/Downloads/silent-speech-asha.zip
+```
+
+```bash
+uv run python -m tools.pack
+```
+
+4. Train as before. To measure how well the model reads someone it never
+   trained on, edit the last cell of the notebook to add
+   `--holdout-speaker asha` (the folder name under `data/friends`).
+
+To change how many sentences each person reads: `python collect/build.py --per-person 30`.
+
+Face video is personal data. The page asks for consent and explains the use;
+keep the recordings private and delete them if someone asks.
+
 ## Privacy
 
 - The camera and microphone run only while the key is held.

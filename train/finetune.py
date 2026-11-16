@@ -238,6 +238,10 @@ def main() -> None:
     ap.add_argument("--max-frames", type=int, default=800, help="padded frames per batch; lower if out of memory")
     ap.add_argument("--beam", type=int, default=10)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument(
+        "--holdout-speaker",
+        help="leave this person out of training and test on their clips: how well does it read a stranger?",
+    )
     args = ap.parse_args()
 
     random.seed(args.seed)
@@ -256,8 +260,18 @@ def main() -> None:
     manifest = json.loads(str(pack["manifest"]))
     clips = [{**m, "x": pack[m["key"]], "y": tokenize(m["text"])} for m in manifest]
     clips = [c for c in clips if len(c["y"]) > 0 and len(c["x"]) >= 2 * len(c["y"])]
-    test = [c for c in clips if c["split"] == "test"]
-    pool = [c for c in clips if c["split"] == "train"]
+    for c in clips:
+        c.setdefault("speaker", "me")
+    if args.holdout_speaker:
+        names = sorted({c["speaker"] for c in clips})
+        if args.holdout_speaker not in names:
+            raise SystemExit(f"No clips from {args.holdout_speaker!r}. People in this pack: {', '.join(names)}")
+        test = [c for c in clips if c["speaker"] == args.holdout_speaker]
+        pool = [c for c in clips if c["speaker"] != args.holdout_speaker and c["split"] == "train"]
+        print(f"Testing on {args.holdout_speaker}, who is left out of training.")
+    else:
+        test = [c for c in clips if c["split"] == "test"]
+        pool = [c for c in clips if c["split"] == "train"]
     # Hold out whole sentences, not clips. Each sentence is recorded in several
     # modes, so holding out single clips would leave the same words in training
     # and the validation loss would reward memorising them.
@@ -267,8 +281,8 @@ def main() -> None:
     val = [c for c in pool if c["text"] in held]
     train = [c for c in pool if c["text"] not in held]
     minutes = sum(len(c["x"]) for c in train) / 25 / 60
-    print(f"{len(train)} training clips ({minutes:.0f} min), {len(val)} validation clips of "
-          f"{len(held)} held-out sentences, {len(test)} test, on {device}")
+    print(f"{len(train)} training clips ({minutes:.0f} min) from {len({c['speaker'] for c in train})} people, "
+          f"{len(val)} validation clips of {len(held)} held-out sentences, {len(test)} test, on {device}")
     if not train:
         raise SystemExit("No training clips in the pack.")
 

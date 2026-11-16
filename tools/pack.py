@@ -2,8 +2,9 @@
 
     uv run python -m tools.pack
 
-Reads data/train and data/train2 (recorded with tools.record --out ...) as
-training clips and data/baseline as test clips, cuts each down to the 96x96 grey mouth
+Reads data/train and data/train2 (recorded with tools.record --out ...) and
+every person under data/friends (from tools.import_friend) as training clips,
+and data/baseline as test clips, cuts each down to the 96x96 grey mouth
 region the model sees, and writes data/pack.npz. Only your mouth region and
 the sentence text go into the file; no audio and no full face.
 """
@@ -35,13 +36,17 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument(
         "--train", type=Path, nargs="+", default=[Path("data/train"), Path("data/train2")],
-        help="folders of training recordings; ones that do not exist are skipped",
+        help="folders of your own training recordings; ones that do not exist are skipped",
     )
+    ap.add_argument("--friends", type=Path, default=Path("data/friends"),
+                    help="folder holding one sub-folder per other person (from tools.import_friend)")
     ap.add_argument("--test", type=Path, default=Path("data/baseline"))
     ap.add_argument("--out", type=Path, default=Path("data/pack.npz"))
     args = ap.parse_args()
 
-    clips = [c for folder in args.train for c in collect(folder, "train")] + collect(args.test, "test")
+    others = sorted(p for p in args.friends.iterdir() if p.is_dir()) if args.friends.exists() else []
+    own = set(args.train) | {args.test}
+    clips = [c for folder in list(args.train) + others for c in collect(folder, "train")] + collect(args.test, "test")
     if not any(split == "train" for _, _, split in clips):
         raise SystemExit(f"No recordings under {args.train[0]}. Record with: tools.record ... --out {args.train[0]}")
 
@@ -57,9 +62,11 @@ def main() -> None:
             skipped += 1
             print(f"[{n}/{len(clips)}] skipped {split}/{mode}/{stem.name}: face found in {face:.0%} of frames")
             continue
-        key = f"{split}_{stem.parent.parent.name}_{mode}_{stem.name}"  # unique across folders
+        source = stem.parent.parent
+        speaker = "me" if source in own else source.name
+        key = f"{split}_{source.name}_{mode}_{stem.name}"  # unique across folders
         arrays[key] = np.asarray(patches, dtype=np.uint8)
-        manifest.append({"key": key, "text": text, "mode": mode, "split": split})
+        manifest.append({"key": key, "text": text, "mode": mode, "split": split, "speaker": speaker})
         frames[split] += len(patches)
         if n % 25 == 0:
             print(f"[{n}/{len(clips)}] cropped")
@@ -68,6 +75,10 @@ def main() -> None:
     np.savez_compressed(args.out, manifest=np.array(json.dumps(manifest)), **arrays)
     size = args.out.stat().st_size / 1e6
     print(f"\n{len(manifest)} clips packed, {skipped} skipped.")
+    people: dict[str, int] = {}
+    for m in manifest:
+        people[m["speaker"]] = people.get(m["speaker"], 0) + 1
+    print("clips per person: " + ", ".join(f"{name} {n}" for name, n in sorted(people.items())))
     print(f"training: {frames['train'] / 25 / 60:.0f} min   test: {frames['test'] / 25 / 60:.0f} min")
     print(f"Wrote {args.out} ({size:.0f} MB). Upload it to Google Drive for the Colab notebook.")
 

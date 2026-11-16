@@ -28,24 +28,45 @@ from server.text import corpus_wer, word_error_rate
 STAGES = ("stt", "face", "encode", "beam", "cleanup", "total")
 
 
+VIDEO_TYPES = (".mp4", ".webm", ".mov")
+
+
 def load_clip(stem: Path) -> tuple[Utterance, str]:
+    """Read one recorded clip: <stem>.json plus a video and, if present, a .wav.
+
+    Clips from tools.record have all three files and their own frame times.
+    Clips recorded in a browser (collect/) are video only, with uneven frame
+    spacing, so their times are read from the video itself.
+    """
     meta = json.loads(stem.with_suffix(".json").read_text())
-    cap = cv2.VideoCapture(str(stem.with_suffix(".mp4")))
-    frames = []
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            break
-        frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-    cap.release()
-    audio, rate = sf.read(stem.with_suffix(".wav"), dtype="float32")
-    if audio.ndim > 1:
-        audio = audio.mean(axis=1)
+    video_path = next((stem.with_suffix(ext) for ext in VIDEO_TYPES if stem.with_suffix(ext).exists()), None)
+    frames, clock = [], []
+    if video_path is not None:
+        cap = cv2.VideoCapture(str(video_path))
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            clock.append(cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0)
+            frames.append(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        cap.release()
+
+    wav = stem.with_suffix(".wav")
+    if wav.exists():
+        audio, rate = sf.read(wav, dtype="float32")
+        if audio.ndim > 1:
+            audio = audio.mean(axis=1)
+        audio = resample(audio, rate)
+    else:
+        audio = np.zeros(0, dtype=np.float32)
+
     stamps = meta.get("timestamps")
     if not stamps or len(stamps) != len(frames):
-        stamps = None
+        # Fall back to the video's own clock when it moves forward sensibly.
+        moving = len(clock) > 1 and clock[-1] > clock[0] and all(b >= a for a, b in zip(clock, clock[1:]))
+        stamps = [t - clock[0] for t in clock] if moving else None
     video = np.stack(frames) if frames else np.zeros((0, 0, 0, 3), np.uint8)
-    return Utterance(frames=video, audio=resample(audio, rate), timestamps=stamps, fps=30.0), meta["text"]
+    return Utterance(frames=video, audio=audio, timestamps=stamps, fps=30.0), meta["text"]
 
 
 def summarise(rows: list[dict]) -> dict:
