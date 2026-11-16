@@ -56,6 +56,7 @@ class Outcome:
                 "spreadDb": round(self.stt.spread_db, 1),
                 "lips": [t for t, _ in self.lips.candidates],
                 "faceFraction": round(self.lips.face_fraction, 2),
+                "mouthMotion": round(self.lips.motion, 2),
                 "cleanup": self.cleaned.source,
             },
         }
@@ -81,6 +82,7 @@ class Pipeline:
                     config.LIPS_BEAM,
                     config.LIPS_NBEST,
                     config.LIPS_WEIGHTS,
+                    config.LIPS_MIN_MOTION,
                 )
             except Exception as e:
                 # Whisper mode still works without the lip model, so keep going
@@ -146,7 +148,12 @@ class Pipeline:
         mode = "whisper" if stt.audible else ("silent" if lips.candidates else "none")
 
         cleaned = raw_pick(stt, lips, similar)
-        step(f"lips {'read' if lips_ran else 'skipped'}: {len(lips.candidates)} candidates")
+        step(
+            f"lips {'read' if lips_ran else 'skipped'}: {len(lips.candidates)} candidates, "
+            f"mouth motion {lips.motion:.2f}{' (still)' if lips.still else ''}"
+        )
+        if not stt.audible and lips.still:
+            warnings.insert(0, "No words detected")
         if cleaned.text and self.cleaner is not None:
             step("cleanup started")
             evidence = build_evidence(

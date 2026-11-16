@@ -347,3 +347,48 @@ def test_spread_hears_a_clip_whispered_end_to_end():
     assert spread(whisper) > 12 > 6 > spread(room())
     assert gate(SttResult(), whisper, -50.0, 0.99)  # passes on spread even if activity is not enough
     assert not gate(SttResult(), room(), -60.0, 0.12)
+
+
+def test_mouth_motion_tells_a_still_mouth_from_a_moving_one():
+    import cv2
+
+    from server.lips import mouth_motion
+
+    rng = np.random.default_rng(0)
+
+    def clip(moving: bool) -> np.ndarray:
+        frames = []
+        for t in range(50):
+            img = np.full((96, 96), 120, np.uint8)
+            opening = 4 + (int(10 * abs(np.sin(t / 3))) if moving else 0)
+            cv2.ellipse(img, (48, 52), (22, opening), 0, 0, 360, 40, -1)  # a mouth
+            noise = rng.normal(0, 4, img.shape)  # camera noise
+            frames.append(np.clip(img + noise, 0, 255).astype(np.uint8))
+        return np.stack(frames)
+
+    still, talking = mouth_motion(clip(False)), mouth_motion(clip(True))
+    assert still < 1.0 < 2.5 < talking
+    assert mouth_motion(np.zeros((3, 96, 96), np.uint8)) == 0.0
+
+
+def test_pipeline_says_no_words_when_the_mouth_is_still(tmp_path, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+
+    from server import pipeline
+    from server.phrases import Phrasebook
+
+    class Stt:
+        def transcribe(self, audio, glossary):
+            return SttResult()
+
+    class Lips:
+        def transcribe(self, frames, timestamps, fps):
+            return LipResult(face_fraction=1.0, frames=len(frames), motion=0.4, still=True)
+
+    monkeypatch.setattr(config, "LIPS_WITH_AUDIO", False)
+    p = pipeline.Pipeline.__new__(pipeline.Pipeline)
+    p.phrasebook = Phrasebook(tmp_path / "d.txt", tmp_path / "p.txt")
+    p.stt, p.lips, p.cleaner, p._pool = Stt(), Lips(), None, ThreadPoolExecutor(max_workers=1)
+    u = pipeline.Utterance(frames=np.zeros((10, 4, 4, 3), np.uint8), audio=np.zeros(16000, np.float32))
+    out = p.run(u, log=False)
+    assert out.text == "" and out.mode == "none" and out.warnings[0] == "No words detected"

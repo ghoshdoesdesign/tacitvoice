@@ -30,6 +30,8 @@ class LipResult:
     candidates: list[tuple[str, float]] = field(default_factory=list)  # (text, score), best first
     face_fraction: float = 0.0  # share of frames in which a face was found
     frames: int = 0
+    motion: float = 0.0  # how much the mouth moved (see mouth_motion)
+    still: bool = False  # the mouth barely moved, so no words were read
     timings_ms: dict[str, int] = field(default_factory=dict)
 
 
@@ -77,6 +79,25 @@ def to_model_input(patches: np.ndarray) -> np.ndarray:
     x = patches[:, top : top + CROP, left : left + CROP].astype(np.float32) / 255.0
     x = (x - MEAN) / STD
     return x[:, None, :, :]
+
+
+def mouth_motion(patches: np.ndarray) -> float:
+    """How much the mouth moved, in grey levels: about 1 when still, several when talking.
+
+    The lip model always outputs a sentence, even for a closed, still mouth.
+    This is the check that lets the caller say "no words" instead. Each patch
+    is blurred to suppress camera noise, compared with the patch two frames
+    later, and averaged over the mouth area; the result is the level that the
+    busiest tenth of the clip reaches.
+    """
+    import cv2
+
+    if len(patches) < 5:
+        return 0.0
+    smooth = np.stack([cv2.blur(p, (7, 7)) for p in patches]).astype(np.float32)
+    mouth = smooth[:, 20:84, 8:88]
+    change = np.abs(mouth[2:] - mouth[:-2]).mean(axis=(1, 2))
+    return float(np.percentile(change, 90))
 
 
 def decode_nbest(hyps, token_list: list[str], n: int) -> list[tuple[str, float]]:
@@ -171,6 +192,7 @@ class LipReader:
         beam_size: int = 0,
         nbest: int = 5,
         weights: Path | None = None,
+        min_motion: float = 0.0,
     ) -> None:
         repo_dir = Path(repo_dir)
         self.mouth_patches = MouthCropper(repo_dir)  # also puts the repo on sys.path
@@ -180,6 +202,7 @@ class LipReader:
 
         self._torch = torch
         self.nbest = nbest
+        self.min_motion = min_motion
         self.device = self._pick_device(device)
 
         ini = ConfigParser()
@@ -249,6 +272,10 @@ class LipReader:
         t1 = time.perf_counter()
         result.timings_ms["face"] = int((t1 - t0) * 1000)
         if patches is None or result.face_fraction < 0.5:
+            return result
+        result.motion = mouth_motion(patches)
+        if result.motion < self.min_motion:
+            result.still = True  # nothing was mouthed: do not let the model invent a sentence
             return result
 
         x = torch.from_numpy(to_model_input(patches)).permute(1, 0, 2, 3)  # (1, T, 88, 88)
