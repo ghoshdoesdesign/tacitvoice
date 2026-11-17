@@ -22,7 +22,7 @@ import argparse
 from pathlib import Path
 
 from server import config
-from tools.make_orb import bounds, read_frames, write_frames
+from tools.make_orb import bounds, orb_diameter, orb_share, read_frames, write_frames
 
 
 def main() -> None:
@@ -42,7 +42,18 @@ def main() -> None:
         raise SystemExit(f"Frame numbers must rise and fit the video, which has {len(frames)} frames.")
 
     # One crop for both sets, so the orb does not jump between them.
-    box = bounds(frames[args.start : args.end], 28)
+    cx, cy, half = bounds(frames[args.start : args.end], 28)
+    # Every animation is shown in the same square, so the orb must fill the
+    # same share of its frame as it does in the listening animation, or it
+    # appears to grow or shrink when the states change.
+    share = orb_share(config.HOME / "orb")
+    diameter = orb_diameter(frames[args.loop_start : args.loop_end], args.rim)
+    if share and diameter:
+        half = int(round(diameter / share / 2))
+        print(f"Matched the listening orb, which fills {share:.0%} of its frame.")
+    else:
+        print("No listening animation found in ~/.tacitvoice/orb to match; using the orb's own size.")
+    box = (cx, cy, half)
     options = dict(size=args.size, body=args.body, rim=args.rim)
     working = write_frames(frames[args.start : args.loop_end], config.HOME / "orb-loading", box, fps,
                            loop_start=args.loop_start - args.start, **options)

@@ -64,6 +64,30 @@ def bounds(frames: list[np.ndarray], threshold: int) -> tuple[int, int, int]:
     return cx, cy, half
 
 
+def orb_diameter(frames: list[np.ndarray], rim: int = 95) -> float:
+    """Typical width of the shape itself, in pixels, ignoring its glow."""
+    sizes = []
+    for frame in frames[:: max(1, len(frames) // 40)]:
+        ys, xs = np.nonzero(silhouette(frame, rim) > 0.5)
+        if len(xs):
+            sizes.append((xs.max() - xs.min() + ys.max() - ys.min()) / 2)
+    return float(np.median(sizes)) if sizes else 0.0
+
+
+def orb_share(folder: Path) -> float | None:
+    """How much of the frame the shape fills in an installed animation (0-1)."""
+    shares = []
+    files = sorted(folder.glob("*.png"))
+    for path in files[:: max(1, len(files) // 40)]:
+        image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
+        if image is None or image.ndim != 3 or image.shape[2] != 4:
+            continue
+        ys, xs = np.nonzero(image[..., 3] > 127)
+        if len(xs):
+            shares.append((xs.max() - xs.min() + ys.max() - ys.min()) / 2 / image.shape[1])
+    return float(np.median(shares)) if shares else None
+
+
 def read_frames(video: Path) -> tuple[list[np.ndarray], float]:
     cap = cv2.VideoCapture(str(video))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
