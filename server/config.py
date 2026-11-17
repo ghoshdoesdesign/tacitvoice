@@ -30,10 +30,12 @@ LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
 LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "10"))
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
 # A silent clip whose mouth moved less than this many times the skin above it
-# is answered with "No words detected" instead of being read. It is a ratio,
-# so the same value is meant to hold for any person, camera and lighting; a
-# still mouth scores about 1. tools.motion prints it for recorded clips.
-LIPS_MIN_MOTION = float(os.getenv("TACIT_LIPS_MIN_MOTION", "2.0"))
+# is answered with "No words detected" instead of being read. Measured on the
+# owner's recordings: pauses score 0.46-2.26 (typically 0.86), sentences
+# 1.05-2.41 (typically 1.55). The ranges overlap, so this measure cannot
+# separate them cleanly. 1.0 is set to never reject a real sentence; it
+# catches only the stillest clips. tools.motion compares better measures.
+LIPS_MIN_MOTION = float(os.getenv("TACIT_LIPS_MIN_MOTION", "1.0"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
 # Also read lips when a whisper was heard. Off: on the owner's clips it added
 # 3-4 seconds and changed the error rate by 0.3 points.
