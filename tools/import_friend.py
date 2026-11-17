@@ -1,6 +1,6 @@
 """Add another person's recordings to the training data (run on the Mac).
 
-    uv run python -m tools.import_friend ~/Downloads/silent-speech-asha.zip
+    uv run python -m tools.import_friend ~/Downloads/quiet-experiment-asha.zip
 
 Takes the .zip that the recording page (collect/index.html) gave them and
 unpacks it into data/friends/<name>/, in the layout tools.pack reads. The

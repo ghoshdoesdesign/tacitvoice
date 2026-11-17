@@ -146,7 +146,7 @@ to send back. It uploads nothing.
 3. When a .zip comes back, import it and repack:
 
 ```bash
-uv run python -m tools.import_friend ~/Downloads/silent-speech-asha.zip
+uv run python -m tools.import_friend ~/Downloads/quiet-experiment-asha.zip
 ```
 
 ```bash

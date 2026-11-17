@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Silent speech recording</title>
+<title>The Quiet Experiment</title>
 <style>
   :root { --ink:#16181d; --muted:#565c6b; --line:#d9dce1; --bg:#f3f4f6; --card:#fff; --blue:#2f6be0; --orange:#b4500a; --green:#17663a; }
   * { box-sizing: border-box; }
@@ -40,8 +40,8 @@
 </head>
 <body>
 <main>
-  <h1>Help teach a computer to read lips</h1>
-  <p class="muted">A research project on silent speech. About 30 minutes. You can stop at any time and still send what you recorded.</p>
+  <h1>The Quiet Experiment</h1>
+  <p class="muted">Some things can be said without a sound. About 30 minutes. You can stop at any time and still send what you recorded.</p>
 
   <section id="intro" class="card">
     <h2>What you will do</h2>
@@ -52,7 +52,7 @@
     </ul>
     <label for="name">Your first name or a nickname</label>
     <input id="name" type="text" autocomplete="off" maxlength="40">
-    <label class="check"><input id="agree" type="checkbox"> <span>I agree to my video being recorded and used for this research on reading lips.</span></label>
+    <label class="check"><input id="agree" type="checkbox"> <span>I agree to my video being recorded and used for this private research project.</span></label>
     <div class="row" style="margin-top:16px">
       <button id="begin" class="primary" disabled>Turn on camera and start</button>
       <span id="resume" class="muted"></span>
@@ -308,7 +308,7 @@ async function download() {
   const zip = await buildZip(files);
   const link = document.createElement("a");
   link.href = URL.createObjectURL(zip);
-  link.download = `silent-speech-${slug(session.name)}.zip`;
+  link.download = `quiet-experiment-${slug(session.name)}.zip`;
   document.body.appendChild(link); link.click(); link.remove();
   $("doneStatus").textContent = `Downloaded ${link.download} (${Math.round(zip.size / 1e6)} MB). Look in your Downloads folder.`;
   $("download").disabled = false;
