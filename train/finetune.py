@@ -272,6 +272,13 @@ def main() -> None:
     else:
         test = [c for c in clips if c["split"] == "test"]
         pool = [c for c in clips if c["split"] == "train"]
+    # A sentence the test also contains could be recognised from memory, so it
+    # is not trained on (everyone who records reads a few sentences in common).
+    tested = {" ".join(words(c["text"])) for c in test}
+    shared = [c for c in pool if " ".join(words(c["text"])) in tested]
+    if shared:
+        pool = [c for c in pool if " ".join(words(c["text"])) not in tested]
+        print(f"Left {len(shared)} clips out of training: their sentences are in the test.")
     # Hold out whole sentences, not clips. Each sentence is recorded in several
     # modes, so holding out single clips would leave the same words in training
     # and the validation loss would reward memorising them.

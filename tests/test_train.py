@@ -72,9 +72,21 @@ def test_notebook_carries_the_current_script():
 
 def test_calibration_sentences_fit_the_model_vocabulary():
     seen = set()
-    for name in ("calibration.txt", "calibration2.txt"):
+    # common.txt is left out here: it is taken from the calibration sets, so the
+    # owner has already recorded the sentences everyone else reads.
+    fewest = {"calibration.txt": 150, "calibration2.txt": 150, "prompts_long.txt": 50, "pool.txt": 2500}
+    for name, least in fewest.items():
         lines = [l for l in (ROOT / "sentences" / name).read_text().splitlines() if l and not l.startswith("#")]
-        assert len(lines) > 150 and len(set(lines)) == len(lines)
-        assert not any(ch.isdigit() for line in lines for ch in line)
-        assert not seen & set(lines), "the two sets must not share sentences"
+        assert len(lines) >= least and len(set(lines)) == len(lines), name
+        assert not any(ch.isdigit() for line in lines for ch in line), name
+        assert not seen & set(lines), "the sets must not share sentences"
         seen |= set(lines)
+
+
+def test_sentence_pool_matches_its_generator():
+    spec = importlib.util.spec_from_file_location("generate", ROOT / "sentences" / "generate.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    made = module.generate()
+    saved = [l for l in (ROOT / "sentences" / "pool.txt").read_text().splitlines() if not l.startswith("#")]
+    assert made == saved, "run: python sentences/generate.py"

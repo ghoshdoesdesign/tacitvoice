@@ -1,0 +1,71 @@
+# Longer prompts, the length people really type to an assistant. No digits or symbols.
+I am planning a small dinner for six friends on Saturday, so suggest a menu that is easy to cook and does not need an oven.
+Rewrite this email so it sounds warm but still professional, and keep it under a hundred words if you can.
+Explain how compound interest works using a simple example, as if you were talking to someone who has never saved money before.
+Look at the three options I listed and tell me which one you would choose, then give me the two strongest reasons.
+I have a job interview on Thursday morning, so help me prepare short answers to the questions they are most likely to ask.
+Turn these rough meeting notes into a clear summary with decisions at the top and open questions at the bottom.
+Write a short story about a lighthouse keeper who finds a message in a bottle, and give it a hopeful ending.
+My laptop has become very slow over the last month, so walk me through the checks I should do before buying a new one.
+Compare renting an apartment with buying a house in a big city, and be honest about the downsides of each choice.
+Plan a relaxed weekend trip to the coast for two people who like walking, good food and quiet places.
+Give me a workout plan for three days a week that I can do at home with no equipment and very little space.
+I want to learn to cook properly this year, so tell me which five dishes I should master first and why.
+Read this paragraph carefully and point out anything that is unclear, repeated or simply not true.
+Draft a polite message to my landlord explaining that the heating has been broken for a week and needs fixing soon.
+Help me write a toast for my brother's wedding that is funny at the start and sincere at the end.
+Explain the difference between a virus and a bacterial infection, and say when antibiotics are useful and when they are not.
+I keep putting off an important project, so give me a practical plan to start today and keep going this week.
+Suggest a name for a small bakery that sells sourdough bread and coffee, and explain the feeling each name gives.
+Summarise the main arguments for and against working from home, then tell me what the evidence actually shows.
+Write clear instructions for setting up a new phone, written for a grandparent who has never owned one before.
+Describe what a typical day looks like for a nurse working night shifts in a busy city hospital.
+Check this cover letter for mistakes and weak phrases, and suggest stronger wording wherever it sounds vague.
+I need to give a five minute talk about my team's work, so help me find one story that makes it memorable.
+Tell me how to politely say no to a colleague who keeps asking me to do work that is not mine.
+Create a simple monthly budget for a student with a part time job, and show where the money usually leaks.
+Explain why the seasons change during the year, and correct the common belief that it is about distance from the sun.
+Give me ten questions I could ask my grandmother about her childhood before those stories are lost.
+My garden gets very little sun, so recommend plants that will grow well there and need hardly any care.
+Write a product description for a wool blanket that is honest about the price and clear about the quality.
+Help me decide whether to accept a new job that pays more but would mean moving to another country.
+Break this large goal into smaller steps, and tell me which step I should finish before the end of the week.
+Describe three ways to make a small living room feel bigger without knocking down any walls.
+I am teaching my daughter to ride a bicycle, so give me advice that will keep her safe and confident.
+Explain what a neural network is to a curious teenager, and avoid any words they would have to look up.
+Suggest a reading list of six novels for someone who loved mysteries as a child but has not read in years.
+Write a friendly reminder to my team that the report is due on Friday and that I can help anyone who is stuck.
+Tell me what to look for when buying a used car, and which warning signs mean I should walk away.
+I have two hours in a city I have never visited, so tell me how to see something real and not just the tourist places.
+Turn this list of features into three short sentences that explain why an ordinary person would care.
+Give me an honest opinion of this plan, and start with the thing most likely to go wrong.
+Explain how vaccines train the body to fight a disease, and why some of them need a second dose.
+Help me write an apology to a friend I have not spoken to in a year, without making excuses.
+Recommend a simple routine for sleeping better, starting with the changes that cost nothing at all.
+Describe the plot of a film about two rival chefs who are forced to open a restaurant together.
+Write a note for the neighbours to say we are having a party on Saturday and it may be a little loud.
+I am trying to drink less coffee, so suggest what I could have in the morning that still wakes me up.
+Outline a talk about the future of cities, and give each section a title that makes people curious.
+Give me a checklist for moving house, in the order things should be done during the final month.
+Explain what inflation is and why prices rise, using the cost of bread as the example all the way through.
+Help me choose between a cat and a dog for a small flat, given that I work long hours during the week.
+Write three different opening lines for a speech to a room full of people who would rather be somewhere else.
+Tell me how to remove a red wine stain from a carpet, and what I should definitely avoid doing.
+Suggest a hobby for someone who sits at a screen all day and wants to make something with their hands.
+I have to explain a difficult decision to my team tomorrow, so help me say it clearly and kindly.
+Describe how a bill becomes a law in simple terms, and mention where it most often gets stuck.
+Give me a plan for learning the basics of a new language in three months of twenty minutes a day.
+Rewrite this paragraph in half the words without losing the main point or the friendly tone.
+Explain how to change a flat tyre at the side of the road, step by step, for someone doing it alone.
+Recommend a present for a friend who is moving abroad and cannot carry anything heavy or fragile.
+Write a short bedtime story about a sleepy bear who cannot find his favourite blanket anywhere in the forest.
+Tell me the history of the bicycle in a few sentences, and say which invention changed it the most.
+Help me plan a surprise birthday for my mother that does not need many people or much money.
+Describe what makes a good manager, using examples of behaviour and not just a list of qualities.
+I want to start running but I get bored quickly, so suggest ways to make the first month enjoyable.
+Compare tea and coffee for someone who wants steady energy through a long afternoon of meetings.
+Write a message to a client explaining that the project will be a week late, and what we are doing about it.
+Give me five ideas for a rainy Sunday with two children who have already watched too much television.
+Explain why the sky turns red at sunset, in a way that a ten year old could repeat to a friend.
+Suggest how to arrange a small kitchen so that cooking for a family feels calmer and quicker.
+Help me write the first paragraph of a personal essay about leaving the town where I grew up.

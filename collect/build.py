@@ -22,17 +22,26 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).parent
-SENTENCE_FILES = ("calibration.txt", "calibration2.txt")
+# Everyone reads COMMON_FILE first; the rest of each person's list is drawn from POOL_FILES.
+COMMON_FILE = "common.txt"
+POOL_FILES = ("calibration.txt", "calibration2.txt", "prompts_long.txt", "pool.txt")
 SECONDS_PER_TAKE = 10  # read, hold, say, release
 
 
+def read(name: str) -> list[str]:
+    lines = (HERE.parent / "sentences" / name).read_text(encoding="utf-8").splitlines()
+    return [line.strip() for line in lines if line.strip() and not line.startswith("#")]
+
+
+def common() -> list[str]:
+    """The sentences every person reads, so that people can be compared on the same words."""
+    return read(COMMON_FILE)
+
+
 def sentences() -> list[str]:
-    out = []
-    for name in SENTENCE_FILES:
-        for line in (HERE.parent / "sentences" / name).read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if line and not line.startswith("#"):
-                out.append(line)
+    """The shared sentences first, then the pool, with nothing repeated."""
+    out = list(dict.fromkeys(common() + [line for name in POOL_FILES for line in read(name)]))
+    assert out[: len(common())] == common()
     return out
 
 
@@ -54,6 +63,7 @@ def build(per_person: int | None = None, upload_url: str | None = None) -> str:
     return (
         page.replace("__SENTENCES__", json.dumps(sentences(), ensure_ascii=False))
         .replace("__PER_PERSON__", str(per_person))
+        .replace("__COMMON__", str(len(common())))
         .replace("__UPLOAD_URL__", json.dumps(upload_url))
         .replace("__MINUTES__", str(minutes))
     )

@@ -105,6 +105,10 @@
 "use strict";
 const SENTENCES = __SENTENCES__;
 const PER_PERSON = __PER_PERSON__;
+// The first COMMON sentences are read by everyone, so people can be compared on
+// the same words. The rest of each person's list is drawn at random from a pool
+// large enough that two people rarely share a sentence.
+const COMMON = __COMMON__;
 // Where "Send your recordings" delivers to: the organiser's own Google Drive,
 // through a small script they deployed (collect/apps_script.gs). Empty means
 // nothing is sent anywhere and people download a .zip instead.
@@ -150,6 +154,11 @@ function shuffled(n) {
   const a = Array.from({ length: n }, (_, i) => i);
   for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a;
+}
+function plan() {
+  const shared = Math.min(COMMON, PER_PERSON, SENTENCES.length);
+  const own = shuffled(SENTENCES.length - shared).slice(0, PER_PERSON - shared).map((i) => i + shared);
+  return [...Array(shared).keys(), ...own];
 }
 const totalTakes = () => session.order.length * MODES.length;
 const takeAt = (k) => ({ sentence: session.order[Math.floor(k / MODES.length)], mode: MODES[k % MODES.length] });
@@ -259,7 +268,7 @@ async function begin() {
     return;
   }
   if (!session) {
-    session = { name: $("name").value.trim(), agreedAt: new Date().toISOString(), order: shuffled(SENTENCES.length).slice(0, PER_PERSON) };
+    session = { name: $("name").value.trim(), agreedAt: new Date().toISOString(), order: plan() };
     position = 0;
     await putState("session", session);
     await putState("position", 0);

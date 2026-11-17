@@ -1,0 +1,12 @@
+# Read by every person, first. Lets recordings from different people be compared
+# on the same words, and makes a shared test set.
+The quick brown fox jumps over the lazy dog.
+She sells fresh vegetables at the village market every Thursday.
+Would you fetch the heavy yellow box from the garage?
+The judge chose the unusual vision with good reason.
+Five thick feathers floated through the thin morning mist.
+Summarise this thread and list the action items.
+What time does the pharmacy shut today?
+Whisper softly while the wolves wander west.
+Vera wore a velvet jacket to the jazz show.
+Could you explain that again more slowly?

@@ -106,7 +106,12 @@ def test_recording_page_is_built_from_the_current_template():
     spec.loader.exec_module(build)
     page = (ROOT / "collect" / "index.html").read_text(encoding="utf-8")
     assert build.build() == page, "run: python collect/build.py"
-    assert "__" not in page and len(build.sentences()) == 380
+    everything = build.sentences()
+    assert "__" not in page and len(everything) > 3000 and len(set(everything)) == len(everything)
+    # Everyone reads the same few sentences first; the rest must be a pool large
+    # enough that two people rarely get the same one.
+    assert everything[:10] == build.common() and len(build.common()) == 10
+    assert "const COMMON = 10;" in page
     assert "audio: false" in page  # the page promises that no sound is recorded
     # The only place the page can send to is the organiser's own Drive script.
     address = build.settings()["upload_url"]
