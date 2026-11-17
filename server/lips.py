@@ -30,7 +30,7 @@ class LipResult:
     candidates: list[tuple[str, float]] = field(default_factory=list)  # (text, score), best first
     face_fraction: float = 0.0  # share of frames in which a face was found
     frames: int = 0
-    motion: float = 0.0  # mouth movement relative to the rest of the face (see mouth_motion)
+    motion: float = 0.0  # how much the mouth opened and closed (see mouth_motion)
     still: bool = False  # the mouth barely moved, so no words were read
     timings_ms: dict[str, int] = field(default_factory=dict)
 
@@ -82,30 +82,28 @@ def to_model_input(patches: np.ndarray) -> np.ndarray:
 
 
 def mouth_motion(patches: np.ndarray) -> float:
-    """How much more the mouth moved than the skin above it: about 1 when still.
+    """How much the mouth opened and closed during the clip, in grey levels.
 
     The lip model always outputs a sentence, even for a closed, still mouth.
     This is the check that lets the caller say "no words" instead.
 
-    It is a ratio, not an amount, so it needs no tuning per person or camera.
-    Camera noise, flicker and small head movements change the whole patch, the
-    strip under the nose as much as the lips; speech moves the lips far more
-    than that strip. So the frame-to-frame change over the mouth (the level
-    its busiest tenth reaches) is divided by the typical change over the
-    strip. A noisier webcam or dimmer room raises both and leaves the ratio.
+    When lips part, the dark gap between them changes the brightness at the
+    centre of the mouth; a still mouth keeps it constant. So this is how much
+    that brightness varies over the clip, after blurring out camera noise and
+    removing each frame's overall brightness (exposure flicker).
+
+    Chosen by measurement, not theory: of five measures tried on 169 of the
+    owner's clips this one separated pauses from sentences best (pauses
+    0.19-1.33, sentences 1.94-4.96 between their 10th and 90th percentiles).
+    Measures based on frame-to-frame movement overlapped badly.
     """
     import cv2
 
     if len(patches) < 5:
         return 0.0
     smooth = np.stack([cv2.blur(p, (7, 7)) for p in patches]).astype(np.float32)
-    # Take out each frame's overall brightness, so exposure flicker (a change
-    # everywhere at once) is not counted as movement anywhere.
     smooth -= smooth.mean(axis=(1, 2), keepdims=True)
-    change = np.abs(smooth[2:] - smooth[:-2])
-    mouth = change[:, 28:84, 12:84].mean(axis=(1, 2))   # lips and jaw
-    above = change[:, 0:14, 16:80].mean(axis=(1, 2))    # under the nose: barely moves in speech
-    return float(np.percentile(mouth, 90) / max(float(np.median(above)), 0.05))
+    return float(smooth[:, 40:64, 30:66].mean(axis=(1, 2)).std())
 
 
 def decode_nbest(hyps, token_list: list[str], n: int) -> list[tuple[str, float]]:

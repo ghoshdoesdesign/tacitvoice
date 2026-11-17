@@ -366,8 +366,8 @@ def test_mouth_motion_tells_a_still_mouth_from_a_moving_one():
             frames.append(np.clip(img, 0, 255).astype(np.uint8))
         return np.stack(frames)
 
-    cutoff = 2.0
-    # One cutoff holds for a clean camera, a noisy one and a flickering one (synthetic clips only).
+    cutoff = config.LIPS_MIN_MOTION
+    # The cutoff holds for a clean camera, a noisy one and a flickering one (synthetic clips only).
     for noise, flicker in ((2, 0), (6, 0), (12, 0), (4, 6)):
         still, talking = mouth_motion(clip(False, noise, flicker)), mouth_motion(clip(True, noise, flicker))
         assert still < cutoff < talking, (noise, flicker, still, talking)

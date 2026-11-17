@@ -49,19 +49,32 @@ def centre_vs_edge(patches: np.ndarray) -> float:
     return float(np.percentile(lips, 90) / max(float(np.median(border)), 0.05))
 
 
-def opening(patches: np.ndarray) -> float:
-    """How much the darkness between the lips varies as the mouth opens and closes."""
-    smooth = np.stack([cv2.blur(p, (7, 7)) for p in patches]).astype(np.float32)
-    smooth -= smooth.mean(axis=(1, 2), keepdims=True)
-    return float(smooth[:, 40:64, 30:66].mean(axis=(1, 2)).std())
+def nose_ratio(patches: np.ndarray) -> float:
+    """Mouth movement against the strip under the nose. Overlapped badly on real clips."""
+    c = change(patches)
+    mouth, above = c[:, 28:84, 12:84].mean(axis=(1, 2)), c[:, 0:14, 16:80].mean(axis=(1, 2))
+    return float(np.percentile(mouth, 90) / max(float(np.median(above)), 0.05))
+
+
+def opening_by_contrast(patches: np.ndarray) -> float:
+    """The measure in use, divided by the picture's own contrast.
+
+    The measure in use is in grey levels, so a dim or washed-out picture
+    would score lower for the same mouth. Dividing by how much brightness
+    varies across the patch should make one cutoff hold in any lighting.
+    Listed here to be checked on other people's recordings.
+    """
+    contrast = float(np.median([p.std() for p in patches]))
+    return 100.0 * mouth_motion(patches) / max(contrast, 1.0)
 
 
 MEASURES = {
-    "ratio to nose strip (in use)": mouth_motion,
+    "mouth opening (in use)": mouth_motion,
+    "opening / contrast x100": opening_by_contrast,
+    "lips against border": centre_vs_edge,
     "amount of movement": amount,
     "swing within the clip": swing,
-    "lips against border": centre_vs_edge,
-    "mouth opening": opening,
+    "ratio to nose strip": nose_ratio,
 }
 
 
