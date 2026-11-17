@@ -71,3 +71,30 @@ def test_loading_frames_are_written_with_a_loop_point(tmp_path):
     assert (out / "loop.txt").read_text().strip() == "5" and (out / "fps.txt").read_text().strip() == "30.000"
     image = cv2.imread(str(out / "0000.png"), cv2.IMREAD_UNCHANGED)
     assert image.shape == (64, 64, 4) and image[0, 0, 3] == 0
+
+
+def test_sonar_measures_a_moving_reflector_and_tells_patterns_apart():
+    from tools import sonar
+
+    rng = np.random.default_rng(0)
+    t = np.arange(int(sonar.TAKE_S * sonar.RATE)) / sonar.RATE
+
+    def take(wobble):
+        """The tones straight from the speaker, plus a weak echo whose path length changes."""
+        out = rng.normal(0, 1e-4, len(t))
+        for f in sonar.TONES:
+            out += 0.05 * np.sin(2 * np.pi * f * t) + 0.002 * np.sin(2 * np.pi * f * t + wobble)
+        return out
+
+    still = take(np.zeros(len(t)))
+    slow = [take(3 * np.sin(2 * np.pi * 3 * t + p)) for p in (0.0, 0.4, 0.8)]
+    fast = [take(3 * np.sin(2 * np.pi * 9 * t + p)) for p in (0.0, 0.4, 0.8)]
+
+    assert all(sonar.carrier_snr_db(still, f) > 25 for f in sonar.TONES)
+    assert sonar.carrier_snr_db(rng.normal(0, 1e-4, len(t)), sonar.TONES[0]) < 10  # no tone, no carrier
+    quiet = sonar.motion_db(sonar.baseband(still, sonar.TONES[0]))
+    moving = sonar.motion_db(sonar.baseband(slow[0], sonar.TONES[0]))
+    assert moving > quiet + 15
+    signatures = [sonar.signature(a, sonar.TONES) for a in slow + fast]
+    assert sonar.nearest_take_score(signatures, [0, 0, 0, 1, 1, 1]) == 6
+    assert abs(float(np.abs(sonar.tone_signal(1.0)).max())) <= 0.25
