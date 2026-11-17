@@ -2,15 +2,27 @@ import AppKit
 import ImageIO
 import QuartzCore
 
-/// The app's whole interface, at the bottom centre of the screen: a floating
-/// animated orb while the key is held, then a small black label for the
-/// polishing and inserted states and for messages.
+/// One state's animation: transparent frames made by tools/make_orb.py or
+/// tools/make_loading.py from videos the owner supplies.
+struct OrbClip {
+    var frames: [CGImage] = []
+    var fps: Double = 30
+    /// Frames before this index play once; the rest repeat.
+    var loopStart = 0
+    var isEmpty: Bool { frames.isEmpty }
+}
+
+/// The app's whole interface, at the bottom centre of the screen. With the
+/// owner's animations installed every working state is a floating orb with no
+/// text: it morphs while the key is held, shows circling dots while the text
+/// is worked out, and closes when the text has been inserted. Without them it
+/// falls back to a small black label. Messages always use the label.
 final class Pill {
     enum State {
-        case observing        // key held: the orb animation on its own
-        case polishing        // key released: spinner, "Polishing your thoughts…"
-        case inserted         // text pasted: green tick, "Inserted"
-        case note(String)     // anything else worth saying, no icon
+        case observing        // key held
+        case polishing        // key released, text being worked out
+        case inserted         // text pasted
+        case note(String)     // anything else worth saying, as text
     }
 
     private let panel: NSPanel
@@ -25,10 +37,10 @@ final class Pill {
     /// Gap between the bottom of the usable screen and the orb.
     private let bottomMargin: CGFloat = 56
 
-    /// Frames of the listening animation, made by tools/make_orb.py from a
-    /// video of the owner's choosing. Empty until loaded, or if none exist.
-    private var orbFrames: [CGImage] = []
-    private var orbFPS: Double = 30
+    /// Empty until loaded, or if the owner has not installed that animation.
+    private var listening = OrbClip()   // ~/.tacitvoice/orb
+    private var working = OrbClip()     // ~/.tacitvoice/orb-loading
+    private var finished = OrbClip()    // ~/.tacitvoice/orb-done
     private let iconSize: CGFloat = 22
     private let padding: CGFloat = 12
     private let gap: CGFloat = 10
@@ -67,45 +79,78 @@ final class Pill {
         loadOrbFrames()
     }
 
-    /// Read ~/.tacitvoice/orb/*.png off the main thread, so launch stays quick.
+    /// Read the animation folders off the main thread, so launch stays quick.
     private func loadOrbFrames() {
-        let folder = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent(".tacitvoice/orb")
+        let home = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".tacitvoice")
         DispatchQueue.global(qos: .utility).async { [weak self] in
-            let files = (try? FileManager.default.contentsOfDirectory(
-                at: folder, includingPropertiesForKeys: nil)) ?? []
-            let pngs = files.filter { $0.pathExtension == "png" }
-                .sorted { $0.lastPathComponent < $1.lastPathComponent }
-            var frames: [CGImage] = []
-            for url in pngs {
-                guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-                    let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
-                else { continue }
-                frames.append(image)
-            }
-            let rateFile = folder.appendingPathComponent("fps.txt")
-            let rateText = (try? String(contentsOf: rateFile, encoding: .utf8)) ?? ""
-            let rate = Double(rateText.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 30
+            let listening = Pill.readClip(home.appendingPathComponent("orb"))
+            let working = Pill.readClip(home.appendingPathComponent("orb-loading"))
+            let finished = Pill.readClip(home.appendingPathComponent("orb-done"))
             DispatchQueue.main.async {
-                self?.orbFrames = frames
-                self?.orbFPS = rate > 0 ? rate : 30
+                self?.listening = listening
+                self?.working = working
+                self?.finished = finished
             }
         }
     }
 
-    /// Show only the animated orb, with no label or background.
-    private func showOrb(on screen: NSScreen) {
+    private static func readClip(_ folder: URL) -> OrbClip {
+        var clip = OrbClip()
+        let files = (try? FileManager.default.contentsOfDirectory(
+            at: folder, includingPropertiesForKeys: nil)) ?? []
+        let pngs = files.filter { $0.pathExtension == "png" }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+        for url in pngs {
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                let image = CGImageSourceCreateImageAtIndex(source, 0, nil)
+            else { continue }
+            clip.frames.append(image)
+        }
+        func number(_ name: String) -> Double? {
+            let url = folder.appendingPathComponent(name)
+            guard let text = try? String(contentsOf: url, encoding: .utf8) else { return nil }
+            return Double(text.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        if let rate = number("fps.txt"), rate > 0 { clip.fps = rate }
+        if let start = number("loop.txt"), start >= 1, Int(start) < clip.frames.count {
+            clip.loopStart = Int(start)
+        }
+        return clip
+    }
+
+    private func frameAnimation(_ frames: [CGImage], fps: Double) -> CAKeyframeAnimation {
+        let play = CAKeyframeAnimation(keyPath: "contents")
+        play.values = frames
+        play.calculationMode = .discrete
+        play.duration = Double(frames.count) / fps
+        play.isRemovedOnCompletion = false
+        play.fillMode = .forwards
+        return play
+    }
+
+    /// Show only an animated orb, with no label or background. With
+    /// `repeats` the clip's opening plays once and the rest loops; without
+    /// it the whole clip plays once. Returns how long one play-through takes.
+    @discardableResult
+    private func showOrb(_ clip: OrbClip, repeats: Bool, on screen: NSScreen) -> Double {
         let image = CALayer()
         image.frame = CGRect(x: 0, y: 0, width: orbSize, height: orbSize)
         image.contentsGravity = .resizeAspect
-        image.contents = orbFrames[0]
-        let play = CAKeyframeAnimation(keyPath: "contents")
-        play.values = orbFrames
-        play.calculationMode = .discrete
-        play.duration = Double(orbFrames.count) / orbFPS
-        play.repeatCount = .infinity
-        play.isRemovedOnCompletion = false
-        image.add(play, forKey: "play")
+        image.contents = repeats ? clip.frames[0] : clip.frames[clip.frames.count - 1]
+
+        let opening = repeats ? Array(clip.frames[..<clip.loopStart]) : clip.frames
+        let openingTime = Double(opening.count) / clip.fps
+        if !opening.isEmpty {
+            image.add(frameAnimation(opening, fps: clip.fps), forKey: "opening")
+        }
+        if repeats {
+            // Added second, so it takes over from the opening once it begins.
+            let loop = frameAnimation(Array(clip.frames[clip.loopStart...]), fps: clip.fps)
+            loop.repeatCount = .infinity
+            if openingTime > 0 { loop.beginTime = CACurrentMediaTime() + openingTime }
+            image.add(loop, forKey: "loop")
+        }
 
         icon.layer?.sublayers = nil
         icon.layer?.addSublayer(image)
@@ -121,6 +166,13 @@ final class Pill {
         panel.setFrame(
             NSRect(origin: origin, size: NSSize(width: orbSize, height: orbSize)), display: true)
         panel.orderFrontRegardless()
+        return openingTime
+    }
+
+    private func hide(after seconds: Double) {
+        let work = DispatchWorkItem { [weak self] in self?.panel.orderOut(nil) }
+        hideWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: work)
     }
 
     /// Show a state at the bottom centre of the active screen. Every state is
@@ -129,9 +181,19 @@ final class Pill {
         hideWork?.cancel()
         guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
 
-        if case .observing = state, !orbFrames.isEmpty {
-            showOrb(on: screen)
+        switch state {
+        case .observing where !listening.isEmpty:
+            showOrb(listening, repeats: true, on: screen)
             return
+        case .polishing where !working.isEmpty:
+            showOrb(working, repeats: true, on: screen)
+            return
+        case .inserted where !finished.isEmpty:
+            // The closing animation is the confirmation: play it once, then go.
+            hide(after: showOrb(finished, repeats: false, on: screen))
+            return
+        default:
+            break
         }
         label.isHidden = false
         background.layer?.backgroundColor = NSColor.black.cgColor
@@ -180,11 +242,7 @@ final class Pill {
             NSRect(origin: origin, size: NSSize(width: width, height: height)), display: true)
         panel.orderFrontRegardless()
 
-        if let seconds = seconds {
-            let work = DispatchWorkItem { [weak self] in self?.panel.orderOut(nil) }
-            hideWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: work)
-        }
+        if let seconds = seconds { hide(after: seconds) }
     }
 
     func hide() {

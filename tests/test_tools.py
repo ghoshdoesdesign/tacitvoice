@@ -55,3 +55,19 @@ def test_orb_keying_makes_black_transparent_and_keeps_the_shape_solid():
     assert out[100, 160, 0] > 240                            # rim keeps its colour (blue channel)
     cx, cy, half = bounds([frame], 28)
     assert abs(cx - 100) <= 1 and abs(cy - 100) <= 1 and 62 <= half <= 75
+
+
+def test_loading_frames_are_written_with_a_loop_point(tmp_path):
+    from tools.make_orb import bounds, write_frames
+
+    frames = []
+    for i in range(12):
+        frame = np.zeros((120, 120, 3), np.uint8)
+        cv2.circle(frame, (60, 60), 30 + i, (255, 220, 120), 4)
+        frames.append(frame)
+    megabytes = write_frames(frames, tmp_path / "orb-loading", bounds(frames, 28), 30.0, size=64, loop_start=5)
+    out = tmp_path / "orb-loading"
+    assert len(list(out.glob("*.png"))) == 12 and megabytes > 0
+    assert (out / "loop.txt").read_text().strip() == "5" and (out / "fps.txt").read_text().strip() == "30.000"
+    image = cv2.imread(str(out / "0000.png"), cv2.IMREAD_UNCHANGED)
+    assert image.shape == (64, 64, 4) and image[0, 0, 3] == 0

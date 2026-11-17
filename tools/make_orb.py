@@ -64,6 +64,45 @@ def bounds(frames: list[np.ndarray], threshold: int) -> tuple[int, int, int]:
     return cx, cy, half
 
 
+def read_frames(video: Path) -> tuple[list[np.ndarray], float]:
+    cap = cv2.VideoCapture(str(video))
+    fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+    frames = []
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            break
+        frames.append(frame)
+    cap.release()
+    if len(frames) < 2:
+        raise SystemExit(f"Could not read frames from {video}")
+    return frames, fps
+
+
+def write_frames(
+    frames: list[np.ndarray], out: Path, box: tuple[int, int, int], fps: float,
+    size: int = 240, body: float = 0.78, rim: int = 95, loop_start: int | None = None,
+) -> float:
+    """Key, crop to `box` (centre x, centre y, half-size) and save. Returns megabytes written."""
+    cx, cy, half = box
+    h, w = frames[0].shape[:2]
+    pad = max(0, half - cx, half - cy, cx + half - w, cy + half - h)
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir(parents=True)
+    for i, frame in enumerate(frames):
+        if pad:
+            frame = cv2.copyMakeBorder(frame, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(0, 0, 0))
+        crop = frame[cy + pad - half : cy + pad + half, cx + pad - half : cx + pad + half]
+        small = cv2.resize(key_frame(crop, body, rim), (size, size), interpolation=cv2.INTER_AREA)
+        cv2.imwrite(str(out / f"{i:04d}.png"), small.astype(np.uint8))
+    (out / "fps.txt").write_text(f"{fps:.3f}\n")
+    if loop_start is not None:
+        # The app plays frames before this index once, then repeats the rest.
+        (out / "loop.txt").write_text(f"{loop_start}\n")
+    return sum(p.stat().st_size for p in out.glob("*.png")) / 1e6
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("video", type=Path)
@@ -74,36 +113,9 @@ def main() -> None:
     ap.add_argument("--step", type=int, default=1, help="keep every Nth frame")
     args = ap.parse_args()
 
-    cap = cv2.VideoCapture(str(args.video))
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
-    frames = []
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            break
-        frames.append(frame)
-    cap.release()
-    if len(frames) < 2:
-        raise SystemExit(f"Could not read frames from {args.video}")
-
-    cx, cy, half = bounds(frames, 28)
-    h, w = frames[0].shape[:2]
-    pad = max(0, half - cx, half - cy, cx + half - w, cy + half - h)
-
-    if args.out.exists():
-        shutil.rmtree(args.out)
-    args.out.mkdir(parents=True)
+    frames, fps = read_frames(args.video)
     kept = frames[:: args.step]
-    for i, frame in enumerate(kept):
-        if pad:
-            frame = cv2.copyMakeBorder(frame, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=(0, 0, 0))
-        crop = frame[cy + pad - half : cy + pad + half, cx + pad - half : cx + pad + half]
-        keyed = key_frame(crop, args.body, args.rim)
-        small = cv2.resize(keyed, (args.size, args.size), interpolation=cv2.INTER_AREA)
-        cv2.imwrite(str(args.out / f"{i:04d}.png"), small.astype(np.uint8))
-    (args.out / "fps.txt").write_text(f"{fps / args.step:.3f}\n")
-
-    megabytes = sum(p.stat().st_size for p in args.out.glob("*.png")) / 1e6
+    megabytes = write_frames(kept, args.out, bounds(frames, 28), fps / args.step, args.size, args.body, args.rim)
     print(f"Wrote {len(kept)} frames ({megabytes:.0f} MB) at {fps / args.step:.0f} per second to {args.out}")
     print("Quit and reopen TacitVoice to use the new animation.")
 
