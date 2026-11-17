@@ -29,10 +29,11 @@ LIPS_DEVICE = os.getenv("TACIT_LIPS_DEVICE", "auto")
 # search took 13 s per clip on an M2 CPU, by far the slowest stage.
 LIPS_BEAM = int(os.getenv("TACIT_LIPS_BEAM", "10"))
 LIPS_NBEST = int(os.getenv("TACIT_LIPS_NBEST", "5"))
-# Below this much mouth movement a silent clip is answered with "No words
-# detected" instead of being read. A first guess, not yet tuned: the server
-# log prints each clip's value, and tools.motion prints it for recordings.
-LIPS_MIN_MOTION = float(os.getenv("TACIT_LIPS_MIN_MOTION", "1.5"))
+# A silent clip whose mouth moved less than this many times the skin above it
+# is answered with "No words detected" instead of being read. It is a ratio,
+# so the same value is meant to hold for any person, camera and lighting; a
+# still mouth scores about 1. tools.motion prints it for recorded clips.
+LIPS_MIN_MOTION = float(os.getenv("TACIT_LIPS_MIN_MOTION", "2.0"))
 LIPS_ENABLED = os.getenv("TACIT_LIPS", "on") != "off"
 # Also read lips when a whisper was heard. Off: on the owner's clips it added
 # 3-4 seconds and changed the error rate by 0.3 points.

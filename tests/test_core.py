@@ -354,20 +354,23 @@ def test_mouth_motion_tells_a_still_mouth_from_a_moving_one():
 
     from server.lips import mouth_motion
 
-    rng = np.random.default_rng(0)
-
-    def clip(moving: bool) -> np.ndarray:
+    def clip(moving: bool, noise: float, flicker: float = 0.0, seed: int = 0) -> np.ndarray:
+        rng = np.random.default_rng(seed)
         frames = []
         for t in range(50):
-            img = np.full((96, 96), 120, np.uint8)
+            img = np.full((96, 96), 120.0)
+            cv2.ellipse(img, (48, 8), (14, 4), 0, 0, 360, 70, -1)   # nostrils, in the strip above
             opening = 4 + (int(10 * abs(np.sin(t / 3))) if moving else 0)
-            cv2.ellipse(img, (48, 52), (22, opening), 0, 0, 360, 40, -1)  # a mouth
-            noise = rng.normal(0, 4, img.shape)  # camera noise
-            frames.append(np.clip(img + noise, 0, 255).astype(np.uint8))
+            cv2.ellipse(img, (48, 54), (22, opening), 0, 0, 360, 40, -1)  # the mouth
+            img += rng.normal(0, noise, img.shape) + flicker * np.sin(t)  # camera noise, exposure flicker
+            frames.append(np.clip(img, 0, 255).astype(np.uint8))
         return np.stack(frames)
 
-    still, talking = mouth_motion(clip(False)), mouth_motion(clip(True))
-    assert still < 1.0 < 2.5 < talking
+    cutoff = config.LIPS_MIN_MOTION
+    # The same cutoff must hold for a clean camera, a noisy one and a flickering one.
+    for noise, flicker in ((2, 0), (6, 0), (12, 0), (4, 6)):
+        still, talking = mouth_motion(clip(False, noise, flicker)), mouth_motion(clip(True, noise, flicker))
+        assert still < cutoff < talking, (noise, flicker, still, talking)
     assert mouth_motion(np.zeros((3, 96, 96), np.uint8)) == 0.0
 
 
