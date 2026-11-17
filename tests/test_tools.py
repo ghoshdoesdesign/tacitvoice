@@ -98,3 +98,37 @@ def test_sonar_measures_a_moving_reflector_and_tells_patterns_apart():
     signatures = [sonar.signature(a, sonar.TONES) for a in slow + fast]
     assert sonar.nearest_take_score(signatures, [0, 0, 0, 1, 1, 1]) == 6
     assert abs(float(np.abs(sonar.tone_signal(1.0)).max())) <= 0.25
+
+
+def test_chirp_finds_a_moving_reflector_at_its_distance():
+    from tools import chirp
+
+    rng = np.random.default_rng(1)
+    sent = np.fft.fft(chirp.sweep(1.0).astype(np.float64))
+    freqs = np.fft.fftfreq(chirp.FRAME, 1 / chirp.RATE)
+    count = int(chirp.TAKE_S * chirp.FPS)
+    face = chirp.column(0.5)  # samples after the direct sound
+
+    def take(wobble_samples):
+        """Direct sound, a wall that does not move, and a weak echo from 50 cm that may move."""
+        frames = []
+        for k in range(count):
+            delays = [(37.0, 1.0), (37.0 + chirp.column(1.0), 0.05), (37.0 + face + wobble_samples[k], 0.01)]
+            channel = sum(a * np.exp(-2j * np.pi * freqs * d / chirp.RATE) for d, a in delays)
+            frames.append(np.fft.ifft(sent * channel).real)
+        return np.concatenate(frames) + rng.normal(0, 1e-4, count * chirp.FRAME)
+
+    t = np.arange(count) / chirp.FPS
+    still = chirp.echo_profiles(take(np.zeros(count)))
+    assert chirp.direct_snr_db(still) > 25
+    moving = chirp.movement(chirp.echo_profiles(take(0.3 * np.sin(2 * np.pi * 3 * t))))
+    quiet = chirp.movement(still)
+    assert chirp.band_db(moving, 0.45, 0.55) > chirp.band_db(quiet, 0.45, 0.55) + 15  # seen where it is
+    assert chirp.band_db(moving, 0.95, 1.05) < chirp.band_db(moving, 0.45, 0.55) - 10  # and not at the wall
+
+    slow = [chirp.signature(chirp.echo_profiles(take(0.3 * np.sin(2 * np.pi * 2 * t + p)))) for p in (0.0, 0.5, 1.0)]
+    burst = [chirp.signature(chirp.echo_profiles(take(0.3 * np.sin(2 * np.pi * 2 * t + p) * (t < 1.5 + p / 5))))
+             for p in (0.0, 0.5, 1.0)]
+    from tools.sonar import nearest_take_score
+    assert nearest_take_score(slow + burst, [0, 0, 0, 1, 1, 1]) >= 5
+    assert float(np.abs(chirp.sweep()).max()) <= 0.25
