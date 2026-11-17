@@ -137,14 +137,21 @@ def openai_cleaner(fake):
 
 
 PROVIDERS = [(anthropic_cleaner, FakeMessages), (openai_cleaner, FakeCompletions)]
-GOOD = json.dumps({"text": "Summarise this thread.", "alternatives": ["Summarise this thread.", "Summarise this bread."]})
+GOOD = json.dumps({"text": "Summarise this thread."})
 
 
 @pytest.mark.parametrize("make,fake", PROVIDERS)
 def test_cleaner_success(make, fake):
     out = make(fake(GOOD)).clean({"audio": None}, cleanup.Cleaned(text="raw"))
     assert out.text == "Summarise this thread." and out.source == "model"
-    assert out.alternatives == ["Summarise this bread."]
+    assert out.alternatives == []
+
+
+def test_cleanup_asks_for_a_sense_check_and_only_the_text():
+    # "how to book this recipe" -> "cook": the model is told to repair a word that
+    # does not fit, and to write nothing but the text so the reply stays short.
+    assert "read the sentence for sense" in cleanup.SYSTEM and "cook this recipe" in cleanup.SYSTEM
+    assert list(cleanup.SCHEMA["properties"]) == ["text"] and "alternatives" not in cleanup.SYSTEM
 
 
 def test_request_shapes():
