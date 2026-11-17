@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 
 from tools.evaluate import load_clip
-from tools.import_friend import clean_text, import_zip, slug
+from tools.import_friend import clean_text, import_recordings as import_zip, slug
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -70,6 +70,31 @@ def test_import_ignores_anything_the_page_would_not_write(tmp_path):
     assert not (tmp_path / "evil.mp4").exists() and not (tmp_path.parent / "outside.txt").exists()
 
 
+def test_import_reads_a_folder_from_drive_and_drives_own_zip(tmp_path):
+    # What "Send your recordings" leaves in Google Drive: flat files, no takes/ folder.
+    video = clip_bytes(tmp_path)
+    person = tmp_path / "download" / "asha-x7k2p9"
+    person.mkdir(parents=True)
+    takes = [{"file": "0000_aloud.mp4", "text": "One", "mode": "aloud"},
+             {"file": "0001_silent.mp4", "text": "One", "mode": "silent"}]
+    (person / "manifest.json").write_text(json.dumps({"name": "Asha", "takes": takes}))
+    for take in takes:
+        (person / take["file"]).write_bytes(video)
+    (person / "stray.txt").write_text("ignored")
+
+    folder, kept, rejected = import_zip(person, tmp_path / "friends")
+    assert folder.name == "asha" and (kept, rejected) == (2, 0)
+    assert load_clip(folder / "silent" / "000")[1] == "One"
+
+    # Drive downloads a folder as a zip with the folder inside it.
+    archive = tmp_path / "asha-x7k2p9-20261117.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        for path in person.iterdir():
+            z.write(path, f"asha-x7k2p9/{path.name}")
+    folder, kept, rejected = import_zip(archive, tmp_path / "friends")
+    assert folder.name == "asha-2" and (kept, rejected) == (2, 0)
+
+
 def test_names_and_text_are_made_safe():
     assert slug("../../Etc Passwd!") == "etc-passwd" and slug("") == "friend"
     assert clean_text("a\n\tb\x00  c") == "a b c" and len(clean_text("x" * 999)) == 300
@@ -83,4 +108,8 @@ def test_recording_page_is_built_from_the_current_template():
     assert build.build() == page, "run: python collect/build.py"
     assert "__" not in page and len(build.sentences()) == 380
     assert "audio: false" in page  # the page promises that no sound is recorded
-    assert "fetch(" not in page and "XMLHttpRequest" not in page  # and that it uploads nothing
+    # The only place the page can send to is the organiser's own Drive script.
+    address = build.settings()["upload_url"]
+    assert address == "" or address.startswith("https://script.google.com/macros/s/")
+    assert f"const UPLOAD_URL = {json.dumps(address)};" in page
+    assert page.count("fetch(") == 1 and "fetch(UPLOAD_URL" in page and "XMLHttpRequest" not in page

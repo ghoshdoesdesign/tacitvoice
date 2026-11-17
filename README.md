@@ -131,36 +131,43 @@ The tuned model fits your face only. It will not help other people.
 
 A model tuned on one person does not help anyone else. To test a shared
 model you need other faces. `collect/index.html` is a recording page people
-open in a browser: it shows sentences, records video only (no sound) while
-they hold a key, keeps everything in their browser, and gives them one .zip
-to send back. It uploads nothing.
+open in a browser: it shows sentences and records video only (no sound)
+while they hold a key.
 
-1. Put the page online. Any host that serves a file over https works. Two
-   free options:
-   - GitHub Pages, if this repository is public: Settings > Pages > deploy
-     from this branch. The link is `https://<user>.github.io/tacitvoice/collect/`.
-   - [Netlify Drop](https://app.netlify.com/drop): drag the `collect` folder
-     onto the page and copy the link it gives you.
-2. Send people the link. Sixty sentences, three ways each, takes about half
+1. Put the page online. GitHub Pages serves it from this repository at
+   `https://<user>.github.io/tacitvoice/collect/` (Settings > Pages > deploy
+   from this branch).
+2. Choose how recordings come back:
+   - **Sent to your Google Drive.** Follow the steps at the top of
+     `collect/apps_script.gs` to deploy the receiver from your Google
+     account, then rebuild the page with its address:
+     `python collect/build.py --upload-url https://script.google.com/macros/s/.../exec`.
+     The page then has a "Send your recordings" button, and each person gets
+     their own folder under "Experiment recordings" in your Drive.
+   - **Downloaded and sent by hand.** With no upload address the page
+     offers a .zip download instead, and sends nothing anywhere.
+3. Send people the link. Sixty sentences, three ways each, takes about half
    an hour; they can stop early and still send what they have.
-3. When a .zip comes back, import it and repack:
+4. Download a person's folder from Drive (or take the .zip they sent), then
+   import it and repack:
 
 ```bash
-uv run python -m tools.import_friend ~/Downloads/quiet-experiment-asha.zip
+uv run python -m tools.import_friend ~/Downloads/asha-x7k2p9
 ```
 
 ```bash
 uv run python -m tools.pack
 ```
 
-4. Train as before. To measure how well the model reads someone it never
+5. Train as before. To measure how well the model reads someone it never
    trained on, edit the last cell of the notebook to add
    `--holdout-speaker asha` (the folder name under `data/friends`).
 
 To change how many sentences each person reads: `python collect/build.py --per-person 30`.
 
-Face video is personal data. The page asks for consent and explains the use;
-keep the recordings private and delete them if someone asks.
+Face video is personal data. Keep the recordings private, tell people what
+they are for, and delete them if someone asks. Anyone who has the page can
+send files to the Drive receiver; archive its deployment when you are done.
 
 ## Privacy
 

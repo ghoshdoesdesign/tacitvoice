@@ -48,7 +48,7 @@
     <ul>
       <li>Read short sentences from the screen, each one three ways: <b>aloud</b>, <b>whispered</b>, and <b>mouthed with no sound</b>.</li>
       <li>Your camera records video of you while you say each one. <b>No sound is recorded.</b></li>
-      <li>At the end you download one file and send it to the person who gave you this link.</li>
+      <li id="how">At the end you download one file and send it to the person who gave you this link.</li>
     </ul>
     <label for="name">Your first name or a nickname</label>
     <input id="name" type="text" autocomplete="off" maxlength="40">
@@ -88,13 +88,16 @@
     <h2>Thank you. One last step</h2>
     <p id="summary"></p>
     <div class="row">
-      <button id="download" class="primary">Download my recordings</button>
+      <button id="send" class="primary">Send your recordings</button>
       <button id="more">Record more</button>
     </div>
+    <div id="sendBarWrap" class="bar hidden" style="margin-top:14px"><div id="sendBar"></div></div>
     <p id="doneStatus" class="status" role="status"></p>
-    <p>Send the downloaded file to the person who gave you this link. It is large, so use AirDrop, Google Drive, WeTransfer or similar.</p>
-    <p class="muted">After they confirm they have it, you can remove the recordings from this browser.</p>
-    <button id="wipe">Delete my recordings from this browser</button>
+    <p id="doneHelp"></p>
+    <div class="row">
+      <button id="download" class="hidden">Download a copy instead</button>
+      <button id="wipe">Delete my recordings from this browser</button>
+    </div>
   </section>
 </main>
 
@@ -102,6 +105,10 @@
 "use strict";
 const SENTENCES = ["Summarise this thread and list the action items.", "Rewrite this paragraph so it sounds more confident.", "What is the fastest way to learn a new language?", "Draft a polite reply saying I will be late.", "Explain this error message in simple words.", "Make the introduction shorter and more direct.", "Give me three names for a coffee shop.", "How do I reset my password on this website?", "Turn these notes into a clear project plan.", "What should I cook for dinner tonight?", "Find the bug in this function and fix it.", "Write a short thank you note to my manager.", "Compare these two options and recommend one.", "Translate this sentence into Spanish and French.", "Remind me to call the bank tomorrow morning.", "Why is the sky blue during the day?", "Create a weekly workout plan for beginners.", "Check this email for spelling and grammar mistakes.", "What are the main causes of inflation?", "Suggest a good book about product design.", "Help me prepare for a job interview next week.", "Write a function that sorts a list of names.", "Tell me a fun fact about the ocean.", "Schedule a meeting with the design team on Friday.", "How long does it take to fly to Tokyo?", "Give me feedback on this presentation outline.", "What is the difference between a virus and bacteria?", "Make this message sound friendlier and less formal.", "List the pros and cons of working from home.", "Show me how to center an element with styles.", "Plan a three day trip to the mountains.", "What is a healthy breakfast I can make quickly?", "Write a headline for this blog post.", "Explain how a neural network learns from data.", "Can you shorten this to two sentences?", "Add comments to this code so others understand it.", "What time zone is best for this call?", "Give me a recipe that uses chicken and rice.", "Describe the image in as much detail as possible.", "Rename these variables so the code reads better.", "How much water should I drink every day?", "Write a birthday message for my best friend.", "Turn this long document into five bullet points.", "What are some good questions to ask a mentor?", "Open the latest report and read the summary.", "Convert this table into a simple chart.", "I need a catchy title for my new video.", "What does this word mean in plain English?", "Reply to her and say the files are attached.", "Build a small landing page for my portfolio.", "Which laptop is better for editing photos?", "Explain the rules of chess to a child.", "Write tests for the login page.", "Give me an example of a strong opening line.", "How do vaccines protect the body?", "Move the deadline to the end of the month.", "Suggest gift ideas for my parents' anniversary.", "What is the capital of Australia?", "Help me write a cover letter for this role.", "Refactor this file into smaller pieces.", "Who invented the telephone and when?", "Make a packing list for a beach holiday.", "Please check whether the build passed.", "Outline a talk about the future of interfaces.", "What should I say to start the meeting?", "Generate a logo idea for a bakery.", "Explain the theory of relativity briefly.", "Push my changes and open a pull request.", "How do I politely decline an invitation?", "Write a poem about rain on a quiet evening.", "Is it going to be cold this weekend?", "Find a cheaper flight that leaves in the afternoon.", "Tell the team that the launch is delayed.", "What are the symptoms of a common cold?", "Clean up this spreadsheet and remove duplicates.", "Give me a simple budget for this month.", "How does a battery store energy?", "Draft an agenda for our planning session.", "Play some calm music while I work.", "What is the best way to take notes?", "Rewrite the ending so it feels more hopeful.", "Search my inbox for the invoice from last week.", "Why do cats purr when they are happy?", "Design a simple habit tracker for mornings.", "Could you explain that again more slowly?", "Run the program and show me the output.", "What are the benefits of walking every day?", "Write a product description for wireless headphones.", "I want to change the color of this button.", "How do I start a small online business?", "Give me five ideas for a weekend project.", "Check if this argument has any weak points.", "Order more printer paper and a box of pens.", "What is the story behind this painting?", "Shorten the list to the three most important things.", "Help me understand this contract clause.", "Set a timer for the pasta, please.", "Which of these fonts is easier to read?", "Write a message asking for a quick update.", "What happened in the news this morning?", "Create a prototype with as few parts as possible.", "Show me examples of minimal furniture design.", "How do I improve my posture at a desk?", "Tell me the history of the bicycle.", "Fix the layout so it works on a phone.", "Add a section about pricing to the page.", "What is a good name for a small robot?", "Email the client and confirm the new budget.", "Explain why this approach might fail.", "Give me a script for a thirty second video.", "How do plants make food from sunlight?", "Make the tone of this article more playful.", "Which city has better weather in the winter?", "Write a query that counts users by country.", "Take a screenshot and send it to the group.", "What skills should a young designer learn first?", "Suggest a title for my research paper.", "Turn off the lights in the living room.", "How far is the moon from the earth?", "Break this big task into smaller steps.", "Should I buy this now or wait for a sale?", "Read the last message out loud.", "Describe a perfect day in the countryside.", "What is the quickest route to the airport?", "Please update the document with these changes.", "Think of a surprising use for this device.", "Why do we dream when we sleep?", "Write a friendly reminder about the unpaid bill.", "Give me a short biography of a famous scientist.", "Change the background to a soft shade of green.", "How can I sleep better at night?", "Paste the result into the shared folder.", "What would you improve about this drawing?", "Explain the difference between weather and climate.", "Book a table for four at seven tonight.", "Find the average of these values.", "Tell me a joke that children would enjoy.", "Which approach uses less memory?", "Write the first chapter of a mystery story.", "Is there a simpler way to say this?", "Close all the windows and save my work.", "What is the population of this country?", "Help me choose between these two apartments.", "Make a checklist for moving to a new house.", "Zoom in on the top left corner.", "How do airplanes stay in the air?", "Give me a stretching routine for a sore back.", "Combine these two paragraphs into one.", "What vegetables grow well in the shade?", "Send the photos to my brother.", "Explain this joke, because I do not get it.", "Write a caption for a photo of a sunset.", "Which language should I learn after English?", "Start a new note called shopping list.", "How does the stock market actually work?", "Thank the volunteers for their generous help.", "Why is exercise good for the brain?", "Draw a quick sketch of a wooden chair.", "Measure the width of this box for me.", "What is the meaning of this proverb?", "Give me a different version with fewer adjectives.", "Join the video call and mute my microphone.", "How do bees find their way back home?", "Offer three ways to reduce our monthly costs.", "Push the button, then wait a few seconds.", "What are good vegetarian sources of protein?", "Write an apology for the shipping delay.", "Show the changes since yesterday evening.", "Which movie should we watch on Friday?", "Explain how to tie a shoelace step by step.", "Does this jacket go with these trousers?", "Archive everything older than a year.", "What is the origin of the word quiz?", "Propose a name for our weekly newsletter.", "Just give me the short version, thanks.", "How should I respond to this difficult customer?", "Save this page so I can read it later.", "What makes a logo feel trustworthy?", "Calculate the tip and split the bill.", "Zebras, foxes and jaguars live in very different places.", "Would you fetch the heavy yellow box from the garage?", "The quick brown fox jumps over the lazy dog.", "She sells fresh vegetables at the village market every Thursday.", "Both of my brothers think this path is too rough.", "A huge orange jellyfish washed up on the shore.", "Measure the pleasure of a leisurely Sunday voyage.", "The judge chose the unusual vision with good reason.", "Which wristwatch would you choose for a wedding?", "Five thick feathers floated through the thin morning mist.", "Open my calendar and tell me what is on for Monday.", "Could you draft a proposal for the new client?", "I would like a shorter version of this report.", "Why does this page take so long to load?", "Put the most important point at the very top.", "Find me a quiet cafe near the train station.", "Which of these headlines grabs your attention?", "Let us go through the plan one more time.", "Please turn the volume down a little.", "What is the weather like in London right now?", "Write a gentle reminder for the overdue invoice.", "Can you make this sentence less awkward?", "Tell me how to brew a better cup of tea.", "I forgot the name of that actor in the film.", "Start with the problem, then explain the solution.", "How many people are coming to the workshop?", "Make a list of everything we need to buy.", "Give this paragraph a stronger first sentence.", "Who should I talk to about the budget?", "Show me the difference between these two files.", "Pick a color palette for a children's book.", "What is the next step after signing up?", "Explain the word algorithm without any jargon.", "I am not sure this argument holds together.", "Add my sister to the family group chat.", "Read me the top stories from this morning.", "How do I export this as a slide deck?", "Keep the same meaning but use simpler words.", "Is there a faster route that avoids the highway?", "Tell them we will ship the order on Thursday.", "What makes bread rise in the oven?", "Create a quiz with ten easy questions.", "Do we have enough chairs for everyone?", "Write a welcome message for new members.", "Move this meeting to later in the afternoon.", "How do I remove a stain from a white shirt?", "Suggest a name for a hiking club.", "This paragraph repeats itself, please fix it.", "What are the opening hours of the library?", "Look up the phone number for the dentist.", "Describe the taste of a ripe mango.", "I need three arguments for and against.", "When is the best season to visit Japan?", "Check the spelling of every name on this list.", "Give me an outline with five clear sections.", "Why did the program crash when I clicked save?", "Share the folder with everyone on the team.", "What should I pack for a rainy weekend?", "Write a note to say I enjoyed the dinner.", "Is this chart easy to understand at a glance?", "Help me pick a birthday present for a teenager.", "Explain what a budget deficit means.", "Put a reminder on Friday to water the plants.", "Can you turn this into a friendly email?", "How do I change the language on this phone?", "Leave out the last paragraph, it is not needed.", "Which exercises strengthen the lower back?", "Tell me something interesting about volcanoes.", "The title is too long, give me a tighter one.", "What would a good first sentence be?", "Call a taxi to pick me up in ten minutes.", "Find a recipe that needs only five ingredients.", "Write a toast for my friend's wedding.", "How does a microwave heat food so quickly?", "Make the buttons bigger and easier to tap.", "Who wrote this song and what is it about?", "Give me a rough estimate of the cost.", "Arrange these tasks from most to least urgent.", "What is the plural of the word cactus?", "Save a copy before you change anything.", "Does this sentence need a comma here?", "Help me write a speech for the school assembly.", "How do birds know when to fly south?", "Add a short summary at the beginning.", "Which museum is worth visiting in Paris?", "Tell me the rules of table tennis.", "I think the second option is clearly better.", "Write a short story about a lost umbrella.", "Where can I park near the city hall?", "Remove the jargon and keep it plain.", "What should I ask before renting a flat?", "Look for flights that leave before noon.", "Explain how interest on a loan is worked out.", "Change every heading to the same style.", "Is it safe to eat this after the date?", "Give me a morning routine that takes half an hour.", "How do I teach a puppy to sit?", "Summarise the meeting in three short lines.", "What rhymes with the word orange?", "Ask the group whether Tuesday works for them.", "Write a clear answer to this customer question.", "Why do onions make people cry?", "Turn the brightness up on my screen.", "Find the cheapest way to send this parcel.", "What is a polite way to ask for a raise?", "Sort the names in order from first to last.", "Tell me how a rainbow forms.", "Suggest a hobby I could start this month.", "Make this table easier to scan quickly.", "How far in advance should I book the venue?", "Write a short description for my profile.", "Which word fits better, quick or rapid?", "Give me the highlights of the latest update.", "What tools do I need to hang a shelf?", "Start a timer for twenty five minutes.", "Explain the plot of this novel in a paragraph.", "Can we push the release back by a week?", "Draw up a seating plan for the dinner.", "How do I say good morning in Italian?", "Check whether the two totals match.", "Write a thank you card for the nurse.", "Why is my phone battery draining so fast?", "List some healthy snacks for the afternoon.", "Tell the driver I am waiting by the gate.", "What does the abbreviation stand for?", "Give me a version that fits on one line.", "How do I get rid of the background noise?", "Find a photo of a lighthouse at dawn.", "Plan the agenda for a half day workshop.", "What is the safest way to carry a laptop?", "Rewrite this in the voice of a pirate.", "Should the logo sit on the left or the right?", "Tell me about the life cycle of a butterfly.", "Open the document I was editing yesterday.", "How many cups of flour does this need?", "Give me an honest opinion of this design.", "Write a slogan for a recycling campaign.", "What is the fastest animal on land?", "Add a column for the delivery date.", "Explain the offside rule in football.", "Could you check my maths on this page?", "Suggest a quiet activity for a rainy afternoon.", "How do I back up my photos safely?", "Tell everyone the office is closed on Monday.", "Which is cheaper, the train or the coach?", "Make the opening scene more dramatic.", "What is a simple way to learn chords?", "Hide the sidebar and widen the main area.", "Write a paragraph about why sleep matters.", "Who painted the ceiling of that chapel?", "Find a synonym for the word beautiful.", "How long should I boil an egg?", "Send a reminder an hour before the appointment.", "Give me a checklist for launching a website.", "What is the difference between a frog and a toad?", "Shorten the introduction by half.", "Tell me a riddle and then the answer.", "How do I share my location with a friend?", "Write the steps as a numbered list.", "Why do leaves change color in autumn?", "Replace the photo with a cleaner version.", "Suggest a name for a puppy with white paws.", "What time does the pharmacy shut today?", "Explain how a camera captures a picture.", "Fill in the missing words in this sentence.", "Can you recommend a good podcast about history?", "Write a brief update for the newsletter.", "How should I store fresh herbs?", "Put the files in alphabetical order.", "Tell me which bus goes to the harbour.", "What does a product manager actually do?", "Give the robot a cheerful personality.", "Add a joke at the end of the speech.", "Is the meeting room free at three?", "How do magnets attract metal?", "Make a plan to finish the book by June.", "Find the mistake in this calculation.", "Write a line of dialogue for a shy character.", "What should I do if I lose my passport?", "Rename the folder to something clearer.", "Tell me how the internet reaches my house.", "Choose a font that feels warm and friendly.", "How do I politely end a long phone call?", "Give me a workout I can do without equipment.", "Why is the ocean salty?", "Write a note to the neighbours about the party.", "Which chapter should I read first?", "Keep the heading but change everything below it.", "What is a fair price for this old bicycle?", "Play the next episode when this one ends.", "Explain why the moon changes shape.", "The children watched a purple kite drift over the church.", "My father usually shaves before he goes fishing.", "A thousand soldiers marched through the thick fog.", "Vera wore a velvet jacket to the jazz show.", "We chose the youngest judge with unusual pleasure.", "Three brothers bought brown bread from the baker.", "The thief thought nothing of the withered path.", "Phil gave Victor five very fine violins.", "Sharp shears and a shiny shovel sat in the shed.", "Whisper softly while the wolves wander west."];
 const PER_PERSON = 60;
+// Where "Send your recordings" delivers to: the organiser's own Google Drive,
+// through a small script they deployed (collect/apps_script.gs). Empty means
+// nothing is sent anywhere and people download a .zip instead.
+const UPLOAD_URL = "";
 const MODES = [
   { id: "aloud", label: "Say it aloud", hint: "Say it normally, in your usual voice." },
   { id: "whisper", label: "Whisper it", hint: "Whisper it: breath only, no voice." },
@@ -233,7 +240,7 @@ async function finish() {
   if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
   const n = (await takeKeys()).length;
   $("summary").textContent = `You made ${n} recordings.`;
-  $("download").disabled = n === 0;
+  $("send").disabled = n === 0;
   $("more").classList.toggle("hidden", position >= totalTakes());
   show("done");
 }
@@ -293,17 +300,19 @@ async function buildZip(files) {  // files: [{ name, blob }], stored without com
 function extensionFor(mime) { return mime.includes("mp4") ? "mp4" : "webm"; }
 function slug(text) { return (text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "friend").slice(0, 30); }
 
+function takeFile(t) { return `${String(t.index).padStart(4, "0")}_${t.mode}.${extensionFor(t.mime)}`; }
+
+function manifestFor(takes, prefix) {
+  const listed = takes.map((t) => ({ file: prefix + takeFile(t), text: t.text, mode: t.mode, ms: t.ms, sentence: t.sentence }));
+  return { version: 1, name: session.name, agreedAt: session.agreedAt, browser: navigator.userAgent, takes: listed };
+}
+
 async function download() {
   $("download").disabled = true;
   $("doneStatus").textContent = "Preparing your file…";
   const takes = (await allTakes()).sort((a, b) => a.index - b.index);
-  const files = [], listed = [];
-  for (const t of takes) {
-    const file = `takes/${String(t.index).padStart(4, "0")}_${t.mode}.${extensionFor(t.mime)}`;
-    files.push({ name: file, blob: t.blob });
-    listed.push({ file, text: t.text, mode: t.mode, ms: t.ms, sentence: t.sentence });
-  }
-  const manifest = { version: 1, name: session.name, agreedAt: session.agreedAt, browser: navigator.userAgent, takes: listed };
+  const files = takes.map((t) => ({ name: "takes/" + takeFile(t), blob: t.blob }));
+  const manifest = manifestFor(takes, "takes/");
   files.unshift({ name: "manifest.json", blob: new Blob([JSON.stringify(manifest, null, 1)], { type: "application/json" }) });
   const zip = await buildZip(files);
   const link = document.createElement("a");
@@ -314,8 +323,76 @@ async function download() {
   $("download").disabled = false;
 }
 
+// ---------- sending: each recording goes to the organiser's Google Drive ----------
+function toBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function post(payload) {
+  // text/plain keeps this a "simple" request, which the Drive script can accept.
+  const response = await fetch(UPLOAD_URL, {
+    method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload),
+  });
+  const answer = await response.json();
+  if (!answer.ok) throw new Error(answer.error || "refused");
+}
+
+async function postWithRetry(payload) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await post(payload); }
+    catch (e) { if (attempt >= 2) throw e; await new Promise((r) => setTimeout(r, 1500 * (attempt + 1))); }
+  }
+}
+
+let sending = false;
+async function send() {
+  if (sending) return;
+  sending = true;
+  $("send").disabled = true; $("more").disabled = true; $("wipe").disabled = true;
+  $("download").classList.add("hidden");
+  $("sendBarWrap").classList.remove("hidden");
+  try {
+    if (!session.folder) {  // one folder per person, kept so a second try lands in the same place
+      session.folder = `${slug(session.name)}-${Math.random().toString(36).slice(2, 8)}`;
+      await putState("session", session);
+    }
+    const takes = (await allTakes()).sort((a, b) => a.index - b.index);
+    const waiting = takes.filter((t) => !t.sent);
+    let done = takes.length - waiting.length;
+    const progress = () => {
+      $("doneStatus").textContent = `Sending ${Math.min(done + 1, takes.length)} of ${takes.length}… keep this page open.`;
+      $("sendBar").style.width = (100 * done / Math.max(takes.length, 1)) + "%";
+    };
+    progress();
+    await postWithRetry({ kind: "start", folder: session.folder });
+    const worker = async () => {
+      for (let t = waiting.shift(); t; t = waiting.shift()) {
+        await postWithRetry({ kind: "take", folder: session.folder, name: takeFile(t), mime: t.mime, data: await toBase64(t.blob) });
+        t.sent = true;
+        await putTake(t.index, t);  // remembered, so a retry skips what already arrived
+        done += 1;
+        progress();
+      }
+    };
+    await Promise.all([worker(), worker(), worker()]);
+    await postWithRetry({ kind: "manifest", folder: session.folder, text: JSON.stringify(manifestFor(takes, ""), null, 1) });
+    $("sendBar").style.width = "100%";
+    $("doneStatus").textContent = `Sent all ${takes.length} recordings. Thank you! You can close this page.`;
+  } catch (e) {
+    $("doneStatus").textContent = "Sending stopped. Check your internet connection and press Send again: it continues where it stopped.";
+    $("download").classList.remove("hidden");
+  }
+  sending = false;
+  $("send").disabled = false; $("more").disabled = false; $("wipe").disabled = false;
+}
+
 async function wipe() {
-  if (!confirm("Delete all your recordings from this browser? Make sure you have sent the file first.")) return;
+  if (!confirm("Delete all your recordings from this browser? Make sure you have sent them first.")) return;
   await tx("takes", "readwrite", (s) => s.clear());
   await tx("state", "readwrite", (s) => s.clear());
   session = null; position = 0;
@@ -331,6 +408,15 @@ $("begin").addEventListener("click", begin);
 $("redo").addEventListener("click", redo);
 $("finishEarly").addEventListener("click", finish);
 $("download").addEventListener("click", download);
+if (UPLOAD_URL) {
+  $("how").textContent = "At the end you press Send, and your recordings go to the person who gave you this link.";
+  $("doneHelp").textContent = "Sending takes a few minutes. After it finishes you can remove the recordings from this browser.";
+  $("send").addEventListener("click", send);
+} else {
+  $("send").textContent = "Download my recordings";
+  $("doneHelp").textContent = "Send the downloaded file to the person who gave you this link. It is large, so use AirDrop, Google Drive, WeTransfer or similar.";
+  $("send").addEventListener("click", download);
+}
 $("wipe").addEventListener("click", wipe);
 $("more").addEventListener("click", begin);
 $("hold").addEventListener("pointerdown", (e) => { e.preventDefault(); startTake(); });

@@ -48,7 +48,7 @@
     <ul>
       <li>Read short sentences from the screen, each one three ways: <b>aloud</b>, <b>whispered</b>, and <b>mouthed with no sound</b>.</li>
       <li>Your camera records video of you while you say each one. <b>No sound is recorded.</b></li>
-      <li>At the end you download one file and send it to the person who gave you this link.</li>
+      <li id="how">At the end you download one file and send it to the person who gave you this link.</li>
     </ul>
     <label for="name">Your first name or a nickname</label>
     <input id="name" type="text" autocomplete="off" maxlength="40">
@@ -88,13 +88,16 @@
     <h2>Thank you. One last step</h2>
     <p id="summary"></p>
     <div class="row">
-      <button id="download" class="primary">Download my recordings</button>
+      <button id="send" class="primary">Send your recordings</button>
       <button id="more">Record more</button>
     </div>
+    <div id="sendBarWrap" class="bar hidden" style="margin-top:14px"><div id="sendBar"></div></div>
     <p id="doneStatus" class="status" role="status"></p>
-    <p>Send the downloaded file to the person who gave you this link. It is large, so use AirDrop, Google Drive, WeTransfer or similar.</p>
-    <p class="muted">After they confirm they have it, you can remove the recordings from this browser.</p>
-    <button id="wipe">Delete my recordings from this browser</button>
+    <p id="doneHelp"></p>
+    <div class="row">
+      <button id="download" class="hidden">Download a copy instead</button>
+      <button id="wipe">Delete my recordings from this browser</button>
+    </div>
   </section>
 </main>
 
@@ -102,6 +105,10 @@
 "use strict";
 const SENTENCES = __SENTENCES__;
 const PER_PERSON = __PER_PERSON__;
+// Where "Send your recordings" delivers to: the organiser's own Google Drive,
+// through a small script they deployed (collect/apps_script.gs). Empty means
+// nothing is sent anywhere and people download a .zip instead.
+const UPLOAD_URL = __UPLOAD_URL__;
 const MODES = [
   { id: "aloud", label: "Say it aloud", hint: "Say it normally, in your usual voice." },
   { id: "whisper", label: "Whisper it", hint: "Whisper it: breath only, no voice." },
@@ -233,7 +240,7 @@ async function finish() {
   if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
   const n = (await takeKeys()).length;
   $("summary").textContent = `You made ${n} recordings.`;
-  $("download").disabled = n === 0;
+  $("send").disabled = n === 0;
   $("more").classList.toggle("hidden", position >= totalTakes());
   show("done");
 }
@@ -293,17 +300,19 @@ async function buildZip(files) {  // files: [{ name, blob }], stored without com
 function extensionFor(mime) { return mime.includes("mp4") ? "mp4" : "webm"; }
 function slug(text) { return (text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "friend").slice(0, 30); }
 
+function takeFile(t) { return `${String(t.index).padStart(4, "0")}_${t.mode}.${extensionFor(t.mime)}`; }
+
+function manifestFor(takes, prefix) {
+  const listed = takes.map((t) => ({ file: prefix + takeFile(t), text: t.text, mode: t.mode, ms: t.ms, sentence: t.sentence }));
+  return { version: 1, name: session.name, agreedAt: session.agreedAt, browser: navigator.userAgent, takes: listed };
+}
+
 async function download() {
   $("download").disabled = true;
   $("doneStatus").textContent = "Preparing your file…";
   const takes = (await allTakes()).sort((a, b) => a.index - b.index);
-  const files = [], listed = [];
-  for (const t of takes) {
-    const file = `takes/${String(t.index).padStart(4, "0")}_${t.mode}.${extensionFor(t.mime)}`;
-    files.push({ name: file, blob: t.blob });
-    listed.push({ file, text: t.text, mode: t.mode, ms: t.ms, sentence: t.sentence });
-  }
-  const manifest = { version: 1, name: session.name, agreedAt: session.agreedAt, browser: navigator.userAgent, takes: listed };
+  const files = takes.map((t) => ({ name: "takes/" + takeFile(t), blob: t.blob }));
+  const manifest = manifestFor(takes, "takes/");
   files.unshift({ name: "manifest.json", blob: new Blob([JSON.stringify(manifest, null, 1)], { type: "application/json" }) });
   const zip = await buildZip(files);
   const link = document.createElement("a");
@@ -314,8 +323,76 @@ async function download() {
   $("download").disabled = false;
 }
 
+// ---------- sending: each recording goes to the organiser's Google Drive ----------
+function toBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function post(payload) {
+  // text/plain keeps this a "simple" request, which the Drive script can accept.
+  const response = await fetch(UPLOAD_URL, {
+    method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload),
+  });
+  const answer = await response.json();
+  if (!answer.ok) throw new Error(answer.error || "refused");
+}
+
+async function postWithRetry(payload) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await post(payload); }
+    catch (e) { if (attempt >= 2) throw e; await new Promise((r) => setTimeout(r, 1500 * (attempt + 1))); }
+  }
+}
+
+let sending = false;
+async function send() {
+  if (sending) return;
+  sending = true;
+  $("send").disabled = true; $("more").disabled = true; $("wipe").disabled = true;
+  $("download").classList.add("hidden");
+  $("sendBarWrap").classList.remove("hidden");
+  try {
+    if (!session.folder) {  // one folder per person, kept so a second try lands in the same place
+      session.folder = `${slug(session.name)}-${Math.random().toString(36).slice(2, 8)}`;
+      await putState("session", session);
+    }
+    const takes = (await allTakes()).sort((a, b) => a.index - b.index);
+    const waiting = takes.filter((t) => !t.sent);
+    let done = takes.length - waiting.length;
+    const progress = () => {
+      $("doneStatus").textContent = `Sending ${Math.min(done + 1, takes.length)} of ${takes.length}… keep this page open.`;
+      $("sendBar").style.width = (100 * done / Math.max(takes.length, 1)) + "%";
+    };
+    progress();
+    await postWithRetry({ kind: "start", folder: session.folder });
+    const worker = async () => {
+      for (let t = waiting.shift(); t; t = waiting.shift()) {
+        await postWithRetry({ kind: "take", folder: session.folder, name: takeFile(t), mime: t.mime, data: await toBase64(t.blob) });
+        t.sent = true;
+        await putTake(t.index, t);  // remembered, so a retry skips what already arrived
+        done += 1;
+        progress();
+      }
+    };
+    await Promise.all([worker(), worker(), worker()]);
+    await postWithRetry({ kind: "manifest", folder: session.folder, text: JSON.stringify(manifestFor(takes, ""), null, 1) });
+    $("sendBar").style.width = "100%";
+    $("doneStatus").textContent = `Sent all ${takes.length} recordings. Thank you! You can close this page.`;
+  } catch (e) {
+    $("doneStatus").textContent = "Sending stopped. Check your internet connection and press Send again: it continues where it stopped.";
+    $("download").classList.remove("hidden");
+  }
+  sending = false;
+  $("send").disabled = false; $("more").disabled = false; $("wipe").disabled = false;
+}
+
 async function wipe() {
-  if (!confirm("Delete all your recordings from this browser? Make sure you have sent the file first.")) return;
+  if (!confirm("Delete all your recordings from this browser? Make sure you have sent them first.")) return;
   await tx("takes", "readwrite", (s) => s.clear());
   await tx("state", "readwrite", (s) => s.clear());
   session = null; position = 0;
@@ -331,6 +408,15 @@ $("begin").addEventListener("click", begin);
 $("redo").addEventListener("click", redo);
 $("finishEarly").addEventListener("click", finish);
 $("download").addEventListener("click", download);
+if (UPLOAD_URL) {
+  $("how").textContent = "At the end you press Send, and your recordings go to the person who gave you this link.";
+  $("doneHelp").textContent = "Sending takes a few minutes. After it finishes you can remove the recordings from this browser.";
+  $("send").addEventListener("click", send);
+} else {
+  $("send").textContent = "Download my recordings";
+  $("doneHelp").textContent = "Send the downloaded file to the person who gave you this link. It is large, so use AirDrop, Google Drive, WeTransfer or similar.";
+  $("send").addEventListener("click", download);
+}
 $("wipe").addEventListener("click", wipe);
 $("more").addEventListener("click", begin);
 $("hold").addEventListener("pointerdown", (e) => { e.preventDefault(); startTake(); });
