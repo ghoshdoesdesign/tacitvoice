@@ -452,6 +452,11 @@ document.addEventListener("keyup", (e) => {
     $("introError").textContent = "This browser is blocking storage for this page (private window?). Open it in a normal window.";
     return;
   }
+  if (session && position === 0) {
+    // Nothing was recorded, so this plan may come from an older version of the
+    // page with a different sentence list. Keep the name and plan afresh.
+    $("name").value = session.name; session = null; ready();
+  }
   if (session) {
     $("name").value = session.name; $("agree").checked = true; ready();
     $("resume").textContent = `Welcome back. You have ${position} of ${totalTakes()} recordings saved.`;
