@@ -2,7 +2,7 @@
 
     uv run python -m tools.pack
 
-Reads data/train and data/train2 (recorded with tools.record --out ...) and
+Reads data/train, data/train2 and data/train3 (recorded with tools.record --out ...) and
 every person under data/friends (from tools.import_friend) as training clips,
 and data/baseline as test clips, cuts each down to the 96x96 grey mouth
 region the model sees, and writes data/pack.npz. Only your mouth region and
@@ -35,7 +35,7 @@ def collect(root: Path, split: str) -> list[tuple[Path, str, str]]:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument(
-        "--train", type=Path, nargs="+", default=[Path("data/train"), Path("data/train2")],
+        "--train", type=Path, nargs="+", default=[Path("data/train"), Path("data/train2"), Path("data/train3")],
         help="folders of your own training recordings; ones that do not exist are skipped",
     )
     ap.add_argument("--friends", type=Path, default=Path("data/friends"),
