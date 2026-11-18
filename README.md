@@ -163,7 +163,7 @@ uv run python -m tools.pack
    trained on, edit the last cell of the notebook to add
    `--holdout-speaker asha` (the folder name under `data/friends`).
 
-Everyone reads the same 10 sentences first (`sentences/common.txt`), then 50 picked at random from about 3,450, so two people rarely read the same ones. Most of that pool is built from templates by `sentences/generate.py`.
+Everyone reads the same 10 sentences first (`sentences/common.txt`), then 50 picked at random from about 4,450, so two people rarely read the same ones. Most of that pool is built from templates by `sentences/generate.py`.
 
 To change how many sentences each person reads: `python collect/build.py --per-person 30`.
 

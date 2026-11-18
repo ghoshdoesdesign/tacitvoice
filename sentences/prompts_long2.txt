@@ -1,0 +1,1001 @@
+# Long prompts for recording, mixed across work, home, learning, technology and personal writing. No digits or symbols.
+Mention in the handover notes that the admin password lives in the shared vault and must be changed when anyone leaves.
+Measure twice, cut once, as they say, so before we migrate anything, list what we should test on a copy of the data.
+Is it safe to refreeze minced beef that thawed in the fridge overnight, or should I cook it today?
+Did I mention how wonderful the choir sounded on Friday? The harmonies in the last hymn gave me goose bumps.
+Walk me through the scientific method using a kitchen experiment I could try this weekend with my children.
+Make the tone of this message warmer, because the customer has been waiting a long time and deserves a proper apology.
+Great, now make the same chart again with the quiet months greyed out, so the busy season stands out more clearly.
+Count how many steps I have walked this week and tell me whether I managed more than the week before.
+What should I say to a friend whose father has just died, when I never actually met him myself?
+Would a single big table or several smaller linked tables be better for tracking orders, customers and deliveries in a little shop?
+From the server logs, work out which hour of the day is busiest, and whether weekends follow a different pattern.
+Dear neighbours, we are having some building work done next month and we apologise in advance for the dust and hammering.
+Note down that the landlord agreed to repaint the lobby before spring and to replace the broken lift by summer.
+Generate a list of cheerful names for a rowing boat that my grandfather is painting bright blue this spring.
+Pay the water bill on Friday, then remind me to cancel the gym membership I have not used since March.
+My maths exam includes geometry. Remind me how to find the area of a triangle and a circle in words.
+Might I suggest we record the session, so that colleagues in other time zones can watch it when they wake up?
+Clean up this column of phone numbers so they all follow the same pattern, and flag any that are obviously too short.
+Translate this technical explanation into something my grandmother would understand, keeping it under a hundred words if you possibly can.
+Simplify the idea of natural selection into three sentences, and then give an example involving moths or finches.
+Check whether this query would be slow on a table with several million rows, and suggest an index if you think one would help.
+Let's meet at the corner cafe on Thursday at four, and I promise this time I will not be late.
+Many thanks for your application. We were impressed by your experience and would like to invite you to a second interview.
+Why is the ocean salty while rivers and lakes are mostly fresh, even though rivers flow into the sea?
+How do I check the oil level properly, and what kind should I top it up with for an older engine?
+How did ancient sailors find their way across open water before anyone had invented a compass or reliable maps?
+People often forget their passwords, so describe a reset process that is easy for them yet hard for an impostor to abuse.
+Highlight any sentence in my essay that is longer than thirty words, and offer a shorter version of each.
+List the questions I should ask a candidate who is applying to lead a small team of designers.
+Thanks for the quick turnaround, Priya. The slides look great, though I would move the pricing chart closer to the beginning.
+Weave a short legend about a mountain that hums at night and the shepherd girl who learns its song.
+Keep the facts in this statement exactly as they are, but make the whole thing sound less defensive.
+Could you make me a two week revision timetable for biology, chemistry and geography with one rest day each week?
+Nana, the whole family is coming on Sunday, so please do not cook, we are bringing everything ourselves.
+Recommend three lecture series about ancient history, suitable for listening to during a long morning commute by train.
+Name three warm things I could say to a shy colleague who has just given her first presentation.
+Just to confirm, the script should skip weekends and public holidays when it counts the working days between two dates.
+Sophie, I am sorry to cancel again, but the baby has a fever and I dare not leave her tonight.
+Have scientists worked out how old the universe is, and what kind of evidence do they base that figure on?
+Does cold weather really cause colds, or is something else responsible for people getting ill more in winter?
+Structure my notes into a formal report with an introduction, three findings, and a short list of recommendations at the end.
+Hello Victor, the board approved your request this morning, and you can begin recruiting for both positions straight away.
+Travelling with a toddler on a long flight terrifies me. What should I bring to keep her calm and busy?
+During the call, the customer raised a complaint about slow responses, and I promised we would answer within one working day.
+George and Linda, congratulations on fifty years together. You make marriage look like the easiest thing in the world.
+Lucy, would you mind feeding the cats while we are away? The spare key is under the blue flowerpot.
+Draft a message to the landlord explaining that the boiler stopped working yesterday and we have no hot water.
+Is it normal for a four month old baby to wake every two hours, and when do nights usually get easier?
+Could you help me understand the passive voice, and show me when using it is actually the better choice?
+Make a moving checklist for the month before we leave, including who needs to know our new address.
+Evaluate whether a chat assistant on our support page would reduce the queue, or simply annoy people who want a human.
+Build me a short pep talk for a friend who is about to run her first marathon in the pouring rain.
+What is the simplest way to remove duplicate rows from a huge sheet without losing the first copy of each entry?
+If the network drops while a form is being saved, the draft disappears, so I need a gentle way of keeping it on the device.
+What is the easiest way to remove red wine from a pale carpet without leaving a ring around the stain?
+Maybe the reason I keep putting off this decision is that both choices mean saying goodbye to something.
+Michael, I am stuck in traffic near the bridge. Put the potatoes on and tell the kids I am coming.
+Guide me through writing a short personal statement for a teaching job, one question at a time.
+Anna, would you be my bridesmaid? I cannot imagine walking down the aisle without you standing close by.
+Tell my wife I love her and that I have booked the little Italian place for our anniversary dinner.
+Lend me a few words for a card to my teacher, who is leaving after twenty years in the same classroom.
+Do you think it is too soon to say I love you after only two months of seeing each other?
+Small text files open instantly, but anything over a few hundred pages makes the editor hang, so what might explain that?
+Storm damage has loosened some slates on the roof. Who should I call, and will the insurance cover it?
+Hi Nadia, I am afraid I have to cancel our lunch on Thursday because a client visit has been moved forward.
+List the main parts of a plant cell, and describe the job each one performs in a single sentence.
+Think of ten rainy day activities for two bored children aged five and nine that need no special equipment.
+One thing I noticed in your essay is that each chapter ends abruptly, without linking forward to the next idea.
+Dear Tom, I wanted to say how much your kindness meant to me last week when everything at home felt so heavy.
+When did humans first start writing things down, and what were those earliest records mostly used for?
+Brainstorm some names for a cosy cafe that serves pancakes all day and has board games on every table.
+Book the dog in for her yearly jabs at the vet, any afternoon next week except Wednesday would suit me.
+Compare the way plants and animals get their energy, and keep the explanation short enough to memorise for a test.
+Puppies chew everything, I know, but ours has destroyed three slippers this week. What should I do about it?
+Insert a paragraph after the introduction that explains who the report is for and how they should use it.
+Honestly, I am not sure whether this feature is worth building, so help me list the evidence for and against it.
+Test my knowledge of the solar system with ten questions, and save the trickiest ones for the very end.
+Show me how to merge two address lists that use slightly different spellings for the same streets and towns.
+Our biggest risk right now is that the testing phase overlaps with the school holidays, when several engineers are away.
+Before I share my screen tomorrow, walk me through hiding the notifications and closing anything private that might pop up.
+Users keep telling us the font is too small on older phones, so recommend a sensible minimum size and line spacing.
+After the funeral we sat in the garden telling stories about her, and for an hour grief felt almost gentle.
+Roughly how many stars are in our galaxy, and how do astronomers estimate a number they cannot count?
+How do I politely decline a wedding invitation from a cousin I have not spoken to in nearly ten years?
+Few things make me happier than a long table, too much food, and old friends arguing cheerfully about nothing.
+Using a pizza as the example, explain why one half is the same as two quarters or four eighths.
+Until the new system is running properly, please keep a paper copy of every order that comes through the shop.
+Rewrite this paragraph of the help guide so that someone who has never used the dashboard can follow it without asking anyone.
+Perhaps I should forgive him, because carrying this anger around for three years has only made me tired.
+Sewing a cushion cover seems like a manageable start. What fabric and stitches would you suggest for a novice?
+After the latest update, the calendar shows every appointment one hour early, which smells like a time zone mistake somewhere.
+Mum, I will be late on Sunday because the train is cancelled, so please start lunch without me and save some pudding.
+Dad, the car passed its inspection, but the mechanic says both front tyres need replacing before winter arrives.
+Is it better to study in one long session or several short ones, according to research on learning?
+Recommend a few films that portray historical events accurately, and warn me where they bend the truth for drama.
+Although the concert started late, the violin solo in the second half was so beautiful that nobody minded the wait.
+Happy birthday, Grandma. I hope the day brings you sunshine, good cake, and a phone call from every grandchild.
+Translate my grumpy mood into a comic poem about a man who cannot find his other slipper.
+Nobody warned me that teaching a teenager to drive would test my nerves more than any job interview.
+Explain in plain language why the project is behind schedule, without blaming anyone on the design team.
+Simplify this tangled formula into separate helper columns, so a future reader can follow the logic without a headache.
+Come up with five interview questions that reveal how a candidate handles conflict with a difficult coworker.
+Propose a theme for my daughter's sixth birthday party that involves pirates, treasure maps and absolutely no glitter.
+Could you tell me how earthquakes are measured, and what the numbers mean for people living near the centre?
+Each time I paste text from the browser into my notes, it brings hidden formatting along, and I would love to stop that.
+Even after clearing the cache, the old logo still appears on some pages, so where else might the browser be keeping it?
+Turn this thought into a short speech, I am retiring after thirty years and I want to thank the kitchen staff.
+Evaluate my opening paragraph as if you were a tired reader who has forty other applications to get through.
+Quickly draft a message to the caterer confirming forty vegetarian meals and asking what time they plan to arrive.
+Narrate a short scene where two old rivals meet by chance on a train and discover they both love chess.
+Correct my grammar in this thought. Me and my brother has went to the museum yesterday afternoon to see fossils.
+Somebody spilled candle wax on the wooden table last night. What is the gentlest way to lift it off?
+Proofread the following announcement and make sure the dates, names and room numbers are consistent all the way through.
+Customers in rural areas have slow connections, so think of ways the app could still be useful when the signal disappears.
+Write a short note to our neighbour asking whether she could water the tomatoes while we are away in August.
+Also check the form for accessibility, especially whether someone using only a keyboard can reach and press every control.
+Follow up on the outage by writing a calm summary of what broke, how long it lasted, and what we will change.
+Let me know which watercolour paints and brushes a beginner needs, without spending a fortune on fancy sets.
+Suggest a sensible way to prepare for an oral exam in French when I have nobody to practise with.
+Since the divorce I have learned to cook for one, and tonight's mushroom risotto was truly something to be proud of.
+Describe our refund policy in two friendly sentences that I can use at the bottom of every receipt.
+First tell me what this old script does line by line, and afterwards suggest how to make it easier to maintain.
+Open my speech with a joke about how the groom once got lost in his own street.
+Judge whether this recommendation letter is too short, and tell me what a hiring manager would still want to know.
+Please find attached the minutes from Tuesday, and let me know by Friday if I have recorded anything incorrectly.
+Pull out every row where the delivery took longer than a week, and tell me whether one courier is responsible for most of them.
+Photography is my new hobby. Explain how to take sharp pictures of birds in the garden on a cloudy day.
+Quiz me on irregular verbs in Spanish, and repeat any that I get wrong until I answer them correctly twice.
+Until last week the sync between my phone and laptop was instant, yet now notes take half an hour to appear.
+Can you suggest a funny toast for my brother's wedding that teases him gently without embarrassing his new wife?
+Because the spreadsheet rounds each row before adding, the grand total is off by a few pennies, and the accountant has noticed.
+What is the difference between a virus and a bacterium, and why do antibiotics only work against one of them?
+Attached is the revised schedule, which adds a buffer of four days between the design review and the final handover.
+Since the client rejected our first quote, I propose we remove the optional training days and send a lower figure.
+Explain how I can comfort a child who is scared of thunder without making the fear seem silly.
+Honestly, I do not understand why negative times negative gives a positive. Is there an intuitive way to see it?
+Granddad, thank you for teaching me to fish, to whistle, and to laugh at myself when things go wrong.
+Break this complicated instruction into simple numbered steps that someone could follow without any previous training or experience.
+Since the clocks went back I feel sluggish by four. Would a daylight lamp on my desk make any difference?
+Quiz me on musical terms like tempo and harmony, and explain each answer briefly after I have a go.
+Then add a second sheet that shows the same data as a monthly trend, with a simple line for each department.
+Questions for a house viewing would be handy. What should I ask about damp, neighbours and the heating?
+Open questions remain about who owns the customer list, so write a polite message asking the sales team to clarify.
+Split this giant task of redesigning the website into smaller jobs that a single person could each finish within a day.
+How much exercise does a young collie need each day, and is one long walk better than two short ones?
+Recommend some science books for a twelve year old who loves space, robots and anything about the future.
+Describe what a sonnet is, how many lines it has, and why Shakespeare wrote so many of them.
+Budgies seem like cheerful company for my elderly mother. Are they difficult to look after in a small flat?
+When a user uploads a picture larger than the limit, the page just freezes, and I would rather show a polite warning instead.
+Edit my biography down to sixty words for the conference programme, keeping my current role and my research interests.
+Imagine you are the customer reading this notice, and tell me which sentence would annoy you the most.
+Compare solar power and wind power in terms of cost, reliability and the amount of land they require.
+Why do leaves change colour in autumn, and why do some trees stay green throughout the entire winter?
+Return this jumper for me by writing a polite note saying it shrank after one wash at a low temperature.
+Think about how we could let users undo a deleted message for ten seconds, and describe the simplest approach that would work.
+Explain why the sky looks blue during the day but turns red and orange when the sun is setting.
+Give me a memory trick for the difference between affect and effect, since I mix them up constantly.
+Can you explain how tides work, and why some beaches have two high tides each day while others have one?
+Conjure a spooky but gentle campfire story about a lantern that floats across the marsh every midsummer night.
+Argue for and against the claim that money can buy happiness, using what psychologists have found in studies.
+Are humans still evolving today, and if so, what recent changes have biologists managed to observe in populations?
+Consider a feature that lets users download all their own data, and outline what the file should contain and how to deliver it.
+Honestly, I cannot face cooking tonight. What could I order that is reasonably healthy and arrives quickly?
+Please explain how the lungs exchange oxygen and carbon dioxide, and why breathing speeds up when we exercise.
+Planting bulbs is my job for Sunday. How deep should daffodils and tulips go, and which way up?
+Draft a heartfelt thank you card for the nurses who looked after my father during his long stay on the ward.
+Start the email by thanking them for the samples, then explain that the colour is not quite what we ordered.
+Why do I always feel guilty when I take a day off, even when I have finished all my work?
+Try to guess why the battery on my phone drains overnight, even though I close every app before going to bed.
+Summarise the story of the moon landing, including who went, how long it took and what they brought back.
+Hi Oliver, I looked over your spreadsheet and the totals in the last column do not seem to match the monthly figures.
+Please forgive the short notice, but could you look after the twins on Friday while we visit the solicitor?
+Read me the instructions for the new pressure cooker slowly, because I am nervous about the steam valve.
+Without changing what it does, make this script faster, since it currently reads the entire file again for every single line.
+Does a short nap after lunch ruin your sleep at night, or can twenty minutes actually be good for you?
+Composting confuses me. Which kitchen scraps can go in the heap, and what must I leave out?
+Generate a polite out of office message saying I am on leave until the fifth and that Karen is covering urgent matters.
+Why does bread rise in the oven, and what exactly is the yeast doing inside the dough beforehand?
+My teenage daughter wants a later bedtime on school nights. What is a reasonable compromise I could offer her?
+Everyone is coming to ours for the holidays this year. Help me plan where nine people are going to sleep.
+Snoring from my husband is keeping me awake most nights. Are there any remedies worth trying before separate rooms?
+Many of our older customers struggle with tiny grey text, so advise me on contrast and button size for the booking page.
+Please show me how to work out a fifteen percent tip in my head without reaching for a calculator.
+Half the team wants weekly releases and half wants monthly ones, so lay out the arguments fairly for each side.
+Snow is expected on Thursday, so remind me to find the shovel, the grit and everybody's warm boots.
+Leave a note for the pet sitter saying the rabbit gets fresh hay each morning and must be locked in at dusk.
+Think of a clever title for my memoir about growing up above a fish and chip shop by the sea.
+Our new receptionist starts on Monday, so please say hello and help her learn everyone's names during her first week.
+Settling the cat into a new home worries me. Should I keep her indoors for the first few weeks?
+Organise my thoughts about whether to sell the family home, starting with the memories and ending with the stairs.
+Before I forget, the wedding band plays from eight, and the bride wants everybody dancing by the second song.
+Could you explain the theory of relativity without any mathematics, perhaps using trains or clocks as an example?
+Argue whether space exploration is worth the expense, first as an enthusiastic supporter and then as a doubtful taxpayer.
+Welcome to the team, Aisha. Your laptop is ready at reception, and Michael will show you around the building after lunch.
+Load the sales figures, remove the test orders, and tell me how many real purchases each product received in the spring.
+Describe a sleepy fishing village at dawn, with gulls circling the harbour and the smell of salt and fresh bread.
+When should I prune the roses, and how far back can I cut them without harming next year's flowers?
+Could you recommend a few documentaries about the deep ocean that are accurate but still exciting to watch?
+Soften this for me. I cannot attend the christening because of work, but I would love to visit the following weekend.
+The test suite passes on my machine but fails on the build server, so what differences between the two should I check first?
+Does vinegar really work for descaling a kettle, and how much should I pour in before boiling it?
+So the idea is a browser extension that hides spoilers for sports results, and I want your view on how hard that is.
+My honest opinion is that the film was far too long, although the final scene on the beach nearly made me cry.
+Kindly confirm that you received the signed forms, and let me know if anything else is needed from our side.
+Could you argue both for and against the idea that free will is only an illusion created by the brain?
+Compare the two restaurants for me in a friendly review, the noisy one with great dumplings and the calm one with dull soup.
+I need a poem about autumn leaves falling on a quiet street, with a hopeful ending and a gentle rhythm.
+Show me the difference between its with an apostrophe and its without one, using a few clear sentences.
+Next week I am visiting a planetarium. What questions should I ask the guide to learn the most?
+Design a small vegetable patch for a shady corner, with crops a beginner could grow from seed.
+Following our conversation this afternoon, I am attaching the revised contract with the changes you asked for highlighted in yellow.
+Being the eldest child taught me patience, though my sisters would probably tell you a very different story.
+Look through the log from last night and tell me the exact moment the payment service started refusing connections.
+Identify which steps in our release process still rely on one person remembering to do them, and suggest how to automate each.
+Flag anything in this agreement that looks unusual, especially the sections about notice periods and late payment fees.
+Mark, could I borrow your van next Saturday? I need to fetch a wardrobe from my sister's place.
+Without you, Grace, I would never have survived that first terrible year at university, and I will always remember that.
+Perhaps we should cache the search results for a minute, but I worry that people would see stale prices, so weigh that up.
+Your painting arrived this morning and it is hanging above the fireplace, where the afternoon sun makes the colours glow.
+Correct any mistakes in my summary. Photosynthesis is when plants breathe in oxygen and release sugar into the ground.
+Summarise what scientists currently know about why we dream, and point out anything that is still only a guess.
+Yoga looks relaxing, but I cannot even touch my toes. Where should a stiff, nervous beginner start?
+It has been baking hot all week. How do I keep the house cool and the dog comfortable?
+Although the pilot went well, I recommend we wait another month before rolling it out to every branch.
+Put together a list of ten questions I could ask my grandfather about his childhood on the farm.
+Name some flowers that bees love and that will keep blooming from early spring until the first frost.
+If I heat ice until it becomes steam, what is happening to the tiny particles at each stage?
+Explain in plain words how a fixed rate mortgage differs from a variable one, and which is safer for a first home.
+Briefly explain what a memory leak is, and describe the warning signs I might notice in a program that runs for days.
+Could you send me the recording of yesterday's training session, since I had to leave halfway through for a dentist appointment?
+Announce to the family chat that we are engaged, with a joke about how long it took him to ask.
+Could you suggest a stronger subject line for this newsletter, something that makes people curious without sounding like an advert?
+Tell me which poems would suit a beginner, and what I should pay attention to when reading them aloud.
+Start by listing everything the old website does, even the odd little features, so nothing gets forgotten in the rebuild.
+My program crashes every time I open a large file, so help me find out where the memory is running out and what to change.
+Hello Grace, would you mind covering my shift on Sunday evening? I can take one of yours later in the month.
+Schedule a reminder to mow the grass every second Saturday from April until the end of September.
+Which is the kinder choice, telling a friend her business idea is weak or letting her discover it alone?
+List the tools I would need to put up three floating shelves on a brick wall in the living room.
+Put together a brief introduction for our guest speaker, mentioning her latest book and her years as a newspaper reporter.
+Coach, I twisted my ankle on the stairs last night, so I will have to sit out training this Thursday.
+Good afternoon Simon, I am following up on the invoice from August, which our records show is still unpaid.
+Okay, write this down exactly. I forgive you, I miss you, and I would like to try again slowly.
+Ask me five questions that will help you understand what this inventory system needs to do before you propose anything.
+All I really want for my birthday is a quiet picnic by the reservoir with cheese, cherries and a good book.
+Three users reported that the video player loses sound after an advert, but only when headphones are connected by wire.
+Mention in the reply that I will be at the same hotel, in case she wants to share a taxi from the airport.
+Recommend a first knitting project that is harder than a scarf but will not make me want to give up.
+Outline a fairy tale in which the princess rescues the knight and then opens a bicycle repair shop.
+Translate the idea of supply and demand into a story about a village market selling apples after a bad harvest.
+Help me choose between studying French or German, considering difficulty, usefulness and how similar each is to English.
+Tonight I fancy something spicy with noodles. What can I make from prawns, garlic, ginger and a lime?
+Wait, before changing anything, tell me what would break if we renamed the customer number column across the whole system.
+Quiz me on the periodic table, but only the first twenty elements, and give me a hint if I hesitate.
+Now rewrite the same function so it handles an empty input gracefully, returning nothing rather than throwing an error at the caller.
+Tom, I left a lasagne in the fridge for you. Heat it for twenty minutes and please wash the dish afterwards.
+Our bedroom gets far too hot in summer. What can I do to cool it down without buying a noisy fan?
+Speaking of testing, write a list of awkward inputs for the address form, such as very long names and missing postcodes.
+Which chart would best show how customer complaints changed over two years, a line, a stacked bar, or something else entirely?
+What caused the First World War, and could you summarise the chain of events in about five sentences?
+Sketch out a toast for my parents' fortieth anniversary that mentions their terrible dancing and their wonderful patience.
+I slept badly again last night, so give me some gentle ideas for winding down before bed without screens.
+Can you tell me whether it is true that we only use a small part of our brains?
+Design a short blessing for a meal with friends, something warm that suits people of any faith or none.
+Old photos on my backup drive show as grey squares, and I am afraid the disk is failing, so what should I do immediately?
+We land at midnight and the hotel desk closes at eleven. Write to them and ask about a late check in.
+Propose a naming scheme for our shared folders, so that drafts, final versions and archived material never get mixed together again.
+Look at my grocery spending for the last month and tell me where I could cut back without eating badly.
+So here is my plan for the weekend, a long sleep, a longer breakfast, and absolutely no talking to anyone.
+In my view, the best pizza has a thin crispy base, very little cheese, and basil added at the last second.
+I have a chemistry exam on Friday. Which topics should I revise first if I only have three evenings?
+Label ideas for packing boxes would help, so that the kettle and mugs are easy to find on the first night.
+Can you compare impressionist painting with realism, and name one famous picture I should look at for each style?
+This spreadsheet has grown to forty tabs and nobody understands it anymore, so propose a simpler structure we could migrate to gradually.
+Nobody on the committee objected to the proposal, so I will treat it as approved and start the paperwork tomorrow.
+Oh, and tell Michael that the band rehearsal has moved to the church hall because the garage roof is leaking.
+Happy birthday, little brother. I hope the day is full of cake, and I promise to visit before the month ends.
+Lastly, a big thank you to Joanna for organising the away day, which everyone agreed was the best one yet.
+End my diary for tonight with this thought, I did not do everything, but I was kind and that counts.
+A warning light shaped like an engine has come on in my car. Is it safe to keep driving to work?
+Our checkout button works on laptops but does nothing on phones, so list the most common reasons for that kind of difference.
+Ask Rachel whether she would like to share a lift to the wedding, since we are driving past her village anyway.
+Could you describe what life was like for an ordinary farmer in medieval England during a typical year?
+Is cracking your knuckles actually harmful, and what is making that popping noise inside the joint?
+Spicy food has never agreed with me, yet I cannot resist the chilli prawns at the harbour restaurant.
+Dream up a slogan for our village cricket club that sounds proud but also admits we rarely win.
+Verify that this formula still works when a cell is blank, because last month it quietly treated blanks as zero and skewed the average.
+Can you explain why this loop never finishes when the list is empty, and suggest a cleaner way to write the stopping condition?
+Summarise this spreadsheet for me, and point out which months had the highest sales and where the numbers look suspicious or incomplete.
+Draft a weekly study schedule for someone working full time who wants to pass an accounting exam by spring.
+Is a tomato a fruit or a vegetable, and why do cooks and scientists give different answers?
+Good luck with the driving test tomorrow, Sam. Breathe slowly, check your mirrors, and remember you already know how to do this.
+Could you tell me how often I ought to wash pillows and duvets, and whether they can go in the machine?
+Thank you for the lovely scarf, Auntie June, it is exactly the shade of green I would have chosen.
+Mark the places in this transcript where the speaker changes subject, and give each section a short heading.
+Compare the mean, the median and the mode, and tell me when each one gives a misleading picture.
+Dear Mrs Hughes, please take this as our notice that we will be leaving the flat at the end of next month.
+Shorten my best man speech to two minutes, keeping the story about the canoe and cutting the one about the goat.
+Was the council tax taken from my account this month, or do I need to chase them about it?
+Warn me an hour before the heavy showers arrive so I can cycle home while the roads are still dry.
+Jenny, are you near the shops? We have run out of milk and nappies, and the baby is getting grumpy.
+Simplify the language in this grant application without removing any of the evidence the judges will be looking for.
+Combine the three monthly sheets into a single yearly one, keeping a column that records which month each row originally came from.
+Speaking as your manager, I think you are ready for more responsibility, and I would like to discuss what that could look like.
+Message the garage and ask whether they can fit new brake pads on Wednesday and lend me a courtesy car.
+Help me see why dividing by zero is impossible, using an explanation that does not rely on memorised rules.
+What are the main ideas of stoic philosophy, and how might someone apply them to a stressful working week?
+Woodwork classes start in September at the college. Sign me up for the Tuesday evening beginners group.
+Recommend a way to practise mental arithmetic for ten minutes a day that will not feel like homework.
+Some of the figures in the appendix look out of date, so I would double check them against the latest accounts.
+Until last night I had never seen a ballet, and now I cannot stop thinking about the dancer in white.
+Split the cost of the holiday cottage between six adults and tell me what each person owes.
+Let me describe the bug. Pressing save twice quickly creates two identical invoices, and the customer gets charged for both.
+Can you suggest three classic novels for someone who normally reads thrillers and gets bored by slow openings?
+Dear Sir or Madam, I am writing to dispute a charge of sixty pounds that appeared on my last statement.
+To be honest, I think the second option is cheaper but riskier, and I would rather spend more for something reliable.
+Will it rain this afternoon, and should I bring the washing in from the line before I leave for work?
+How should I answer the interview question about my greatest weakness without giving a tired or dishonest answer?
+Goodbye is a hard word, so I will simply say see you soon and mean it with all my heart.
+Today I walked along the river for an hour and finally felt my shoulders drop for the first time this month.
+Somewhere between the form and the database the customer's middle name gets dropped, and I need help tracing where.
+Lately the search feature returns nothing for words with apostrophes, such as names like O'Brien, and customers are complaining.
+My understanding is that muscles grow during rest and not during exercise. Have I got that right?
+Do I need to keep paper receipts for seven years, or is a photograph of each one good enough?
+It was lovely to see you at the trade fair, and I hope your journey home was smoother than mine.
+On my phone the keyboard covers the send button in the chat window, so people cannot post without closing it first.
+Order these ten tasks by importance, and tell me which ones I could hand to somebody else this week.
+Remind me how to set up automatic backups on my laptop, so that the family photos are copied somewhere safe every single night.
+Create a cleaning rota for four housemates that shares out the kitchen, bathroom, hoovering and taking out the rubbish fairly.
+Supposing the main server fails at midnight, describe what should happen automatically and who ought to be woken up.
+Why do we yawn when we see someone else yawning, and does it happen with animals as well?
+Every drawer in this kitchen is a jumble. Give me a sensible system for sorting cutlery, utensils and odd lids.
+Next week I will be visiting the factory in the north, so my replies may be slower than usual.
+Tonight is quiz night at the pub, so give me ten tricky questions about rivers, capitals and famous painters.
+Expand this single line into a full paragraph describing my experience managing suppliers across several countries.
+After reading the latest version, I have three small comments and one larger concern about the conclusion.
+Work out how long it would take to clear a debt of three thousand pounds if I repay ninety each month.
+Might it be better to move closer to my parents now, or wait until the children have finished primary school?
+I need a present for my father in law who likes fishing and crosswords, and I can spend about thirty pounds.
+Compare living in ancient Athens with living in ancient Sparta, especially for children, women and soldiers.
+Change my address with the bank, the doctor and the library, and tell me who else I have forgotten.
+Was King Arthur a real person, or did storytellers invent him from several different legends and local heroes?
+Adjust the wording so the email sounds like it comes from a colleague rather than from the legal department.
+Lay out the arguments for and against opening a second office, giving each side roughly the same amount of space.
+Over the years I have realised that the friends who tease you the most are often the ones who stay.
+Whenever you send the weekly figures, please include a line explaining anything that changed by more than a tenth.
+Name three ways to show progress during a long upload, and say which feels least frustrating when the wait is unpredictable.
+Our dishwasher leaves a cloudy film on the glasses. What causes that and how can I get them sparkling again?
+Pretend you are my examiner and ask me three hard questions about the causes of the Russian Revolution.
+Rewrite my message to Daniel so it sounds warm instead of cold, I only want to ask for my books back.
+Tell me whether a firm or a soft mattress is better for somebody who sleeps on their side and has sore hips.
+Tidy the wording of these button labels so each one starts with a verb and nobody has to guess what it does.
+Fix the awkward transition between the third and fourth paragraphs, and vary the sentence lengths a little more.
+Please correct me if I am wrong, but I believe Napoleon was unusually short for a man of his time.
+Choose the clearest of these three error messages, and tell me why the other two might leave someone feeling blamed.
+Walk me through the events that led to the fall of the Berlin Wall, in the order they happened.
+Next, write a short script that checks whether our website is up every five minutes and sends me a message if it fails.
+To my wonderful team, thank you for a brilliant season, every muddy practice and early morning was worth it.
+Narrow down why the invoice total differs from the sum of its lines, starting with rounding, discounts, and tax applied twice.
+Shall we go to the jazz bar on Saturday? The new singer is meant to be astonishing and tickets are cheap.
+Paste in the customer's complaint, then help me reply kindly while explaining that the refund button was broken by an update.
+Simon, are you free for fishing on Sunday? The river is low, but the trout were biting last week.
+Thanks for the lovely dinner last night, Maria. The children have not stopped talking about your chocolate mousse.
+Propose three possible dates in early June for the board dinner, avoiding the week when the chairman is abroad.
+Which is cheaper for a family of five, driving to the coast or taking the train with a railcard?
+Hi Doctor Patel, my hay fever tablets are no longer working. Could I try a different kind this spring?
+There is a bug where the total at the bottom shows yesterday's figure until you refresh, which confuses nearly everyone who sees it.
+Apologies for the confusion yesterday. The correct meeting link is in the updated invitation, and the old one no longer works.
+My grandmother's kitchen always smelled of ginger and butter, and she hummed old hymns while she rolled out the pastry.
+Can you suggest three simple packed lunches for a fussy seven year old who refuses anything green or crunchy?
+In my view the candidate from Leeds was stronger on paper, but the other one asked far better questions.
+Balance the praise and the criticism in this review so the writer knows exactly what to keep and what to change.
+The login page keeps sending people back to the start after they type the right password, and I can't work out why.
+Teach me a fun way to help my son practise his times tables in the car on the way to school.
+Wrap up my wedding speech with a line about how love is mostly remembering to buy milk.
+Can you quiz me on European capital cities, starting with easy ones and getting harder each time I answer correctly?
+Darling, I have booked the babysitter for Friday evening, so choose a restaurant and I will sort out the taxi.
+Every Friday I would like a short written update from each of you, covering progress, problems and plans.
+Could you write a short eulogy for my uncle, a quiet carpenter who loved crossword puzzles and stray cats?
+Somewhere between the second verse and the chorus, the whole stadium began singing and I forgot my worries.
+Let's move our weekly catch up to Thursday at four, since half the team will be at the conference on Tuesday.
+Thinking about privacy, what should a fitness app never share with advertisers, even if the user clicked agree without reading?
+Wake me at half past six tomorrow, and play something soft rather than that dreadful beeping alarm.
+Louise, the washing machine has flooded the kitchen again. Please ring the repair man if you get home before me.
+Sorry for the late reply, I was travelling all week and only just caught up with everything that landed in my inbox.
+Tell the vendor we appreciate their patience and that payment will reach their account by the end of next week.
+Congratulations on the promotion, Rachel. Nobody has worked harder for it, and I am looking forward to seeing what you do next.
+Why do onions make people cry when they are chopped, and is there a reliable trick to prevent it?
+Would you be comfortable presenting the findings to the directors yourself, since you did most of the research?
+Condense the attached twenty page strategy paper into a single page summary that a busy director could read in two minutes.
+Could I borrow your notes from the budget briefing? I arrived late and missed the part about travel expenses.
+Set out the steps for moving all my contacts, messages and photos from an old phone to a new one without losing anything.
+Between tea and coffee, which has more caffeine, and does the way I brew them change the answer much?
+Find a gentler way to phrase this criticism, because the author is new and I do not want to discourage her.
+Tell me how glaciers carve valleys, and where in the world I could go to see one up close.
+Reply to Marcus and say I am happy to speak at the event, as long as my session is before lunch.
+Wherever life takes you next, Leo, remember that there is always a spare bed and a hot meal here.
+Wrap this calculation in a function that accepts a start date and an end date, and returns the number of full weeks between them.
+Nobody on the team remembers why this setting exists, so help me design a safe experiment to see whether we can remove it.
+Our choir is singing at the village fair. Write a cheerful notice inviting people to come and listen.
+Start a diary entry for me. Today was strange, wonderful and exhausting, and I want to remember every moment of it.
+Say something encouraging to my nephew, who failed his piano exam and now refuses to touch the keys.
+Why does this sentence feel clumsy, and how would a professional editor rearrange it to read more smoothly?
+Everyone at the reunion looked older except Peter, who somehow still has the same ridiculous haircut from our school days.
+Explain how a refrigerator keeps food cold, step by step, without assuming I know anything about physics.
+Tighten the argument in my conclusion and end on a sentence that tells the reader what to do next.
+Correct me if needed. I believe the heart is on the left side of the chest and shaped like a triangle.
+Give me the strongest argument that mathematics is discovered, and then the strongest argument that humans invented it.
+Describe the main features of gothic architecture, so I can recognise a cathedral from that period when travelling.
+Dear Helen, I am delighted to confirm your place on the management course, which begins on the ninth of September.
+Offer the customer two choices in the reply, either a full refund today or a replacement arriving on Monday.
+Sort the customer feedback by date, newest first, and highlight any comment that mentions slow loading or lost work.
+Argue both sides of whether schools should still teach handwriting now that most pupils type nearly everything.
+Look up the ferry times to the island on Saturday morning and tell me which crossing has space for a car.
+Learning Spanish in my fifties feels daunting. Lay out a plan of fifteen minutes a day that I might actually keep.
+Does this paragraph make sense to someone outside the finance department, or should I explain the terms more carefully?
+There is a tiny bookshop behind the market where the owner remembers what every customer likes to read.
+Share your opinion on whether a small charity really needs its own app, or whether a good website would serve it better.
+Katie, our flight has been delayed by three hours, so do not set off for the airport until I text you.
+Stretching before bed is supposed to help a stiff back. Show me four easy moves I can do on the floor.
+Honestly, I would rather delay the announcement than publish something with errors that we have to correct in public.
+Right now the app asks for the camera, contacts and location all at once, which scares people, so suggest a gentler order.
+Hello James, I enjoyed meeting you yesterday and wanted to share a few thoughts on how our companies might work together.
+Prepare talking points for my conversation with Lucy about her repeated lateness, keeping the focus on facts rather than feelings.
+Why does my old dog pant so heavily at night, and should I be worried enough to call the vet?
+Let the hotel know we will arrive a day early and would like a room on the ground floor.
+It rained all week on our holiday, yet somehow we laughed more in that leaky tent than we have all year.
+Build a simple weekly plan that leaves my mornings free for writing and groups all my meetings after lunch.
+Many people say the countryside is boring, yet I find more drama in one hedgerow than in a whole shopping street.
+Map out a road trip through the mountains with a stop every two hours for the children to stretch their legs.
+Can you check my understanding of evolution? I think animals change during their lifetime and pass those changes on.
+How long does it take light from the sun to reach us, and what would happen if the sun vanished?
+Where do deleted files actually go on a laptop, and can somebody still recover them after I empty the bin?
+Hi Maria, thanks for sending the draft over, I read it last night and I think the opening section needs a clearer argument.
+There are two candidates I would like to bring back, and I need your opinion before I call either of them.
+Add a closing sentence that invites the reader to call me directly if they have questions about the invoice.
+Argue both for and against nuclear energy, keeping each side to three clear points I can remember easily.
+Which houseplants are poisonous to cats, because I want to check the ones on my kitchen windowsill?
+Test my understanding. If I delete a shared folder on my laptop, does it also vanish for everyone else who uses it?
+Make up a short rhyme that helps me remember the colours of the visible spectrum in their proper order.
+Pick a novel for our book club that is under three hundred pages and gives us plenty to argue about.
+Robert, I owe you an apology for what I said at the barbecue. It was thoughtless, and I regret it deeply.
+Please teach me five useful Latin roots, and list a few modern English words that grew from each one.
+Am I right that turning on two step sign in protects me even when a thief already knows my password?
+Can you break down how a bill becomes a law in a parliament, using plain language and short steps?
+Describe the journey of a raindrop from a mountain stream to the ocean, mentioning every stage along the way.
+Our gas bill has doubled since last winter. Write a letter asking the supplier to explain the increase.
+Find a jigsaw with a thousand pieces showing a harbour or a lighthouse, as a gift for my mother.
+Read this privacy notice and tell me in everyday language what the company is allowed to do with my location history.
+Remove the jargon from this policy document so that part time staff can understand their holiday entitlement.
+Instead of one giant settings page, would it be clearer to group the options under headings like account, privacy and sound?
+Which is older, the stars we see at night or the light that reaches our eyes from them?
+Am I being unfair if I ask my partner to spend less time on his phone during dinner?
+Review my performance summary and suggest where I could add specific examples instead of general claims.
+Although the feature is finished, nobody has written instructions, so draft a short guide with a heading for each main task.
+Edit my review of the new drama series so it praises the lead actress without giving away the twist.
+Sadly the grant was not awarded to us this year, though the panel encouraged us to apply again in the autumn.
+Rewrite this paragraph so that it sounds more confident, and cut any sentence that repeats a point I already made earlier.
+Write a brief explanation of gravity that a six year old could follow, without using any difficult words.
+Have you got any ideas for a thoughtful present for a friend who says she already owns too many things?
+Decide which of these metrics belong on the front page of the dashboard, and which should hide behind a details link.
+Between you and me, I thought the bride's father spoke for far too long, but the champagne was excellent.
+Roughly how much storage would a year of security camera footage need, if we record only when something moves?
+Did Vikings truly wear helmets with horns, or did that image come from later paintings and stage costumes?
+Any ideas for a cheap anniversary surprise at home, perhaps a candlelit supper and a film we both love?
+Record in the summary that we chose the simpler design because it needs less maintenance, even though it is slightly slower.
+If I could live anywhere, I would choose a stone cottage on a windy cliff with a view of the lighthouse.
+Define the word paradox for me, and share a famous example that philosophers have puzzled over for centuries.
+Tidy up the grammar in this report but leave my wording alone wherever the meaning is already clear.
+Notice that the error only appears for accounts created before March, which makes me think the old records lack a required field.
+Add comments to this script explaining each step, since my colleague will inherit it next month and has never seen it before.
+Read back my note and make it sound less formal, it is only a thank you to the man next door.
+Reply to Olivia and say yes, we would love to come for lunch, and ask whether we can bring dessert.
+Can you summarise the notes from this morning's meeting into five short bullet points that I can paste into the team channel?
+One of our customers says the app logs her out whenever she switches to another window, which sounds like a session problem.
+Hi Elena, I have attached my notes from the workshop, and I would love to hear which ideas you think are worth pursuing.
+I want to learn about the Renaissance. Where should I begin, and which artists are essential to know?
+Give me an overview of how sleep affects memory, and tell me how many hours a teenager truly needs.
+How does a piano produce sound when I press a key, and why do the low notes need longer strings?
+Should I take notes by hand or type them during lectures if I want to remember the material longer?
+Should I buy a winter coat now or wait for the sales in January when the prices usually drop?
+Tell me what questions I should ask a customer before building them a booking system for a small hair salon.
+Swap the order of the last two slides so that the audience sees the recommendation before the cost breakdown.
+If the printer cannot deliver the leaflets by Monday, we will have to hand out the older version at the exhibition.
+Fixing the fence is finally happening this weekend, so remind me to buy posts, nails and a bag of cement.
+Who invented the telephone, and is it true that another inventor nearly got the credit on the same day?
+Outline a research plan for finding out why new users abandon the sign up process halfway through the second screen.
+Swap the butter in this cake for something my vegan cousin can eat, and tell me whether the baking time changes.
+Give me an example of a metaphor and a simile, and explain how I can tell the two apart.
+Why does the moon seem to change shape over a month, and how long does one full cycle take?
+I think the seasons happen because the earth moves closer to the sun in summer. Is that correct?
+Quiz me on fractions and percentages using word problems about shopping, cooking or sharing a pizza between friends.
+Find me a breakfast that keeps me full until lunchtime and takes less than five minutes to throw together.
+Walk me through bleeding a radiator, step by step, because the top half stays cold even when the heating is on.
+Suggest a clearer title for my talk, which is about how small shops can compete with big online sellers.
+Hoping you can help, I am looking for a mentor in publishing and wondered whether you might spare an hour.
+Would you write a wedding vow that mentions our first rainy camping trip and the burnt sausages we laughed about?
+Put together a short comparison of storing our files on our own hardware versus renting space from an outside provider.
+My windscreen wipers smear instead of clearing the glass. Do they just need a clean or new blades?
+Avoid jargon and explain to our volunteers how to tell a genuine message from a scam that pretends to be the bank.
+Emma, can you collect the twins from swimming on Thursday? My meeting has moved and I will not make it in time.
+When I look back on this year, I think the bravest thing I did was ask for help.
+Picture a parent trying to limit screen time for a teenager, and suggest features that feel fair to both of them.
+Convert this long list of features into a short story about how a typical customer uses the service each morning.
+Running the import twice creates double entries, so I want it to recognise records it has already seen and quietly skip them.
+Two of our drivers are off sick this week, so some deliveries in the east of the city will arrive a day late.
+Quiz me about the causes of the American Civil War, then grade my answers as a strict teacher would.
+Would it be possible to push the deadline back by three days so we can include the results from the customer survey?
+Keep the existing behaviour, but change the function so the tax rate is passed in rather than fixed inside the body.
+Describe how a caterpillar turns into a butterfly, including what actually happens inside the cocoon during those weeks.
+Highlight the cells where spending went over budget, using a soft red, and leave everything else in the sheet untouched.
+Suggest a name for my folk band, we play fiddle and guitar and mostly sing about rain and railways.
+Between work, school runs and football practice, our evenings are chaos. Help me build a calmer weekday routine.
+Hi Sarah, sorry I missed your call earlier. I was stuck in the garden trying to rescue the tomatoes from the frost.
+Polish this sentence for a sympathy card. Your mother was a generous soul, and her garden gate was always open.
+Sketch out a difficult conversation with an employee whose work has slipped, starting with something they do well.
+Above all, the script must never delete anything, so have it move unwanted files into a holding folder that I can inspect later.
+Plan a two week sprint for the team, covering the new search filters, the faster image loading, and a round of testing.
+Keep track of how much water I drink today, and nudge me every couple of hours if I forget.
+Clarify what I mean in the third sentence, since I think a reader could take it in two different ways.
+Thanks again for stepping in at such short notice, the client had no idea that the original presenter was ill.
+Compose a thank you message for the volunteers who stayed late on Saturday to pack the boxes for the charity sale.
+Two of the hens have stopped laying this month. Could the shorter days be the reason, or is something wrong?
+Quickly sketch a way to let shop staff scan a parcel label with a phone camera and mark the order as collected.
+Fix the wording on this error screen so it explains what went wrong and what the person should try next.
+Mention in the note to Chloe that her casserole dish is washed and waiting on our porch whenever she wants it.
+Could you remind the group that the kitchen is shared, and that dirty mugs should not be left in the sink overnight?
+Compare the philosophies of Plato and Aristotle, focusing on how each one thought we gain knowledge about the world.
+These shoes rub my heels raw. Is there a trick for softening stiff leather before I give up on them?
+Mum, the recipe worked beautifully, though I used honey instead of sugar and the crust came out a little darker.
+Help me understand probability by explaining why flipping a coin ten times rarely gives exactly five heads.
+Compare a symphony with a concerto, and suggest one piece of each kind that a beginner would probably enjoy.
+Walk me through what happens between pressing enter on a web address and seeing the page appear, one stage at a time.
+Walk me through solving a simple algebra problem in words, where a number doubled plus three equals eleven.
+Not everyone enjoys opera, but the moment the soprano hit that high note the entire theatre seemed to stop breathing.
+With your permission, I would like to share your case study with our sales team as an example of good practice.
+Neither of the suggested fixes worked, since the screen still flickers whenever the laptop wakes from sleep with the lid half open.
+Next door's tree hangs right over our fence and blocks the light. How do I raise it politely with them?
+Because I value our friendship, I need to be honest and say that your comment yesterday really stung.
+Sometimes the print preview cuts off the last column of the table, so adjust the layout to fit on a single wide page.
+Can you describe how a volcano erupts, from the pressure building underground to the lava cooling on the surface?
+Give me three different ways to open a presentation about customer loyalty that do not start with a boring statistic.
+Make a checklist of everything a new puppy needs, from a bed and bowls to a lead and chew toys.
+Note to self, stop saying yes to every favour and leave at least one evening a week completely empty.
+Describe how the printing press changed Europe, and compare its impact with the arrival of the internet.
+Why does my laptop fan become so loud whenever I join a video call, and is there anything simple I can do about it?
+Last question for today. Is it worth learning to write my own scripts, or should I keep asking you each time?
+Regarding the office move, the furniture arrives on the twelfth, and everyone should pack their desks by the evening before.
+Generate ten realistic but fake customer records I can use for testing, with varied names, towns and order amounts.
+Create a warm welcome speech for a new member of our choir who is nervous about singing in public.
+Add a line to my journal saying that the garden is finally blooming and the bees have come back.
+Is the Great Wall of China really visible from space, and who first started that popular rumour?
+We are moving to a smaller flat in June. Help me decide which furniture to keep, sell or give away.
+Most of the crashes come from one old tablet model, so should we fix it or politely tell those users it is unsupported?
+My goldfish keeps floating near the surface on its side. Is that an illness, and can it be treated?
+Two charts on the dashboard disagree about total revenue, so help me trace where each one gets its numbers from.
+My teacher says a comma splice is an error. What is it, and how do I repair one?
+Estimate how long it would take one developer to add dark mode to an app with roughly thirty different screens.
+Clarify the difference between a hypothesis, a theory and a law, since people use them loosely in conversation.
+Buying a bicycle for commuting is on my mind. What size frame suits somebody who is rather tall?
+My feedback on the brochure is mostly positive, although the photographs on page four feel dark and a little old fashioned.
+This is a difficult email to write, so help me find words that are honest about the redundancy without sounding cold.
+Tonight the sky turned pink and orange over the rooftops, and for once I stopped to watch until it faded.
+Kate, please forgive me for forgetting your birthday. I have no excuse, only a very late present and a red face.
+Double the pancake recipe I saved last week and convert the measurements from cups into grams for me.
+Because the survey closes on Sunday, please encourage your teams to fill it in before they leave on Friday.
+Give me a simple explanation of how the stock market works, and why prices rise and fall every day.
+Thinking about selling the estate car and buying something smaller. What should I look for in a used hatchback?
+Is there a simple way to understand how aeroplanes stay in the air despite weighing many tonnes?
+Where does the wind come from, and why is it usually stronger near the coast than further inland?
+Good morning, could you read me today's appointments and tell me whether I have time for a haircut?
+Please draft an invitation to our housewarming party next Saturday evening, and mention that guests should bring a favourite dish to share.
+Frankly, the report buries its best finding on page nine, and I would bring that discovery right up to the summary.
+We agreed in the meeting that Sofia will own the launch plan and that Daniel will handle all the press enquiries.
+We want the home page to load in under two seconds, so list the changes that usually give the biggest improvement for least effort.
+Losing the match hurt, but watching the youngest players shake hands and smile afterwards made me oddly proud.
+Since switching to the new router, my printer vanishes from the network every few hours and needs restarting before it reappears.
+How do noise cancelling headphones actually remove the rumble of an aeroplane engine without blocking a human voice?
+Using the figures from last quarter, estimate how many servers we would need if traffic doubled during the holiday season.
+Remind me to phone the plumber tomorrow morning, because the tap in the upstairs bathroom has been dripping all week.
+Explain the difference between weather and climate, and give me one clear example of each from everyday life.
+Under the old oak in the park there is a bench where I do most of my serious thinking.
+Is it true that lightning never strikes the same place twice, or is that just an old saying?
+Is it safe to use the same password manager on my phone and my work laptop, or should I keep them completely separate?
+My philosophy class is debating whether lying is ever acceptable. What would Kant say, and who disagrees with him?
+Calculate the fuel cost for a drive of three hundred miles if my car does about fifty miles a gallon.
+Please cancel my dentist appointment on Tuesday and ask whether they have anything free the following week instead.
+There is black mould growing around the bedroom window. How do I clean it off and stop it coming back?
+Persuade my stubborn husband, in a loving little note, that we really do need a holiday before the winter.
+This morning the fog was so thick that the church tower vanished, and the whole village felt like a dream.
+Correct my timeline, please. The Greeks came first, then the Egyptians built pyramids, and after that Rome was founded.
+Tell me if my reasoning is right. Heavier objects fall faster than lighter ones because gravity pulls them harder.
+Recommend a way to share a large video with a client who is not technical and refuses to install anything new.
+Three years ago I could barely boil an egg, and last night I served roast duck to eight hungry guests.
+Baby names are causing arguments at home. Suggest some that sound nice with a short surname and are easy to spell.
+Having read the design document, tell me which parts are vague enough that two engineers might build different things.
+My bread dough did not rise at all this morning. Tell me what might have gone wrong with the yeast.
+Turn this list of leftovers into a soup recipe, I have carrots, an onion, some stale bread and a tin of beans.
+Am I storing too much on the phone itself, and which kinds of files are usually safe to move elsewhere?
+Earlier you suggested storing settings in a separate file, so remind me why that beats keeping them inside the program itself.
+My daughter asked why the sea has waves, and I could not answer. What should I tell her?
+Supply a gentle explanation of why restarting a device fixes so many problems, suitable for a curious ten year old.
+You asked me to think about the reorganisation, and my honest opinion is that it solves the wrong problem.
+Assume I know nothing about encryption, and explain why a padlock in the address bar does not prove a site is honest.
+Edit the onboarding text so that each screen has no more than two short sentences and one obvious action.
+Wish my colleague Priya a speedy recovery and tell her the office plants are surviving, though only just.
+The smoke alarm keeps chirping in the middle of the night. How do I change its battery and test it?
+Describe how to trim a guinea pig's nails safely, since ours wriggles and squeaks whenever I pick up the clippers.
+Our football team lost again on Sunday, but the young goalkeeper made three saves that had the whole crowd on its feet.
+Dear Mister Palmer, I am writing to apply for the senior editor position that was advertised on your website last Thursday.
+Quiz me on famous paintings by describing each one and asking me to name the artist who made it.
+Go through this list of error codes from the warehouse scanner and group them by likely cause, hardware, network, or human mistake.
+Write a short note to my manager asking whether I can work from home on Monday while the plumber fixes the kitchen.
+Honestly, I think the second album is better than the first because the lyrics are braver and the drums hit harder.
+Outline the major world religions in a neutral way, with one or two central beliefs for each tradition.
+Passport renewal takes ages, I hear. How many weeks before our trip should I send off the forms?
+Before the movers come, how should I wrap plates, glasses and mirrors so that nothing arrives chipped?
+Long ago people believed the sun circled the earth. Who proved otherwise, and how was the idea received?
+Log my weight as seventy four kilos this morning, and show me how the trend has looked since the spring.
+Cut every unnecessary adverb from this article and tell me how many words that saves in total.
+Their offer is lower than we hoped, so I plan to counter with a figure halfway between the two.
+The little bakery near the station sells the best cinnamon buns I have ever tasted, soft, sticky and still warm.
+Kindly shorten this technical summary to four sentences, keeping the finding about slow queries and dropping the background history.
+What should I wear for a windy coastal walk tomorrow when the morning is cold but the afternoon turns sunny?
+Judge these three layouts for the pricing page, and say which one makes the middle option look like the obvious choice.
+Trim the introduction, because it takes almost a full page to reach the point that matters to the reader.
+Help me prepare for my driving theory test by asking questions about road signs and stopping distances.
+Clearly the old approach will not scale, so sketch two alternatives and say what each would cost us in time and money.
+Prepare a few talking points for explaining to my manager why we need a month to pay down old shortcuts in the code.
+How do birds know which direction to fly when they migrate thousands of miles to the same place every year?
+Every morning the report arrives with yesterday's totals missing, and I suspect the job starts before the data has finished loading.
+Would swimming or cycling be kinder on my knees, given that jogging makes them ache for days afterwards?
+Tell me what the Silk Road was, which goods travelled along it, and why it eventually faded away.
+Under heavy load the website shows a blank page instead of an error, and I want a friendly message asking people to wait.
+Often the upload stalls at ninety nine percent and then starts again, so I would like it to resume from where it stopped.
+It takes nearly a minute for the monthly report to open, and most of that time seems to be spent drawing one enormous chart.
+Recommend a few healthy snacks for the afternoon slump that are not just another biscuit with my tea.
+Pen a cheerful note for the lunchbox of a boy who is starting at a new school on Monday.
+Jot down that I felt proud today after speaking up in the meeting, even though my voice trembled a little.
+Get three quotes from removal firms for a two bedroom house, moving about sixty miles north in early spring.
+Help me write a study plan for learning the guitar, assuming I can practise for half an hour daily.
+Combine these two paragraphs into one and remove the sentence about parking, which belongs in a different section.
+Rank these database options by how easy they are for a beginner to run, and mention what each one costs in upkeep.
+Both proposals have merit, but the first one fits our budget and can be delivered before the summer break.
+Arrange a taxi to the station for quarter to seven on Monday, and allow extra time for heavy luggage.
+Over the centuries, how has the English language changed, and why is Chaucer so hard for modern readers?
+Where can I recycle old batteries and broken light bulbs, since the council will not take them in the normal bin?
+After the party there are balloons, paper plates and half a trifle left. What can be recycled or reused?
+Compare the cost of buying a new washing machine with repairing the old one, which is nearly eleven years old.
+Give me a simple curry I can cook in under forty minutes with chickpeas, spinach and coconut milk.
+Could you give me a short summary of the French Revolution and say why it still matters today?
+Despite the delays, the building work should finish in time for the opening ceremony, provided the weather stays dry.
+Ask Peter whether the venue has a projector and enough chairs for sixty guests, and copy me on the reply.
+Aunt Carol, we would love to come for tea on Saturday. Shall I bring a sponge cake or some flowers?
+Why are there seven days in a week, and where did the names of the days originally come from?
+Choose the best of these four slogans for a bakery, and explain your reasoning in a sentence or two.
+Hi Laura, would you be willing to read my chapter this weekend and mark any passages that drag?
+Help me remember the difference between latitude and longitude, because I always swap them on geography tests.
+Organise these action items by owner, and put the ones that are due this week at the very top.
+Jump starting a flat battery always worries me. Which cable goes on first, the red one or the black one?
+Change the tone of my message to the landlord's wife, I want to thank her warmly for the jar of marmalade.
+Walk me through how to analyse a poem, starting with the title and ending with its deeper meaning.
+We are having eight people over on Saturday, so suggest a starter, a main course and a pudding I can prepare ahead.
+Find every place in this document where I wrote the old company address, and replace it with the new one I gave you earlier.
+Recite a calm verse I could whisper to myself before walking on stage to accept the award.
+Cheap ways to heat a draughty old house would be very welcome, since our fuel costs keep climbing.
+Work out the growth rate between the first and last rows of this table, and express it as a yearly percentage.
+Earlier today I spoke with the auditor, who wants copies of every bank statement from the last financial year.
+Create a checklist for onboarding a new assistant, covering equipment, passwords, introductions and the first week of training.
+Describe the structure of an atom using an everyday comparison, and then tell me where that comparison breaks down.
+Like a patient teacher, explain what a variable is, using an example about keeping score in a board game.
+Help me figure out why my sourdough starter smells like vinegar, and explain the science behind that sour scent.
+Something about the smell of cut grass takes me straight back to cricket matches with my cousins in June.
+Read this complaint and draft a calm reply that acknowledges the mistake and offers a replacement at no charge.
+Yesterday my daughter rode her bicycle without help for the first time, and I cried behind my sunglasses like a fool.
+I keep confusing mitosis and meiosis. Please explain both and give me a way to keep them straight.
+From my point of view, the meeting ran too long because nobody had read the briefing paper beforehand.
+Once the contract is signed, I will introduce you to the project lead and arrange a tour of the site.
+Translate a few polite phrases I might need at a bakery in France, like asking for two loaves and a coffee.
+Please shorten this email to three sentences and keep the part where I ask for the budget figures by Friday.
+Walk me through how a seed becomes a tree, from the moment it lands in soil until it flowers.
+No decision was reached on the new logo, so we will vote again once the designer has sent two more options.
+Given how busy December is, I suggest we hold the planning day in the second week of January instead.
+Suppose the earth stopped spinning suddenly. What would happen to the oceans, the atmosphere and everybody standing outside?
+Give me three surprising facts about octopuses that I could share with my nephew, who adores sea creatures.
+So far the feedback from the trial group has been encouraging, although several people found the menu hard to navigate.
+Could we meet for twenty minutes before the presentation to decide who answers which kind of question from the audience?
+Point out the flaw in this argument. All birds can fly, penguins are birds, so penguins must fly.
+Here is the short version. Sales are up, costs are flat, and the only real worry is staff turnover in the call centre.
+Maybe the simplest answer is a shared calendar, but talk me through whether a proper booking tool would save us enough time.
+What does the word irony really mean, and can you show me a case that people often mislabel?
+Assess the risks of letting staff use their personal phones for work email, and propose three sensible rules to reduce them.
+Watching the swimmers at the lake this morning, I envied how easily they slid through the cold green water.
+Do you know why a photo looks sharp on my camera but blurry after I upload it to the website gallery?
+Frame the bad news about the price increase honestly, but lead with the improvements customers will notice.
+Text Hannah that I found her scarf under the sofa and I will drop it round after work tomorrow.
+Some days I miss my old town so badly that I can almost hear the tram bells and the pigeons.
+Compare the two pricing ideas we discussed, a monthly subscription and a single payment, and tell me which suits a tiny team better.
+Congratulations on the new job, Maria. You worked so hard for this and nobody deserves it more than you do.
+Before we sign anything, I would like our lawyer to read the clause about early cancellation and tell us what it means.
+Carpets or wooden floors, which is more practical for a hallway with muddy boots and a large hairy dog?
+Freezing bread, berries and cooked rice would cut our waste. How long does each one keep before it spoils?
+Hi Fiona, I have read your resignation letter and, while I am sad to lose you, I completely understand your reasons.
+Take the survey answers in this sheet and group the free text comments into five or six themes, with a rough count for each.
+We are so sorry for your loss, and we are thinking of you and the children during this painful time.
+Before my literature exam tomorrow, remind me of the main themes in Pride and Prejudice and who represents each.
+Each department head should send me their top three priorities for next year no later than the end of this week.
+Last quarter we lost two major accounts, and I want to understand what went wrong before we pitch to anyone new.
+What happens inside my body when I drink coffee, and why does the effect fade after a few hours?
+Dad, I know we argued about the car, but I want you to know I am grateful for everything you do.
+Tell me about the placebo effect, and why doctors take it so seriously when they test a new medicine.
+Recommend a respectful way to decline this invitation to join a committee, since I simply do not have the time.
+Finish this poem for me, it begins with a grey heron standing perfectly still at the edge of a pond.
+Hannah, we finally got the keys today. Come round on Friday for pizza on the floor and a glass of something fizzy.
+Someone scraped my bumper in the supermarket car park and drove off. What should I do about the insurance?
+Prepare a short welcome for the village fair, thanking the volunteers and reminding everyone that the dog show starts at noon.
+Write a haiku about the first snowfall of winter landing softly on a red letterbox at the end of the lane.
+Baking sourdough has taken over my weekends. Why is my crust pale and soft instead of dark and crackly?
+Do fish sleep, and if they do, how can they rest without eyelids while still avoiding hungry predators?
+At the end of the month I will circulate a summary of what we spent and what remains in the fund.
+That goal in the final minute was pure magic, a curling shot from distance that left the keeper frozen.
+Yesterday's workshop produced some excellent ideas, and I have grouped them into themes on the shared board for everyone to review.
+Phrase this kindly for me, I cannot lend my brother any more money until he repays what he borrowed in March.
+Tell me if frost is forecast tonight, because I have just planted out the young beans and courgettes.
+I wanted to follow up on the proposal I sent two weeks ago and ask whether you have had a chance to look at it.
+All staff should complete the fire safety course by the end of April, and managers must check that their teams have done so.
+I read that goldfish have a memory of only three seconds. Is there any truth in that claim?
+What is a tactful way to tell a colleague that their part of the document needs to be completely rewritten?
+Remind me what I promised Hannah during our last one to one, and draft a message confirming I have done it.
+Review this design for the settings screen and tell me honestly whether the most important choices are easy enough to find.
+Imagine a dragon who is afraid of fire, and write the opening paragraph of a children's tale about her.
+Dear Mrs Patel, thank you for watering our plants while we were away, the roses have never looked happier.
+Check whether I need any vaccinations or special tablets before travelling to a tropical island next February.
+Convert this recipe for deploying the website into a numbered guide that a nervous beginner could follow on their first day.
+I want to learn the guitar at forty five. How much should I practise each day to see real progress?
+Tell me how a camera lens focuses light, and why a blurry background makes a portrait look more professional.
+Come up with a catchy slogan for a small flower shop that delivers bouquets by bicycle around the old town.
+Make up a riddle about a clock that a clever ten year old could solve in under a minute.
+Please look at the error message I just pasted and tell me in simple terms which line is most likely causing the trouble.
+Olivia and I have decided to adopt a rescue greyhound, and we would love your advice on choosing a name.
+So what exactly is a calorie, and why do nutrition labels treat fat and sugar so differently?
+Recommend an effective technique for memorising vocabulary, and explain why it works better than reading a list repeatedly.
+Might it be better to send the weekly digest on Tuesday morning rather than Friday evening, judging by when people open their mail?
+Design a welcome email for people who just created an account, warm in tone, with a single clear button to get started.
+Granddad, your runner beans have gone wild this year. Come and pick some before they grow tough and stringy.
+Summarise the key differences between British and American spelling, with a handful of words that commonly trip people up.
+Spin me a tall tale about a postman who delivers a letter to the moon and comes back with a tan.
+Teach me the basic rules of chess so that I can play with my nephew without embarrassing myself.
+Her laugh fills the whole room, loud and bright, and strangers always turn around smiling when they hear it.
+When you have a moment, could you look at the figures in section two and tell me if they seem realistic?
+Sometimes I hear that sugar makes children hyperactive. Has that been tested properly, and what did researchers find?
+Argue whether history is shaped more by great individuals or by larger social forces, giving examples for each view.
+Is there a shorter way to say this sentence without losing the point about safety training for new drivers?
+Rachel, do you fancy joining the badminton club with me? They meet on Monday evenings at the leisure centre.
+Keep a record that today I chose to rest instead of rushing, and the world carried on perfectly well.
+Recommend a gentle film for a rainy Sunday afternoon, something funny with a happy ending and no violence at all.
+Which of these two headlines is stronger for a press release about our new apprenticeship scheme for school leavers?
+Good morning everyone, a quick reminder that the quarterly review starts at ten tomorrow, so please bring your updated numbers.
+Summarise the plot of Hamlet in a few sentences, then tell me what the play is really about underneath.
+How should I structure a history essay so the argument stays clear from the opening paragraph to the conclusion?
+Build me a gentle running plan that takes a complete beginner from the sofa to five kilometres in nine weeks.
+Behind the scenes, how does a phone know which way is north, and why does the compass sometimes need waving around?
+Should I tell my sister that her boyfriend was rude to our mother, or would it be wiser to stay quiet?
+Explain the difference between simmering and boiling, because my sauces always seem to stick and burn on the bottom.
+Per our agreement, the first instalment is due on the first of March, and the remainder follows on completion.
+Headaches hit me most afternoons around three. Could it be my eyes, my posture, or simply too much coffee?
+Translate my bullet points into a friendly paragraph that a new starter could understand on their first day.
+Something is wrong with the date picker, because choosing the last day of February jumps forward into the following month.
+Weigh up whether I should accept the job with the longer commute and higher pay, or stay where I am.
+Phrase this reminder so it nudges people to submit their expenses without making them feel they are being told off.
+Should I mention the gap in my career history in the letter, or wait until they ask about it in person?
+I never understood how electricity gets from a power station to my kitchen. Could you trace the whole journey?
+Hey Tom, are you free on Wednesday afternoon to walk me through the new onboarding process before the interns arrive?
+Even now I can picture the old cinema, with its velvet seats and the usher who sold ice cream at the interval.
+Offer me three opening lines for a mystery novel set in a seaside hotel during a winter storm.
+Along with the chart, write two sentences that a busy director could read to grasp the main trend at a glance.
+Walking home through the orchard, I picked an apple so sour that my whole face folded in half.
+Recommend a good introduction to philosophy for a complete beginner, ideally something short, modern and entertaining to read.
+When is my car insurance due for renewal, and roughly how much did I pay for it last year?
+Describe how memory works in the brain, and explain why smells can bring back childhood moments so vividly.
+How should I store passwords safely for a small website, and what mistakes do beginners usually make when they first try it?
+Change every mention of the old product name in this document to the new one, and flag anything that reads awkwardly.
+Sorry I missed your call, Nan. I was bathing the children, but I will ring you back after supper tonight.
+Explain how vaccines train the immune system to recognise a virus without making the person seriously ill first.
+Unless someone objects, I plan to archive every project older than three years, so warn me about anything that could go wrong.
+Draft a polite reply to the client explaining that the delivery will slip by one week because the supplier missed their shipment.
+Moths have eaten holes in two of my wool jumpers. How do I get rid of them for good?
+Organise a treasure hunt in the garden for six children, with rhyming clues that lead to a hidden box of sweets.
+Finish this half written paragraph about teamwork in the same voice, and keep it under eighty words.
+Sorry I snapped at you this morning, I was tired and worried, and none of it was your fault.
+Sing the praises of my local curry house in a short review, mentioning the smoky aubergine and the friendly owner.
+Every Sunday my father made pancakes shaped like animals, and none of us could ever guess what they were.
+Dearest Emma, the house is too quiet without you, and even the dog keeps looking at the front door.
+What is a prime number, and why do mathematicians find them so fascinating after thousands of years of study?
+Summarise my feelings about the play. The acting was superb, the costumes were dazzling, but the story dragged badly after the interval.
+Suggest five names for a mobile app that helps neighbours lend tools to each other, and keep them short and friendly.
+I am writing an essay on climate change. What are the three most convincing pieces of evidence to include?
+Mice have been nibbling the cereal boxes in the larder. What is a humane way to send them packing?
+Here is the situation. A customer deleted her account by accident, and I need to know whether last night's backup can bring it back.
+How long should I roast a whole chicken that weighs about two kilos, and at what oven temperature?
+Break down the causes of the Great Depression into simple points, and say how governments eventually responded to it.
+Am I being too blunt in this message, or is it reasonable to remind someone twice about an overdue payment?
+Enter a note in the project diary that the migration is paused until the missing records from the old system are found.
+Henry, the allotment looks marvellous, and those runner beans you gave us were the sweetest we have tasted.
+Assess whether this business plan would convince a cautious bank manager, and name the weakest part of it.
+Zoom out for a moment and tell me whether splitting the app into separate services would solve our problem or merely move it.
+Set up a pocket money chart where the kids earn a little extra for feeding the cat and tidying their rooms.
+Let's plan the launch week, starting with the announcement email on Monday and ending with a feedback survey on Friday afternoon.
+The front door sticks every time it rains. Could I plane the edge myself or do I need a carpenter?
+Reword this job advert so it appeals to people changing careers, not only to those with years of industry experience.
+Sitting on the back step with a mug of cocoa, I listened to the blackbird and decided the day had been enough.
+Does it make sense to keep the user's shopping basket for thirty days, or would a shorter period be kinder to their privacy?
+Work a mention of her love for sailing into the birthday verse, and rhyme it with something unexpected.
+As discussed, the warehouse team needs two extra people during December, and I would like approval to hire them this month.
+Whenever I hear that song I am sixteen again, sitting on a cold wall outside the swimming baths.
+Let us practise German greetings. Say a phrase in English and I will try to answer in German.
+I would like to start learning Italian. Suggest a daily routine of twenty minutes that covers speaking and listening.
+Vary the vocabulary in this paragraph, because I have used the word important four times in five lines.
+Advise me on whether to accept a job abroad when my elderly mother lives alone and depends on my visits.
+Quiz me on the bones of the human body, one question at a time, and correct me gently when I slip.
+Create a checklist I can follow each Friday to confirm that the backups actually restore, rather than just assuming they do.
+Suggest a board game that works for grandparents and young children together and finishes within half an hour.
+Join me for a walk in the hills on Saturday, Paula. I will bring a flask of tea and some sandwiches.
+Could you turn these rough meeting notes into a tidy list of tasks, each with a deadline and the person responsible?
+Schedule a reminder for nine tomorrow to chase the accountant about the missing receipts from the spring quarter.
+Grandma, thank you so much for the knitted scarf. It arrived this morning and the colour suits me perfectly.
+Sketch the main screens for a recipe app in words, starting from the moment someone opens it feeling hungry and short of time.
+Assume I know nothing about opera. Which one should I watch first, and what should I listen out for?
+Which herbs go well with roast lamb, and should I add them at the start or near the end?
+Plan a farewell lunch for Derek, find a restaurant near the office, and collect money for a present.
+Craft a gentle rejection for a second date, kind and clear, without giving him any false hope.
+Was I wrong to leave the party early without saying goodbye, or am I simply worrying too much again?
+Rephrase my request for a reference so it gives my former boss an easy way to say no.
+Savings feel impossible at the moment. Suggest five small habits that might free up a little cash each month.
+My lawn is more moss than grass these days. What should I do this autumn to bring it back?
+Describe in plain words how a search engine decides which pages to show first, without going deep into the mathematics.
+Over the weekend the storage filled up completely with old log files, so write a job that clears anything older than a month.
+Give me five playful names for a ginger kitten who climbs curtains and steals socks from the laundry basket.
+Our cat has started scratching the sofa to shreds. How can I persuade her to use the post instead?
+Compare frogs and toads for me, since I can never remember which one has the dry, bumpy skin.
+Pull out every deadline mentioned in this email chain and arrange them in order from soonest to latest.
+Capture the feeling of a crowded night market in a few lines, with lanterns, sizzling pans and children weaving between stalls.
+Last summer we drove through the mountains with the windows down, singing badly and stopping for peaches at every roadside stall.
+Running along the canal before sunrise has become my favourite habit, mostly because of the ducks and the silence.
+Would a feather and a hammer really land together on the moon, and has anyone actually tried that experiment?
+Someone reported that the export button produces a file with strange characters wherever a name contains an accent, so where should I look?
+Explain the difference between a table and a view in a database, as if I were completely new to the subject.
+Explain what a black hole is in simple terms, as if I were a curious ten year old.
+Send a cheerful note to the street group saying the lost tortoise has been found safe under a wheelbarrow.
+Write out the steps for poaching an egg properly, since mine always fall apart into cloudy strings in the pan.
+Darling, I will be home late tonight, so please don't wait for me and save a little of the pasta.
+Pack a suitcase list for ten days in a hot country with two small children and only one bag each.
+Draft a short project plan for moving our customer records to the new database, with three phases and a clear owner for each.
+Help me prepare for a salary negotiation by listing the strongest arguments for a raise based on my results this year.
+Looking at the timeline again, I doubt we can finish the user testing before the holidays unless we borrow two people.
+I am writing to let you know that I have accepted another offer and will be leaving at the end of next month.
+Suggest a birthday cake for a boy who loves dinosaurs, nothing too fiddly because I am not a confident baker.
+What were the most important inventions of the industrial revolution, and how did they change ordinary family life?
+Explain how compound interest works using a story about two friends who start saving at different ages.
+Choose a quote about courage that I could read aloud at my niece's graduation without sounding too serious.
+Put a note in my diary to defrost the freezer on Saturday and to clean behind the fridge afterwards.
+Pretend you are a careful reviewer and criticise my plan to rewrite the whole billing module in a single weekend.
+Improve the flow of this paragraph and replace any long words with simpler ones that mean the same thing.
+Does it sound too dramatic if I end the letter by saying that I will always keep a light on for her?
+Mark each of these requirements as clear, unclear or contradictory, and add a question wherever more detail is needed.
+Both versions of the landing page got similar clicks, so tell me how many more visitors we need before trusting the difference.
+Pick a gentle lullaby style rhyme about a sleepy fox curling up beneath a blanket of ferns.
+Please outline the major periods of English literature in order, with one author who represents each of them.
+Summarise the main arguments for and against zoos, and then tell me which side has the stronger evidence.
+Long before we met, I used to walk past your shop window and wonder who arranged the flowers so carefully.
+Imagine you are a tour guide in ancient Rome. Describe what I would see walking through the busy forum.
+Change the tone of this release note so it sounds less like an apology and more like a confident improvement.
+Hello Victor, just a quick word to say the fence looks splendid and we owe you a bottle of something nice.
+Describe step by step how the pyramids of Egypt were probably built, given the tools available at the time.
+Check this cover letter for spelling mistakes and tell me whether the second paragraph sounds too boastful.
+Notify the tenants that the water will be switched off between nine and noon on Thursday for repairs.
+Remind me to send flowers to Aunt Helen, she comes home from hospital on Wednesday and loves yellow tulips.
+Help me write an apology to my neighbour for the noise from our party, and offer to bring round a cake.
+Share some advice on how to stay friends with someone after a breakup when we still share a dog.
+Yesterday the nightly job sent the same reminder email to every customer four times, and I must make sure that never happens again.
+Invent a bedtime story about a shy hedgehog who learns to dance, and keep it short enough for a sleepy toddler.
+Sweetheart, I left soup on the stove and a note on the fridge, and the cat has already been fed.
+Friends, family and brave members of the dance floor, please raise your glasses to the happy couple.
+Can we agree on a fixed price for the whole project instead of an hourly rate that neither of us can predict?
+How can I remember the order of the planets, and could you invent a funny sentence to help me?
+Design a short questionnaire asking employees how they feel about returning to the office three days a week.
+Are the yellow leaves on my tomato plants a sign of too much watering or not enough feed?
+Uncle Peter, we are thinking of visiting at Easter. Would it suit you if we stayed for three nights?
+Produce a funny excuse I can give my friends for forgetting our fantasy league draft for the second year running.
+Birds keep stealing the strawberries just as they ripen. Would netting work, or is there a kinder method?
+I have had a sore throat and a cough for ten days now. At what point should I see a doctor?
+Any time two people edit the same document together, one person's changes vanish, and we need to understand the cause quickly.
+Whoever designed this menu hid the logout option four levels deep, so suggest a more natural home for it.
+Sarah, could you send me your grandmother's recipe for apple crumble, the one with oats and brown sugar on top?
+Match the tone of this reply to the original message, which was casual and full of jokes.
+Name five famous composers from different centuries, and tell me one piece by each that is worth hearing.
+Message the book club and say that I will host next month, and that I am making my famous plum cake.
+What makes a rainbow appear as a curve, and why can I never seem to reach the end of one?
+Explain the rules for using who and whom, because I always guess and I suspect I am usually wrong.
+Brainstorm ways a small bakery could use a simple website to take orders in advance without hiring a programmer.
+Ironing takes me hours each Sunday. Are there shortcuts for shirts that still look smart at the office?
+Tell me the story of how penicillin was discovered, and whether it really happened by accident as people say.
+Invent a superhero whose only power is making perfect cups of tea, and describe her most dramatic rescue.
+Our toddler has started refusing vegetables, so I need sneaky ways to hide them in pasta sauce and muffins.
+Add washing powder, bin bags, olive oil and two loaves of bread to my shopping list for tomorrow.
+Write a short bedtime story about a shy hedgehog who learns to dance under the moon with a family of friendly owls.
+Whenever I plug in the second monitor, the windows rearrange themselves, and I would like them to remember their places.
+Hi Ben, quick question about the budget. Did we set aside any money for travel, or does that come from another pot?
+Thanks for dinner last night, the roast lamb was perfect and I am still thinking about that lemon pudding.
+Are there any polite ways to ask my mother in law to phone before she visits us at the weekend?
+Having friends to stay next weekend means fresh sheets, clean towels and a tidy spare room. Draw up a plan.
+Help me work out a monthly budget that covers rent, groceries, the electricity bill and a little bit of saving.
+Summarise what each person said in this long thread, and point out where two people disagree with each other.
+Hi Carlos, the photographer can only come on Wednesday, so could we shift the team portrait to eleven that day?
+Why did the dinosaurs go extinct, and how confident are scientists about the asteroid theory these days?
+People keep telling me to follow my heart, but my heart changes its mind about twice a day.
+Guide me through writing a rule that moves newsletters into their own folder, while leaving messages from real people in the inbox.
+Remind me how the tenses work in English, particularly the difference between I have eaten and I ate.
+Lucy, I heard about the baby and I am so thrilled for you both. Does she have a name yet?
+Please accept my apologies for missing the call, my train was stuck outside the station for nearly an hour.
+Nightmares have been waking my son around midnight. How should I comfort him and help him settle again?
+Please tell me what cognitive bias means, and share two examples that affect the decisions people make every day.
+Hello, I am writing to ask for a quote to repaint our hallway, stairs and landing in a plain white.
+Count how many support tickets mention the word slow, and compare that number with the month before the redesign.
+Camping in October sounds cold. What sleeping bags and layers would keep us warm in a tent overnight?
+James, your father and I are so proud of your exam results. Come home this weekend and we will celebrate.
+Point out any places in this function where a missing value could slip through and cause a crash further down the line.
+Welcome to the neighbourhood. We live at number twelve across the road, so please knock if you ever need sugar or a ladder.
+Send a calendar invitation to the whole marketing group for a brainstorm next Tuesday morning in the large meeting room.
+Teach me the basics of reading sheet music, beginning with the lines of the staff and the note names.
+How do bees decide where to build a new hive, and how do they share that decision with the colony?
+Am I eating enough protein if I mostly have porridge, cheese sandwiches and a vegetable stew each day?
+During the demo yesterday the map refused to load, and afterwards I discovered that the location permission had been silently denied.
+Quiz me on world rivers, asking which continent each one flows through and which sea it finally reaches.
+Where would you take a nervous first date in a small town with one cinema and two restaurants?
+Organise these forty feature requests into must have, nice to have, and not now, and briefly justify the top three.
+Tell me a joke about a penguin who walks into a bakery, something silly enough to make a seven year old giggle.
+Help me grasp what inflation is, and why a loaf of bread costs more than it did for my grandparents.
+Ben, you still owe me forty pounds for the concert tickets. Could you transfer it before the weekend, please?
+List the personal details our sign up form collects, and mark which ones we could drop without harming the service at all.
+A tile has cracked on the kitchen floor. Tell me how to lift it out and fit a replacement without damaging the others.
+Walk me through how the digestive system handles a sandwich, from the first bite to the final stage.
+Plan a week of dinners that use up the lentils, frozen peas and half a cabbage sitting in my kitchen right now.
+Polish this speech for the retirement party so it is funny in places but still respectful of thirty years of service.
+I need a script that renames every photo in a folder using the date it was taken, followed by a short running number.
+Compare the book and the film of a famous story, and explain why directors often change the ending.
+Slugs have eaten every one of my lettuces. Is there a way to stop them that will not hurt the hedgehogs?
+Give me a step by step method for solving long division by hand, because I have completely forgotten it.
+Roll back my last change in your head and tell me whether the previous version handled leap years correctly.
+Is it normal to feel lonely in a new city even when everyone at work has been welcoming and friendly?
+Help me write a clear bug report about the search box, including what I expected, what happened, and the steps to repeat it.
+Write a kind but firm note to the school explaining that Oliver will miss Friday for a hospital appointment.
+Dictate a note to the cleaning company saying the back door was left unlocked again on Tuesday night.
+People keep asking where to find the holiday request form, so let us pin the link at the top of the channel.
+Hey Ben, are you still coming to the quiz night on Friday? We need someone who knows about old films.
+Nothing beats a bowl of hot noodle soup on a cold evening, especially with plenty of garlic and fresh coriander.
+Jack, your speech at the ceremony was perfect, funny in all the right places and honest where it mattered.
+Argue the case that reading fiction makes people kinder, and then point out the weaknesses in that argument.
+Outline a ten minute presentation on our hiring plans, with a slide for each department and one for the overall budget.
+Compose a limerick about a clumsy waiter who spills soup on a duke and somehow ends up getting promoted.
+Should we build the reporting feature ourselves or buy something ready made, given that only two developers are available this quarter?
+Guide me through writing a letter to my younger self, beginning with the day I left home with one suitcase.
+Have a look at my outline for the data analysis and tell me whether the order of the sections tells a convincing story.
+Turn this long function into three smaller ones with sensible names, and explain what each piece is responsible for afterwards.
+Certain customers see prices in the wrong currency after travelling abroad, because the app trusts the phone's location over their account.
+Calculate the average response time for each support agent from this table, then rank them from quickest to slowest.
+Wrap up this message with a friendly sign off that suits a client I have known for about ten years.
+Explain why the Roman Empire eventually collapsed, and tell me which cause historians think mattered the most.
+Make a bar chart comparing weekly visitors across the four regions, and use calm colours that still print well in black and white.
+Find a gentle way to tell my flatmate that his cooking smells wonderful but the kitchen is always a disaster afterwards.
+Build me a simple budget tracker in a sheet, with one page for income, one for spending, and a summary at the front.
+Scrolling through the product list feels jerky on cheaper phones, and I wonder whether the large images are to blame.
+Over the past month, our team closed forty support tickets a day, which is nearly double the previous average.
+Unfortunately we cannot offer a discount on this order, but I would be happy to include free delivery as a gesture of goodwill.
+My friend insists that bats are blind. Is he correct, and how do they hunt insects in darkness?
+Never have I eaten a mango as sweet as the one that old man sold us beside the dusty road.
+One thing I admire about my brother is that he listens fully before he speaks, which is rarer than it sounds.
+Find me a quiet seaside town for a long weekend in May, somewhere I can reach by train in under four hours.
+Summarise how the human heart pumps blood around the body, naming the four chambers in the correct order.
+Looking at old photographs tonight, I realised how young my parents were when they first held me.
+Truthfully, I prefer the book, since the film cut out the grandmother and she was the heart of the entire story.
+Turn these rough notes into a tidy agenda for the planning session, with a time estimate beside each item.
+Give me a formula that adds up column four only when the status beside it says paid, and ignores everything marked pending.
+Imagine a reading app for children that rewards them with stickers, then tell me the three riskiest assumptions behind that idea.
+Tell me why Pluto is no longer called a planet, and whether astronomers still disagree about that decision.
+Please describe how a suspension bridge holds its weight, and why the cables hang in that particular curve.
+Just a heads up that I will be out of the office next Friday, so please send anything urgent before then.
+Describe my ideal Saturday for the dating profile, a slow market stroll, strong coffee and a matinee at the old theatre.
+Growing older has made me less afraid of silence, and more willing to sit beside someone without filling it.
+Write a small function that takes a list of names and returns them sorted by last name, ignoring any extra spaces at the ends.
+Everyone did a brilliant job on the launch, and I want to thank the support staff in particular for their calm under pressure.
+Please recommend some gentle classical music for studying, and tell me a little about each composer you mention.
+Summarise the life of Marie Curie, and explain why her discoveries were so dangerous to her own health.
+Give me a brief history of jazz, from its roots in New Orleans to the styles people play now.
+Finally, read back the whole plan in order, and stop me wherever a step depends on something we have not decided yet.
+Shorten my answer to the question about leadership so that I can say it comfortably in under a minute.
+Soften the ending of this message so it does not sound like I am giving the supplier an ultimatum.
+Without using technical terms, explain how the internet sends a photograph from my phone to my cousin overseas.
+Thank you for your patience while we investigated. We found the error in our records and have corrected your balance.
+Summarise the water cycle in four short steps that I could draw as a diagram for my younger sister.

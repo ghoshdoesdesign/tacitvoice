@@ -24,7 +24,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 # Everyone reads COMMON_FILE first; the rest of each person's list is drawn from POOL_FILES.
 COMMON_FILE = "common.txt"
-POOL_FILES = ("calibration.txt", "calibration2.txt", "prompts_long.txt", "pool.txt")
+POOL_FILES = ("calibration.txt", "calibration2.txt", "prompts_long.txt", "prompts_long2.txt", "pool.txt")
 SECONDS_PER_TAKE = 10  # read, hold, say, release
 
 

@@ -74,7 +74,7 @@ def test_calibration_sentences_fit_the_model_vocabulary():
     seen = set()
     # common.txt is left out here: it is taken from the calibration sets, so the
     # owner has already recorded the sentences everyone else reads.
-    fewest = {"calibration.txt": 150, "calibration2.txt": 150, "prompts_long.txt": 50, "pool.txt": 2500}
+    fewest = {"calibration.txt": 150, "calibration2.txt": 150, "prompts_long.txt": 50, "prompts_long2.txt": 1000, "pool.txt": 2500}
     for name, least in fewest.items():
         lines = [l for l in (ROOT / "sentences" / name).read_text().splitlines() if l and not l.startswith("#")]
         assert len(lines) >= least and len(set(lines)) == len(lines), name
