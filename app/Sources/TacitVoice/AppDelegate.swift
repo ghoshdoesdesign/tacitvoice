@@ -12,12 +12,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         title: "Send text before cursor as context", action: #selector(toggleContext),
         keyEquivalent: "")
 
-    private let hotkey = HoldKey()
+    private let hotkey = HoldKey.rightOption
+    /// Held instead of right Option, the words go to the OpenClaw agent as a
+    /// task for it to do, and are not typed.
+    private let commandKey = HoldKey.rightCommand
     private let capture = Capture()
     private let client = ServerClient()
     private let pill = Pill()
 
     private var phase = Phase.idle
+    private var commanding = false
     private var pressedAt = Date()
     private var targetApp = ""
     private var textBefore = ""
@@ -34,9 +38,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         setIcon(recording: false)
         requestPermissions()
 
-        hotkey.onPress = { [weak self] in self?.keyDown() }
-        hotkey.onRelease = { [weak self] in self?.keyUp() }
+        hotkey.onPress = { [weak self] in self?.keyDown(command: false) }
+        hotkey.onRelease = { [weak self] in self?.keyUp(command: false) }
         hotkey.start()
+        commandKey.onPress = { [weak self] in self?.keyDown(command: true) }
+        commandKey.onRelease = { [weak self] in self?.keyUp(command: true) }
+        commandKey.start()
 
         checkServer()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -51,6 +58,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let hint = NSMenuItem(
             title: "Hold right Option, whisper or mouth, release", action: nil, keyEquivalent: "")
         hint.isEnabled = false
+        let commandHint = NSMenuItem(
+            title: "Hold right Command to give OpenClaw a task", action: nil, keyEquivalent: "")
+        commandHint.isEnabled = false
         serverLine.isEnabled = false
         contextItem.target = self
         contextItem.state = UserDefaults.standard.bool(forKey: contextKey) ? .on : .off
@@ -59,6 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             keyEquivalent: "")
         access.target = self
         menu.addItem(hint)
+        menu.addItem(commandHint)
         menu.addItem(serverLine)
         menu.addItem(.separator())
         menu.addItem(contextItem)
@@ -140,16 +151,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: Hold to talk
 
-    private func keyDown() {
+    private func keyDown(command: Bool) {
         guard phase == .idle else { return }
         if let problem = missingPermission() {
             pill.show(.note(problem), hideAfter: 4)
             return
         }
         // Read what the text will join now, while the user's app has focus.
+        commanding = command
         targetApp = FocusContext.appName()
         let sendContext = UserDefaults.standard.bool(forKey: contextKey)
-        textBefore = sendContext ? FocusContext.textBeforeCursor() : ""
+        // A command is not typed anywhere, so the field's text has no bearing on it.
+        textBefore = sendContext && !command ? FocusContext.textBeforeCursor() : ""
 
         phase = .recording
         pressedAt = Date()
@@ -162,12 +175,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self.pill.show(.note(problem), hideAfter: 4)
         }
         limitTimer = Timer.scheduledTimer(withTimeInterval: maximumHold, repeats: false) {
-            [weak self] _ in self?.keyUp()
+            [weak self] _ in
+            guard let self = self else { return }
+            self.keyUp(command: self.commanding)
         }
     }
 
-    private func keyUp() {
-        guard phase == .recording else { return }
+    private func keyUp(command: Bool) {
+        // Only the key that started the recording ends it.
+        guard phase == .recording, command == commanding else { return }
         limitTimer?.invalidate()
         let held = Date().timeIntervalSince(pressedAt)
         phase = .processing
@@ -188,10 +204,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 case .failure(let error):
                     self.pill.show(.note(error.text), hideAfter: 4)
                 case .success(let transcript):
-                    self.finish(transcript)
+                    if self.commanding {
+                        self.runCommand(transcript)
+                    } else {
+                        self.finish(transcript)
+                    }
                 }
             }
         }
+    }
+
+    /// Show what was understood, pass it to the agent, then show its answer.
+    private func runCommand(_ transcript: Transcript) {
+        guard !transcript.text.isEmpty else {
+            pill.show(.note(transcript.warnings.first ?? "Nothing recognised"), hideAfter: 3)
+            return
+        }
+        phase = .processing  // no new recording until the agent has answered
+        pill.show(.note("“" + shortened(transcript.text) + "”"))
+        client.command(transcript.text) { [weak self] result in
+            guard let self = self else { return }
+            self.phase = .idle
+            switch result {
+            case .failure(let error):
+                self.pill.show(.note(self.shortened(error.text)), hideAfter: 6)
+            case .success(let reply):
+                self.pill.show(.note(self.shortened(reply)), hideAfter: 8)
+            }
+        }
+    }
+
+    /// The label is one line, so long text is cut to what fits.
+    private func shortened(_ text: String) -> String {
+        let line = text.split(whereSeparator: \.isNewline).joined(separator: " ")
+        return line.count > 70 ? String(line.prefix(69)) + "…" : line
     }
 
     private func finish(_ transcript: Transcript) {

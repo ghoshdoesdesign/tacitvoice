@@ -16,7 +16,7 @@ from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadF
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
-from . import config
+from . import agent, config
 from .pipeline import append_log
 from .worker import Worker, WorkerError, say
 
@@ -105,6 +105,24 @@ async def correction(body: Correction) -> dict:
     append_log({"event": "correction", **body.model_dump()})
     await ask(("remember", body.text))
     return {"ok": True}
+
+
+class Command(BaseModel):
+    text: str
+
+
+@app.post("/command", dependencies=[Depends(authorised)])
+async def command(body: Command) -> dict:
+    """Give a recognised sentence to the OpenClaw agent on this Mac and return its reply."""
+    text = " ".join(body.text.split())[:1000]
+    if not text:
+        raise HTTPException(status_code=400, detail="No command.")
+    say(f"command: {len(text.split())} words")
+    try:
+        reply = await run_in_threadpool(agent.run, text)
+    except agent.AgentError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+    return {"reply": reply}
 
 
 def main() -> None:

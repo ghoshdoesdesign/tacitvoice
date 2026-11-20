@@ -1,5 +1,6 @@
 import json
 import time
+from types import SimpleNamespace
 
 import cv2
 import numpy as np
@@ -146,3 +147,49 @@ def test_model_process_survives_its_own_crash():
 
 def test_describe_exit():
     assert worker.describe_exit(0) == "exit code 0" and worker.describe_exit(-9) == "killed by SIGKILL"
+
+
+def test_command_goes_to_the_agent_as_one_argument(client, monkeypatch):
+    from server import agent
+
+    seen = {}
+
+    def fake_run(command, **kwargs):
+        seen["command"], seen["kwargs"] = command, kwargs
+        return SimpleNamespace(returncode=0, stdout=json.dumps({"payloads": [{"text": " Brightness is down. "}]}), stderr="")
+
+    monkeypatch.setattr(agent, "find_openclaw", lambda: "/usr/local/bin/openclaw")
+    monkeypatch.setattr(agent.subprocess, "run", fake_run)
+
+    assert client.post("/command", json={"text": "x"}).status_code == 401
+    assert client.post("/command", json={"text": "   "}, headers=client.token).status_code == 400
+    nasty = "reduce the brightness; rm -rf ~ $(whoami)"
+    r = client.post("/command", json={"text": nasty}, headers=client.token)
+    assert r.status_code == 200 and r.json() == {"reply": "Brightness is down."}
+    command = seen["command"]
+    # No shell: the dictated words arrive as a single argument, whatever they contain.
+    assert "shell" not in seen["kwargs"] and command[:2] == ["/usr/local/bin/openclaw", "agent"]
+    assert command[command.index("--message") + 1].endswith(nasty) and "--json" in command
+    assert command[command.index("--session-key") + 1] == "agent:main:tacitvoice"
+
+
+def test_command_reports_agent_failures(client, monkeypatch):
+    from server import agent
+
+    def missing():
+        raise agent.AgentError("OpenClaw is not installed on this Mac.")
+
+    monkeypatch.setattr(agent, "find_openclaw", missing)
+    r = client.post("/command", json={"text": "open my email"}, headers=client.token)
+    assert r.status_code == 502 and "not installed" in r.json()["detail"]
+
+    monkeypatch.setattr(agent, "find_openclaw", lambda: "openclaw")
+    replies = iter([
+        SimpleNamespace(returncode=1, stdout=json.dumps({"ok": False, "error": {"message": "gateway down"}}), stderr=""),
+        SimpleNamespace(returncode=0, stdout="not json", stderr=""),
+        SimpleNamespace(returncode=0, stdout=json.dumps({"result": {"payloads": []}}), stderr=""),
+    ])
+    monkeypatch.setattr(agent.subprocess, "run", lambda *a, **k: next(replies))
+    details = [client.post("/command", json={"text": "hi"}, headers=client.token).json()["detail"] for _ in range(3)]
+    assert "gateway down" in details[0] and "no readable answer" in details[1] and "without saying" in details[2]
+    assert agent.extract_reply({"result": {"payloads": [{"text": "old shape"}]}}) == "old shape"

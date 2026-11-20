@@ -92,6 +92,12 @@ the app once so the hold key starts working. Add names and terms you use to
 `~/.tacitvoice/dictionary.txt` and prompts you send often to
 `~/.tacitvoice/prompts.txt`; both are read on every use.
 
+## Command mode: give OpenClaw a task
+
+Hold **right Command** instead of right Option, whisper or mouth a task, and release. The words are recognised the same way, but they go to an [OpenClaw](https://openclaw.ai) agent on this Mac instead of being typed. The bar at the bottom shows what was heard, then the agent's short answer.
+
+It needs OpenClaw installed and its gateway running on the same Mac. What the agent is able to do (shell commands, files, a browser, and screen control if you turn that on in OpenClaw) is set in OpenClaw, not here. Recognition makes mistakes, so the agent is told to ask before anything that cannot be undone; treat that as a request to the model, not a guarantee.
+
 ## Fine-tune the lip model on yourself
 
 Silent mode is weak until the model has seen your own mouth. One day's work:

@@ -76,6 +76,12 @@ CLEANUP_MODEL = os.getenv("TACIT_CLEANUP_MODEL") or (
 )
 CLEANUP_TIMEOUT_S = float(os.getenv("TACIT_CLEANUP_TIMEOUT", "6"))
 
+# Command mode (server/agent.py): which OpenClaw agent gets the request, the
+# conversation it continues, and how long one task may run.
+AGENT_NAME = os.getenv("TACIT_AGENT", "main")
+AGENT_SESSION = os.getenv("TACIT_AGENT_SESSION", f"agent:{AGENT_NAME}:tacitvoice")
+AGENT_TIMEOUT_S = int(os.getenv("TACIT_AGENT_TIMEOUT", "120"))
+
 HOST = "127.0.0.1"  # never listen on other interfaces: frames of your face come here
 PORT = int(os.getenv("TACIT_PORT", "8765"))
 

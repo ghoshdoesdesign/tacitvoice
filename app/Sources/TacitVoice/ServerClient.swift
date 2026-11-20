@@ -22,8 +22,8 @@ struct Health: Decodable {
 
 /// Talks to the local recognition server (scripts/server.sh) on this Mac.
 final class ServerClient {
-    private let base = URL(string: "http://127.0.0.1:8765")!
-    private let session: URLSession
+    let base = URL(string: "http://127.0.0.1:8765")!
+    let session: URLSession
 
     init() {
         let config = URLSessionConfiguration.ephemeral  // nothing cached to disk
@@ -32,7 +32,7 @@ final class ServerClient {
     }
 
     /// The server writes this file on start; it proves a request comes from this user.
-    private func token() -> String {
+    func token() -> String {
         let url = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(".tacitvoice/token")
         let text = (try? String(contentsOf: url, encoding: .utf8)) ?? ""
@@ -105,6 +105,40 @@ final class ServerClient {
                 let transcript = try? JSONDecoder().decode(Transcript.self, from: data)
             {
                 result = .success(transcript)
+            } else {
+                result = .failure(.message("Unreadable reply from the server."))
+            }
+            DispatchQueue.main.async { completion(result) }
+        }.resume()
+    }
+}
+
+struct CommandReply: Decodable {
+    let reply: String
+}
+
+extension ServerClient {
+    /// Hand a recognised sentence to the OpenClaw agent on this Mac. Tasks can
+    /// take a while, so this waits longer than a transcription does.
+    func command(_ text: String, completion: @escaping (Result<String, ClientError>) -> Void) {
+        var request = URLRequest(url: base.appendingPathComponent("command"))
+        request.httpMethod = "POST"
+        request.timeoutInterval = 150
+        request.setValue("Bearer \(token())", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: ["text": text])
+
+        session.dataTask(with: request) { data, response, error in
+            let result: Result<String, ClientError>
+            if error != nil {
+                result = .failure(.message("No answer from the server."))
+            } else if let http = response as? HTTPURLResponse, http.statusCode != 200 {
+                let problem = data.flatMap { try? JSONDecoder().decode(ServerProblem.self, from: $0) }
+                result = .failure(.message(problem?.detail ?? "Server error \(http.statusCode)."))
+            } else if let data = data,
+                let answer = try? JSONDecoder().decode(CommandReply.self, from: data)
+            {
+                result = .success(answer.reply)
             } else {
                 result = .failure(.message("Unreadable reply from the server."))
             }
