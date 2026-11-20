@@ -184,7 +184,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func keyDown(command: Bool) {
         guard phase == .idle else { return }
         if let problem = missingPermission() {
-            pill.show(.note(problem), hideAfter: 4)
+            say(problem, for: 4)
             return
         }
         // Read what the text will join now, while the user's app has focus.
@@ -206,7 +206,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self.quiet.end()
             self.phase = .idle
             self.setIcon(recording: false)
-            self.pill.show(.note(problem), hideAfter: 4)
+            self.say(problem, for: 4)
         }
         limitTimer = Timer.scheduledTimer(withTimeInterval: maximumHold, repeats: false) {
             [weak self] _ in
@@ -239,7 +239,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.phase = .idle
                 switch result {
                 case .failure(let error):
-                    self.pill.show(.note(error.text), hideAfter: 4)
+                    self.say(error.text, for: 4)
                 case .success(let transcript):
                     if self.commanding {
                         self.runCommand(transcript)
@@ -255,12 +255,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// agent works; then the orb closes and the answer takes their place.
     private func runCommand(_ transcript: Transcript) {
         guard !transcript.text.isEmpty else {
-            pill.show(.note(transcript.warnings.first ?? "Nothing recognised"), hideAfter: 3)
+            say(transcript.warnings.first ?? "Nothing recognised", for: 3)
             return
         }
         phase = .processing  // no new recording until the agent has answered
         let attempt = self.attempt
-        caption.show(transcript.text)  // the orb is already spinning from the key release
+        // The orb is already spinning from the key release.
+        caption.show("“" + transcript.text + "”", busy: true)
         // A pause before the agent starts: the chance to cancel a misheard task.
         DispatchQueue.main.asyncAfter(deadline: .now() + commandDelay) { [weak self] in
             guard let self = self, attempt == self.attempt else { return }
@@ -281,6 +282,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// Every notice goes to the card at the top, never to the orb's place.
+    private func say(_ text: String, for seconds: Double) {
+        pill.hide()
+        caption.show(text, hideAfter: seconds)
+    }
+
     /// Control+X: drop the recording, the recognition or the task in progress.
     private func cancel() {
         guard phase != .idle else { return }
@@ -294,14 +301,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         quiet.end()
         phase = .idle
         setIcon(recording: false)
-        caption.hide()
-        pill.show(.note("Cancelled"), hideAfter: 1.2)
+        say("Cancelled", for: 1.2)
     }
 
     private func finish(_ transcript: Transcript) {
         guard !transcript.text.isEmpty else {
             let reason = transcript.warnings.first ?? "Nothing recognised"
-            pill.show(.note(reason), hideAfter: 3)
+            say(reason, for: 3)
             return
         }
         var text = transcript.text
