@@ -1,14 +1,16 @@
 import AppKit
 import QuartzCore
 
-/// The one place the app speaks in words: a dark card at the top centre of
+/// The one place the app speaks in words: a dark glass card at the top centre of
 /// the screen, just under the menu bar. It shows what a task was heard as,
 /// what came back, questions from the agent, and every notice ("No words
 /// detected", "Cancelled", errors). It never takes focus or clicks, so the
 /// user stays in the app they were using.
 final class Caption {
     private let panel: NSPanel
+    private let glass = NSVisualEffectView()
     private let background = NSView()
+    private let cornerRadius: CGFloat = 22
     private let label = NSTextField(wrappingLabelWithString: "")
     private let dots = CALayer()
     private var dotLayers: [CALayer] = []
@@ -35,25 +37,34 @@ final class Caption {
         panel.level = .statusBar
         panel.isOpaque = false
         panel.backgroundColor = .clear
-        panel.hasShadow = true
+        panel.hasShadow = false  // a window shadow would draw a square behind the rounded glass
         panel.ignoresMouseEvents = true
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
 
-        // Near-black with a slight lift toward one corner and a thin cool edge.
+        // Glass: the screen behind shows through, blurred, under a dark tint
+        // that lifts toward one corner, with a thin cool edge.
+        glass.material = .hudWindow
+        glass.blendingMode = .behindWindow
+        glass.state = .active  // stay glassy although this panel is never the key window
+        glass.appearance = NSAppearance(named: .vibrantDark)
+        glass.maskImage = Caption.roundedMask(radius: cornerRadius)
+        glass.autoresizingMask = [.width, .height]
+
         let backing = CAGradientLayer()
         backing.colors = [
-            NSColor(white: 0.10, alpha: 0.94).cgColor,
-            NSColor(white: 0.16, alpha: 0.94).cgColor,
+            NSColor(white: 0.04, alpha: 0.50).cgColor,
+            NSColor(white: 0.20, alpha: 0.34).cgColor,
         ]
         backing.startPoint = CGPoint(x: 0, y: 1)
         backing.endPoint = CGPoint(x: 1, y: 0)
-        backing.cornerRadius = 22
+        backing.cornerRadius = cornerRadius
         backing.borderWidth = 1
-        backing.borderColor = NSColor(red: 0.36, green: 0.40, blue: 0.78, alpha: 0.55).cgColor
+        backing.borderColor = NSColor(red: 0.42, green: 0.46, blue: 0.86, alpha: 0.50).cgColor
         backing.masksToBounds = true
         background.layer = backing
         background.wantsLayer = true
+        background.autoresizingMask = [.width, .height]
 
         // Three discs: one bright, two dimmer, as in the loading orb.
         let discs: [(x: CGFloat, y: CGFloat, size: CGFloat, alpha: CGFloat)] = [
@@ -78,7 +89,12 @@ final class Caption {
         label.isSelectable = false
 
         background.addSubview(label)
-        panel.contentView = background
+        let content = NSView()
+        glass.frame = content.bounds
+        background.frame = content.bounds
+        content.addSubview(glass)
+        content.addSubview(background)  // tint, edge, discs and text sit on the glass
+        panel.contentView = content
     }
 
     /// Show a card. With `busy` the discs pulse in turn, for work in progress.
@@ -143,6 +159,19 @@ final class Caption {
             wave.beginTime = CACurrentMediaTime() + Double(index) * 0.25
             layer.add(wave, forKey: "pulse")
         }
+    }
+
+    /// A stretchable rounded rectangle: the shape the blur is cut to.
+    private static func roundedMask(radius: CGFloat) -> NSImage {
+        let side = radius * 2 + 1
+        let image = NSImage(size: NSSize(width: side, height: side), flipped: false) { rect in
+            NSColor.black.setFill()
+            NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
+            return true
+        }
+        image.capInsets = NSEdgeInsets(top: radius, left: radius, bottom: radius, right: radius)
+        image.resizingMode = .stretch
+        return image
     }
 
     /// Time to read `text`: a short "Done" goes quickly, an email stays longer.
