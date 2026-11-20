@@ -94,9 +94,9 @@ the app once so the hold key starts working. Add names and terms you use to
 
 ## Command mode: give OpenClaw a task
 
-Hold **right Command** instead of right Option, whisper or mouth a task, and release. The words are recognised the same way, but they go to an [OpenClaw](https://openclaw.ai) agent on this Mac instead of being typed. The bar at the bottom shows what was heard, then the agent's short answer.
+Hold **right Command** instead of right Option, whisper or mouth a task, and release. The words are recognised the same way, but they go to an [OpenClaw](https://openclaw.ai) agent on this Mac instead of being typed. While it works, the orb keeps spinning with the words it heard in a translucent panel above it. Then the panel shows the result: "Done" and what was done for an action, or the content itself (the email, the answer) for something you asked to see, without leaving the app you are in. **Open history…** in the menu shows every task and dictation in a browser page served from this Mac.
 
-It needs OpenClaw installed and its gateway running on the same Mac. What the agent is able to do (shell commands, files, a browser, and screen control if you turn that on in OpenClaw) is set in OpenClaw, not here. Recognition makes mistakes, so the agent is told to ask before anything that cannot be undone; treat that as a request to the model, not a guarantee.
+It needs OpenClaw installed and its gateway running on the same Mac. What the agent is able to do (shell commands, files, a browser, and screen control if you turn that on in OpenClaw) is set in OpenClaw, not here. Recognition makes mistakes. The agent sends messages without asking first and reports exactly what it sent; it is told to ask before deleting anything or spending money. Treat that as a request to the model, not a guarantee.
 
 ## Fine-tune the lip model on yourself
 

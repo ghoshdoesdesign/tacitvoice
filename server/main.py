@@ -9,11 +9,14 @@ from __future__ import annotations
 
 import hmac
 import json
+import time
+from pathlib import Path
 from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 from . import agent, config
@@ -21,6 +24,8 @@ from .pipeline import append_log
 from .worker import Worker, WorkerError, say
 
 _state: dict = {"worker": None}
+# The app name the menu-bar app reports while a task, not dictation, is being recognised.
+COMMAND_APP = "TacitVoice command"
 
 
 def make_worker() -> Worker:
@@ -118,11 +123,53 @@ async def command(body: Command) -> dict:
     if not text:
         raise HTTPException(status_code=400, detail="No command.")
     say(f"command: {len(text.split())} words")
+    started = time.monotonic()
     try:
-        reply = await run_in_threadpool(agent.run, text)
+        reply, ok = await run_in_threadpool(agent.run, text), True
     except agent.AgentError as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        reply, ok = str(e), False
+    append_log({"event": "command", "heard": text, "reply": reply, "ok": ok,
+                "seconds": round(time.monotonic() - started, 1)})
+    if not ok:
+        raise HTTPException(status_code=502, detail=reply)
     return {"reply": reply}
+
+
+def history_entries(limit: int = 200) -> list[dict]:
+    """The newest dictations and tasks from the text log, newest first."""
+    try:
+        lines = config.LOG_FILE.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    entries = []
+    for line in reversed(lines):
+        try:
+            record = json.loads(line)
+        except ValueError:
+            continue
+        if record.get("event") == "command":
+            entries.append({"kind": "command", "ts": record.get("ts", 0), "heard": record.get("heard", ""),
+                            "reply": record.get("reply", ""), "ok": record.get("ok", True),
+                            "seconds": record.get("seconds", 0)})
+        elif record.get("event") == "utterance" and record.get("app") != COMMAND_APP:
+            # (A task's own recognition is logged too; it is listed once, as the task.)
+            seconds = (record.get("timingsMs") or {}).get("total", 0) / 1000
+            entries.append({"kind": "dictation", "ts": record.get("ts", 0), "heard": record.get("text", ""),
+                            "reply": "", "ok": True, "seconds": seconds})
+        if len(entries) >= limit:
+            break
+    return entries
+
+
+@app.get("/history", dependencies=[Depends(authorised)])
+def history() -> dict:
+    return {"entries": history_entries()}
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard() -> str:
+    """The history page. It holds no data itself: its script asks /history with the token."""
+    return (Path(__file__).parent / "dashboard.html").read_text(encoding="utf-8")
 
 
 def main() -> None:

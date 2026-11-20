@@ -18,14 +18,19 @@ from pathlib import Path
 
 from . import config
 
-# The reply is shown on one line at the bottom of the screen, and the request
-# was whispered or mouthed, so it may contain misheard words.
+# The reply is shown in a small panel above the orb, and the request was
+# whispered or mouthed, so it may contain a misheard word.
 STYLE = (
     "[This request was dictated to a silent-speech tool on the user's Mac and may contain a "
-    "misheard word; go by the evident intent. Do the task on this Mac. Before anything that "
-    "cannot be undone (deleting, sending, buying, posting), say what you would do and ask "
-    "the user to confirm. Reply in one short plain sentence of at most 15 words, with no "
-    "markdown.] "
+    "misheard word; go by the evident intent. Do the task yourself, on this Mac, without "
+    "opening windows the user has to look at when a quieter way exists. "
+    "If it was something to do (change a setting, open an app, send a message), do it and "
+    "reply 'Done' followed by a few words saying exactly what you did, including the "
+    "recipient and the text of anything you sent. "
+    "If it was something to find or show (an email, a fact, a file), reply with the content "
+    "itself in plain text, at most eight short lines, most important first. "
+    "Before deleting anything or spending money, say what you would do and ask the user to "
+    "confirm. If you could not do it, say why in one sentence. No markdown.] "
 )
 
 

@@ -22,6 +22,7 @@ final class Pill {
         case observing        // key held
         case polishing        // key released, text being worked out
         case inserted         // text pasted
+        case done             // a task for the agent finished
         case note(String)     // anything else worth saying, as text
     }
 
@@ -188,7 +189,7 @@ final class Pill {
         case .polishing where !working.isEmpty:
             showOrb(working, repeats: true, on: screen)
             return
-        case .inserted where !finished.isEmpty:
+        case .inserted where !finished.isEmpty, .done where !finished.isEmpty:
             // The closing animation is the confirmation: play it once, then go.
             hide(after: showOrb(finished, repeats: false, on: screen))
             return
@@ -210,6 +211,9 @@ final class Pill {
             layers = spinnerLayers()
         case .inserted:
             text = "Inserted"
+            layers = tickLayers()
+        case .done:
+            text = "Done"
             layers = tickLayers()
         case .note(let message):
             text = message

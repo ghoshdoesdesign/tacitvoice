@@ -193,3 +193,32 @@ def test_command_reports_agent_failures(client, monkeypatch):
     details = [client.post("/command", json={"text": "hi"}, headers=client.token).json()["detail"] for _ in range(3)]
     assert "gateway down" in details[0] and "no readable answer" in details[1] and "without saying" in details[2]
     assert agent.extract_reply({"result": {"payloads": [{"text": "old shape"}]}}) == "old shape"
+
+
+def test_history_lists_tasks_and_dictation_newest_first(client, monkeypatch):
+    from server import agent
+
+    assert client.get("/history").status_code == 401
+    assert client.get("/history", headers=client.token).json() == {"entries": []}
+    pipeline.append_log({"event": "utterance", "app": "Notes", "text": "Buy milk.", "timingsMs": {"total": 2500}})
+    pipeline.append_log({"event": "utterance", "app": main.COMMAND_APP, "text": "Open the calculator."})
+    monkeypatch.setattr(agent, "run", lambda text: "Done, the calculator is open.")
+    client.post("/command", json={"text": "Open the calculator."}, headers=client.token)
+
+    def fail(text):
+        raise agent.AgentError("OpenClaw is not installed on this Mac.")
+
+    monkeypatch.setattr(agent, "run", fail)
+    client.post("/command", json={"text": "Dim the screen."}, headers=client.token)
+
+    entries = client.get("/history", headers=client.token).json()["entries"]
+    assert [(e["kind"], e["heard"], e["ok"]) for e in entries] == [
+        ("command", "Dim the screen.", False),
+        ("command", "Open the calculator.", True),
+        ("dictation", "Buy milk.", True),
+    ]
+    assert entries[1]["reply"] == "Done, the calculator is open." and entries[2]["seconds"] == 2.5
+
+    page = client.get("/dashboard")  # no token: the page itself holds no data
+    assert page.status_code == 200 and "Buy milk" not in page.text and "/history" in page.text
+    assert "innerHTML" not in page.text  # dictated and fetched text is never inserted as HTML

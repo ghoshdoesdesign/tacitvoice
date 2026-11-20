@@ -19,6 +19,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let capture = Capture()
     private let client = ServerClient()
     private let pill = Pill()
+    private let caption = Caption()
 
     private var phase = Phase.idle
     private var commanding = false
@@ -72,6 +73,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(commandHint)
         menu.addItem(serverLine)
         menu.addItem(.separator())
+        let history = NSMenuItem(
+            title: "Open history…", action: #selector(openHistory), keyEquivalent: "")
+        history.target = self
+        menu.addItem(history)
         menu.addItem(contextItem)
         menu.addItem(access)
         menu.addItem(.separator())
@@ -96,6 +101,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let on = !UserDefaults.standard.bool(forKey: contextKey)
         UserDefaults.standard.set(on, forKey: contextKey)
         contextItem.state = on ? .on : .off
+    }
+
+    /// The history page is served by the local server. The token goes after
+    /// the #, which the browser keeps to itself and the page's script reads.
+    @objc private func openHistory() {
+        if let url = URL(string: "http://127.0.0.1:8765/dashboard#\(client.token())") {
+            NSWorkspace.shared.open(url)
+        }
     }
 
     @objc private func openAccessibility() {
@@ -159,7 +172,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         // Read what the text will join now, while the user's app has focus.
         commanding = command
-        targetApp = FocusContext.appName()
+        caption.hide()
+        // The server lists a task once in the history, not also as dictation.
+        targetApp = command ? "TacitVoice command" : FocusContext.appName()
         let sendContext = UserDefaults.standard.bool(forKey: contextKey)
         // A command is not typed anywhere, so the field's text has no bearing on it.
         textBefore = sendContext && !command ? FocusContext.textBeforeCursor() : ""
@@ -214,30 +229,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    /// Show what was understood, pass it to the agent, then show its answer.
+    /// The orb keeps spinning with the understood words above it while the
+    /// agent works; then the orb closes and the answer takes their place.
     private func runCommand(_ transcript: Transcript) {
         guard !transcript.text.isEmpty else {
             pill.show(.note(transcript.warnings.first ?? "Nothing recognised"), hideAfter: 3)
             return
         }
         phase = .processing  // no new recording until the agent has answered
-        pill.show(.note("“" + shortened(transcript.text) + "”"))
+        caption.show(transcript.text)  // the orb is already spinning from the key release
         client.command(transcript.text) { [weak self] result in
             guard let self = self else { return }
             self.phase = .idle
             switch result {
             case .failure(let error):
-                self.pill.show(.note(self.shortened(error.text)), hideAfter: 6)
+                self.pill.hide()
+                self.caption.show(error.text, hideAfter: 6)
             case .success(let reply):
-                self.pill.show(.note(self.shortened(reply)), hideAfter: 8)
+                self.pill.show(.done, hideAfter: 1.4)
+                self.caption.show(reply, hideAfter: Caption.readingTime(reply))
             }
         }
-    }
-
-    /// The label is one line, so long text is cut to what fits.
-    private func shortened(_ text: String) -> String {
-        let line = text.split(whereSeparator: \.isNewline).joined(separator: " ")
-        return line.count > 70 ? String(line.prefix(69)) + "…" : line
     }
 
     private func finish(_ transcript: Transcript) {
