@@ -12,6 +12,8 @@ API key). Nothing here gives it more access than it already has.
 from __future__ import annotations
 
 import json
+import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -39,13 +41,27 @@ class AgentError(Exception):
 
 
 def find_openclaw() -> str:
+    """The openclaw command: TACIT_OPENCLAW, the PATH, or the usual install places.
+
+    OpenClaw's installer puts it under whichever Node.js it finds. With nvm
+    that folder is on the PATH only in shells where `nvm use` has been run, so
+    it is looked for there too, newest Node first.
+    """
+    if config.OPENCLAW_PATH:
+        return config.OPENCLAW_PATH
     path = shutil.which("openclaw")
     if path:
         return path
-    for candidate in ("~/.npm-global/bin/openclaw", "~/.volta/bin/openclaw", "/opt/homebrew/bin/openclaw"):
-        found = Path(candidate).expanduser()
-        if found.exists():
-            return str(found)
+    home = Path.home()
+    places = [home / ".npm-global/bin", home / ".volta/bin", Path("/opt/homebrew/bin"), Path("/usr/local/bin")]
+
+    def version(folder: Path) -> tuple:
+        return tuple(int(n) for n in re.findall(r"\d+", folder.parent.name))
+
+    places += sorted((home / ".nvm/versions/node").glob("*/bin"), key=version, reverse=True)
+    for place in places:
+        if (place / "openclaw").exists():
+            return str(place / "openclaw")
     raise AgentError("OpenClaw is not installed on this Mac.")
 
 
@@ -61,8 +77,11 @@ def extract_reply(result: dict) -> str:
 def run(text: str, timeout_s: int | None = None) -> str:
     """One agent turn. The text is passed as an argument, never through a shell."""
     timeout_s = timeout_s or config.AGENT_TIMEOUT_S
+    openclaw = find_openclaw()
+    # openclaw is a Node.js script: put the Node it was installed with first on the PATH.
+    env = {**os.environ, "PATH": str(Path(openclaw).parent) + os.pathsep + os.environ.get("PATH", "")}
     command = [
-        find_openclaw(), "agent",
+        openclaw, "agent",
         "--agent", config.AGENT_NAME,
         "--session-key", config.AGENT_SESSION,
         "--message", STYLE + text,
@@ -70,7 +89,7 @@ def run(text: str, timeout_s: int | None = None) -> str:
         "--json",
     ]
     try:
-        done = subprocess.run(command, capture_output=True, text=True, timeout=timeout_s + 10)
+        done = subprocess.run(command, capture_output=True, text=True, timeout=timeout_s + 10, env=env)
     except subprocess.TimeoutExpired:
         raise AgentError("OpenClaw took too long and was stopped.")
     except OSError as e:

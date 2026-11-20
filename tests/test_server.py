@@ -222,3 +222,29 @@ def test_history_lists_tasks_and_dictation_newest_first(client, monkeypatch):
     page = client.get("/dashboard")  # no token: the page itself holds no data
     assert page.status_code == 200 and "Buy milk" not in page.text and "/history" in page.text
     assert "innerHTML" not in page.text  # dictated and fetched text is never inserted as HTML
+
+
+def test_openclaw_is_found_under_nvm_and_run_with_its_own_node(tmp_path, monkeypatch):
+    from server import agent
+
+    for name in ("v24.16.0", "v26.10.0", "v9.0.0"):
+        (tmp_path / ".nvm/versions/node" / name / "bin").mkdir(parents=True)
+    for name in ("v24.16.0", "v26.10.0"):
+        (tmp_path / ".nvm/versions/node" / name / "bin/openclaw").write_text("")
+    monkeypatch.setattr(agent.Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(agent.shutil, "which", lambda name: None)
+    monkeypatch.setattr(config, "OPENCLAW_PATH", "")
+    newest = tmp_path / ".nvm/versions/node/v26.10.0/bin"
+    assert agent.find_openclaw() == str(newest / "openclaw")
+
+    seen = {}
+
+    def fake_run(command, **kwargs):
+        seen.update(kwargs)
+        return SimpleNamespace(returncode=0, stdout=json.dumps({"payloads": [{"text": "hi"}]}), stderr="")
+
+    monkeypatch.setattr(agent.subprocess, "run", fake_run)
+    assert agent.run("say hello") == "hi" and seen["env"]["PATH"].startswith(str(newest))
+
+    monkeypatch.setattr(config, "OPENCLAW_PATH", "/somewhere/openclaw")
+    assert agent.find_openclaw() == "/somewhere/openclaw"
