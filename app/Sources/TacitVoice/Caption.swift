@@ -132,6 +132,9 @@ final class Caption {
             y: screen.visibleFrame.maxY - topMargin - height)
         panel.setFrame(
             NSRect(origin: origin, size: NSSize(width: width, height: height)), display: true)
+        let whole = NSRect(origin: .zero, size: NSSize(width: width, height: height))
+        glass.frame = whole
+        background.frame = whole
         panel.orderFrontRegardless()
 
         if let seconds = seconds {
