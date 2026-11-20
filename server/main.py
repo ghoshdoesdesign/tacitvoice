@@ -135,6 +135,12 @@ async def command(body: Command) -> dict:
     return {"reply": reply}
 
 
+@app.post("/command/cancel", dependencies=[Depends(authorised)])
+def cancel_command() -> dict:
+    """Stop the task the agent is working on, if there is one."""
+    return {"cancelled": agent.cancel()}
+
+
 def history_entries(limit: int = 200) -> list[dict]:
     """The newest dictations and tasks from the text log, newest first."""
     try:

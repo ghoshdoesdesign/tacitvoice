@@ -96,6 +96,10 @@ the app once so the hold key starts working. Add names and terms you use to
 
 Hold **right Command** instead of right Option, whisper or mouth a task, and release. The words are recognised the same way, but they go to an [OpenClaw](https://openclaw.ai) agent on this Mac instead of being typed. While it works, the orb keeps spinning with the words it heard in a translucent panel above it. Then the panel shows the result: "Done" and what was done for an action, or the content itself (the email, the answer) for something you asked to see, without leaving the app you are in. **Open history…** in the menu shows every task and dictation in a browser page served from this Mac.
 
+The words are shown for a second and a half before the agent gets them. **Control+X** cancels: in that moment if they were heard wrong, or later to stop a task that is running (it may already have done part of it). Control+X also drops a dictation that has not been typed yet.
+
+While either key is held the Mac's sound is muted, so music from the speakers is not heard as part of your whisper; it comes back when you let go.
+
 It needs OpenClaw installed and its gateway running on the same Mac. What the agent is able to do (shell commands, files, a browser, and screen control if you turn that on in OpenClaw) is set in OpenClaw, not here. Recognition makes mistakes. The agent sends messages without asking first and reports exactly what it sent; it is told to ask before deleting anything or spending money. Treat that as a request to the model, not a guarantee.
 
 ## Fine-tune the lip model on yourself

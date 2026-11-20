@@ -1,4 +1,5 @@
 import json
+import threading
 import time
 from types import SimpleNamespace
 
@@ -149,6 +150,26 @@ def test_describe_exit():
     assert worker.describe_exit(0) == "exit code 0" and worker.describe_exit(-9) == "killed by SIGKILL"
 
 
+class FakeProcess:
+    """Stands in for the openclaw command: answers at once, or waits to be stopped."""
+
+    def __init__(self, stdout="", returncode=0, waits=False):
+        self.stdout, self.returncode, self.waits = stdout, returncode, waits
+        self.stopped = threading.Event()
+
+    def communicate(self, timeout=None):
+        if self.waits:
+            assert self.stopped.wait(5), "the task was never cancelled"
+            return "", ""
+        return self.stdout, ""
+
+    def poll(self):
+        return None if self.waits and not self.stopped.is_set() else self.returncode
+
+    def terminate(self):
+        self.stopped.set()
+
+
 def test_command_goes_to_the_agent_as_one_argument(client, monkeypatch):
     from server import agent
 
@@ -156,10 +177,10 @@ def test_command_goes_to_the_agent_as_one_argument(client, monkeypatch):
 
     def fake_run(command, **kwargs):
         seen["command"], seen["kwargs"] = command, kwargs
-        return SimpleNamespace(returncode=0, stdout=json.dumps({"payloads": [{"text": " Brightness is down. "}]}), stderr="")
+        return FakeProcess(json.dumps({"payloads": [{"text": " Brightness is down. "}]}))
 
     monkeypatch.setattr(agent, "find_openclaw", lambda: "/usr/local/bin/openclaw")
-    monkeypatch.setattr(agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(agent.subprocess, "Popen", fake_run)
 
     assert client.post("/command", json={"text": "x"}).status_code == 401
     assert client.post("/command", json={"text": "   "}, headers=client.token).status_code == 400
@@ -185,11 +206,11 @@ def test_command_reports_agent_failures(client, monkeypatch):
 
     monkeypatch.setattr(agent, "find_openclaw", lambda: "openclaw")
     replies = iter([
-        SimpleNamespace(returncode=1, stdout=json.dumps({"ok": False, "error": {"message": "gateway down"}}), stderr=""),
-        SimpleNamespace(returncode=0, stdout="not json", stderr=""),
-        SimpleNamespace(returncode=0, stdout=json.dumps({"result": {"payloads": []}}), stderr=""),
+        FakeProcess(json.dumps({"ok": False, "error": {"message": "gateway down"}}), returncode=1),
+        FakeProcess("not json"),
+        FakeProcess(json.dumps({"result": {"payloads": []}})),
     ])
-    monkeypatch.setattr(agent.subprocess, "run", lambda *a, **k: next(replies))
+    monkeypatch.setattr(agent.subprocess, "Popen", lambda *a, **k: next(replies))
     details = [client.post("/command", json={"text": "hi"}, headers=client.token).json()["detail"] for _ in range(3)]
     assert "gateway down" in details[0] and "no readable answer" in details[1] and "without saying" in details[2]
     assert agent.extract_reply({"result": {"payloads": [{"text": "old shape"}]}}) == "old shape"
@@ -241,10 +262,34 @@ def test_openclaw_is_found_under_nvm_and_run_with_its_own_node(tmp_path, monkeyp
 
     def fake_run(command, **kwargs):
         seen.update(kwargs)
-        return SimpleNamespace(returncode=0, stdout=json.dumps({"payloads": [{"text": "hi"}]}), stderr="")
+        return FakeProcess(json.dumps({"payloads": [{"text": "hi"}]}))
 
-    monkeypatch.setattr(agent.subprocess, "run", fake_run)
+    monkeypatch.setattr(agent.subprocess, "Popen", fake_run)
     assert agent.run("say hello") == "hi" and seen["env"]["PATH"].startswith(str(newest))
 
     monkeypatch.setattr(config, "OPENCLAW_PATH", "/somewhere/openclaw")
     assert agent.find_openclaw() == "/somewhere/openclaw"
+
+
+def test_a_running_task_can_be_cancelled(client, monkeypatch):
+    from server import agent
+
+    assert client.post("/command/cancel").status_code == 401
+    assert client.post("/command/cancel", headers=client.token).json() == {"cancelled": False}  # nothing running
+
+    process = FakeProcess(waits=True)
+    monkeypatch.setattr(agent, "find_openclaw", lambda: "openclaw")
+    monkeypatch.setattr(agent.subprocess, "Popen", lambda *a, **k: process)
+    result = {}
+    worker_thread = threading.Thread(
+        target=lambda: result.update(r=client.post("/command", json={"text": "send it"}, headers=client.token)))
+    worker_thread.start()
+    for _ in range(100):
+        if agent._running["process"] is process:
+            break
+        time.sleep(0.02)
+    assert client.post("/command/cancel", headers=client.token).json() == {"cancelled": True}
+    worker_thread.join(5)
+    assert process.stopped.is_set() and result["r"].status_code == 502 and result["r"].json()["detail"] == "Cancelled."
+    entries = client.get("/history", headers=client.token).json()["entries"]
+    assert entries[0]["heard"] == "send it" and entries[0]["reply"] == "Cancelled." and entries[0]["ok"] is False

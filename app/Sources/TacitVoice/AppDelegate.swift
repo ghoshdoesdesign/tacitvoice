@@ -20,9 +20,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let client = ServerClient()
     private let pill = Pill()
     private let caption = Caption()
+    private let quiet = Quiet()
 
     private var phase = Phase.idle
     private var commanding = false
+    /// Goes up when the user cancels. Work started under an earlier number
+    /// finds it changed when it finishes, and drops its result.
+    private var attempt = 0
+    private var agentRunning = false
+    private var cancelMonitor: Any?
+    /// How long a task's heard words are shown before the agent gets them:
+    /// the moment to cancel if they were heard wrong.
+    private let commandDelay = 1.5
     private var pressedAt = Date()
     private var targetApp = ""
     private var textBefore = ""
@@ -45,6 +54,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         commandKey.onPress = { [weak self] in self?.keyDown(command: true) }
         commandKey.onRelease = { [weak self] in self?.keyUp(command: true) }
         commandKey.start()
+        // Control+X drops whatever is in progress. (A global monitor sees the
+        // key but cannot keep it from the app in front.)
+        cancelMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            if event.keyCode == 7, event.modifierFlags.contains(.control) { self?.cancel() }
+        }
 
         checkServer()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
@@ -62,6 +76,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let commandHint = NSMenuItem(
             title: "Hold right Command to give OpenClaw a task", action: nil, keyEquivalent: "")
         commandHint.isEnabled = false
+        let cancelHint = NSMenuItem(title: "Control+X cancels", action: nil, keyEquivalent: "")
+        cancelHint.isEnabled = false
         serverLine.isEnabled = false
         contextItem.target = self
         contextItem.state = UserDefaults.standard.bool(forKey: contextKey) ? .on : .off
@@ -71,6 +87,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         access.target = self
         menu.addItem(hint)
         menu.addItem(commandHint)
+        menu.addItem(cancelHint)
         menu.addItem(serverLine)
         menu.addItem(.separator())
         let history = NSMenuItem(
@@ -182,9 +199,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         phase = .recording
         pressedAt = Date()
         setIcon(recording: true)
+        quiet.begin()  // music from the speakers would be heard as part of the whisper
         pill.show(.observing)
         capture.start { [weak self] problem in
             guard let self = self else { return }
+            self.quiet.end()
             self.phase = .idle
             self.setIcon(recording: false)
             self.pill.show(.note(problem), hideAfter: 4)
@@ -201,12 +220,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard phase == .recording, command == commanding else { return }
         limitTimer?.invalidate()
         let held = Date().timeIntervalSince(pressedAt)
+        let attempt = self.attempt
         phase = .processing
         setIcon(recording: false)
+        quiet.end()
         pill.show(.polishing)
 
         capture.stop { [weak self] clip in
-            guard let self = self else { return }
+            guard let self = self, attempt == self.attempt else { return }
             if held < self.minimumHold || clip.frames.count < 8 {
                 self.phase = .idle
                 self.pill.hide()
@@ -214,6 +235,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             self.client.transcribe(clip, app: self.targetApp, textBeforeCursor: self.textBefore) {
                 result in
+                guard attempt == self.attempt else { return }  // cancelled meanwhile
                 self.phase = .idle
                 switch result {
                 case .failure(let error):
@@ -237,19 +259,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         phase = .processing  // no new recording until the agent has answered
+        let attempt = self.attempt
         caption.show(transcript.text)  // the orb is already spinning from the key release
-        client.command(transcript.text) { [weak self] result in
-            guard let self = self else { return }
-            self.phase = .idle
-            switch result {
-            case .failure(let error):
-                self.pill.hide()
-                self.caption.show(error.text, hideAfter: 6)
-            case .success(let reply):
-                self.pill.show(.done, hideAfter: 1.4)
-                self.caption.show(reply, hideAfter: Caption.readingTime(reply))
+        // A pause before the agent starts: the chance to cancel a misheard task.
+        DispatchQueue.main.asyncAfter(deadline: .now() + commandDelay) { [weak self] in
+            guard let self = self, attempt == self.attempt else { return }
+            self.agentRunning = true
+            self.client.command(transcript.text) { [weak self] result in
+                guard let self = self, attempt == self.attempt else { return }
+                self.agentRunning = false
+                self.phase = .idle
+                switch result {
+                case .failure(let error):
+                    self.pill.hide()
+                    self.caption.show(error.text, hideAfter: 6)
+                case .success(let reply):
+                    self.pill.show(.done, hideAfter: 1.4)
+                    self.caption.show(reply, hideAfter: Caption.readingTime(reply))
+                }
             }
         }
+    }
+
+    /// Control+X: drop the recording, the recognition or the task in progress.
+    private func cancel() {
+        guard phase != .idle else { return }
+        attempt += 1
+        limitTimer?.invalidate()
+        if phase == .recording { capture.stop { _ in } }
+        if agentRunning {
+            agentRunning = false
+            client.cancelCommand()
+        }
+        quiet.end()
+        phase = .idle
+        setIcon(recording: false)
+        caption.hide()
+        pill.show(.note("Cancelled"), hideAfter: 1.2)
     }
 
     private func finish(_ transcript: Transcript) {

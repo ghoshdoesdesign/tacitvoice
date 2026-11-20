@@ -147,6 +147,17 @@ extension ServerClient {
     }
 }
 
+extension ServerClient {
+    /// Ask the server to stop the task the agent is working on. Nothing waits for the answer.
+    func cancelCommand() {
+        var request = URLRequest(url: base.appendingPathComponent("command/cancel"))
+        request.httpMethod = "POST"
+        request.timeoutInterval = 5
+        request.setValue("Bearer \(token())", forHTTPHeaderField: "Authorization")
+        session.dataTask(with: request).resume()
+    }
+}
+
 enum ClientError: Error {
     case message(String)
 

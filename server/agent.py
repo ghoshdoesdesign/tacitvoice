@@ -16,6 +16,7 @@ import os
 import re
 import shutil
 import subprocess
+import threading
 from pathlib import Path
 
 from . import config
@@ -74,6 +75,22 @@ def extract_reply(result: dict) -> str:
     return "\n".join(t.strip() for t in texts if t.strip())
 
 
+# The task in progress, so that it can be stopped. The app sends one at a time.
+_lock = threading.Lock()
+_running: dict = {"process": None, "cancelled": False}
+
+
+def cancel() -> bool:
+    """Stop the task in progress. Ending the openclaw command aborts the agent's run."""
+    with _lock:
+        process = _running["process"]
+        if process is None or process.poll() is not None:
+            return False
+        _running["cancelled"] = True
+        process.terminate()
+        return True
+
+
 def run(text: str, timeout_s: int | None = None) -> str:
     """One agent turn. The text is passed as an argument, never through a shell."""
     timeout_s = timeout_s or config.AGENT_TIMEOUT_S
@@ -89,11 +106,24 @@ def run(text: str, timeout_s: int | None = None) -> str:
         "--json",
     ]
     try:
-        done = subprocess.run(command, capture_output=True, text=True, timeout=timeout_s + 10, env=env)
-    except subprocess.TimeoutExpired:
-        raise AgentError("OpenClaw took too long and was stopped.")
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
     except OSError as e:
         raise AgentError(f"OpenClaw could not be started: {e.strerror or e}")
+    with _lock:
+        _running["process"], _running["cancelled"] = process, False
+    try:
+        stdout, stderr = process.communicate(timeout=timeout_s + 10)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.communicate()
+        raise AgentError("OpenClaw took too long and was stopped.")
+    finally:
+        with _lock:
+            cancelled = _running["cancelled"]
+            _running["process"] = None
+    if cancelled:
+        raise AgentError("Cancelled.")
+    done = subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
     try:
         # With --json an error is also reported as JSON, on stdout or stderr.
         result = json.loads(done.stdout or done.stderr or "")
